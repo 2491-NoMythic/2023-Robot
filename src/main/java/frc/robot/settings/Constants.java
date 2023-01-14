@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot;
+package frc.robot.settings;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -20,5 +20,10 @@ public final class Constants {
     private OperatorConstants () {}
 
     public static final int DRIVER_CONTROLLER_PORT = 0;
+  }
+  public final class Intake{
+    private Intake() {
+    }
+    public static final INTAKE_MOTOR_ID = 2491;
   }
 }

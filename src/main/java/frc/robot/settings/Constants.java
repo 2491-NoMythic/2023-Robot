@@ -24,6 +24,6 @@ public final class Constants {
   public final class Intake{
     private Intake() {
     }
-    public static final INTAKE_MOTOR_ID = 2491;
+    public static final int INTAKE_MOTOR_ID = 2491;
   }
 }

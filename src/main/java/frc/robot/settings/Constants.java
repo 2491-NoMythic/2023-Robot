@@ -26,4 +26,11 @@ public final class Constants {
     }
     public static final int INTAKE_MOTOR_ID = 2491;
   }
+  public final class Arm{
+    private Arm(){
+
+    }
+    public static final int ARM_SHOULDER_MOTOR_ID = 2491;
+    public static final int ARM_ELBOW_MOTOR_ID = 2491;
+  }
 }

@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import frc.robot.commands.Autos;
-import frc.robot.commands.Shutup;
-import frc.robot.commands.Shutup;
 import static frc.robot.settings.Constants.OperatorConstants.DRIVER_CONTROLLER_PORT;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -58,6 +55,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(null);
-  }
+    return null;
+   }
 }

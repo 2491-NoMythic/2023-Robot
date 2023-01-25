@@ -4,15 +4,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.settings.Constants.Arm.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class RobotShoulderSubsystem extends SubsystemBase{
-    TalonFX armShoulderMotor;
+    TalonSRX armShoulderMotor;
     
     public RobotShoulderSubsystem(){
-        armShoulderMotor = new TalonFX(ARM_SHOULDER_MOTOR_ID);
+        armShoulderMotor = new TalonSRX(ARM_SHOULDER_MOTOR_ID);
     }
     public void setShoulderPower(double power){
         armShoulderMotor.set(ControlMode.PercentOutput, power);
+    }
+    public void setBrakeMode() {
+        armShoulderMotor.setNeutralMode(NeutralMode.Brake);
     }
 }

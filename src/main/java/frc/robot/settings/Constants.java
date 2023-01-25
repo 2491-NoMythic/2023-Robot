@@ -30,7 +30,12 @@ public final class Constants {
     private Arm(){
 
     }
-    public static final int ARM_SHOULDER_MOTOR_ID = 2491;
-    public static final int ARM_ELBOW_MOTOR_ID = 2491;
+    public static final int ARM_SHOULDER_MOTOR_ID = 2;
+    public static final int ARM_ELBOW_MOTOR_ID = 1;
   }
+  public final class PS4{
+    public static final int CONTROLLER_ID = 1;
+    public static final int LEFT_AXIS_ID = 1;
+    public static final int RIGHT_AXIS_ID = 5;
+}
 }

@@ -8,6 +8,8 @@ import static frc.robot.settings.Constants.OperatorConstants.DRIVER_CONTROLLER_P
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Commands.RobotArmControl;
+import frc.robot.subsystems.RobotArmSubsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -18,7 +20,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-
+private final RobotArmSubsystem arm = new RobotArmSubsystem();
+private final RobotArmControl ControlArm = new RobotArmControl(arm);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController =
@@ -28,6 +31,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    arm.setDefaultCommand(ControlArm);
   }
 
   /**

@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Commands.RunViaLimelightCommand;
+import frc.robot.subsystems.LimelightmotorSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -18,7 +20,7 @@ public class Robot extends TimedRobot {
   private Command autonomousCommand;
 
   private RobotContainer robotContainer;
-
+  private LimelightmotorSubsystem llmotor;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -48,10 +50,12 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {  /* TODO document why this method is empty or remove */ }
+  public void disabledInit() {  //need to add stuff
+   }
 
   @Override
-  public void disabledPeriodic() {  /* TODO document why this method is empty or remove */ }
+  public void disabledPeriodic() {  //need to add stuff
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -66,7 +70,8 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() { /* TODO document why this method is empty or remove */ }
+  public void autonomousPeriodic() { //not sure what we do here
+   }
 
   @Override
   public void teleopInit() {
@@ -74,6 +79,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
@@ -81,7 +87,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {  /* TODO document why this method is empty or remove */ 
+  public void teleopPeriodic() {  
     robotContainer.teleopPeriodic();
   }
 
@@ -93,13 +99,16 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {  /* TODO document why this method is empty or remove */ }
+  public void testPeriodic() {  //Not sure what goes here
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override
-  public void simulationInit() {  /* TODO document why this method is empty or remove */ }
+  public void simulationInit() {   //Not sure what goes here
+  }
 
   /** This function is called periodically whilst in simulation. */
   @Override
-  public void simulationPeriodic() {  /* TODO document why this method is empty or remove */ }
+  public void simulationPeriodic() { //Not sure what goes here 
+  }
 }

@@ -11,7 +11,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.LimelightmotorSubsystem;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -20,19 +22,25 @@ import frc.robot.subsystems.Limelight;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Limelight limelight = new Limelight();
-
+  private Limelight limelight = Limelight.getInstance();
+  private final LimelightmotorSubsystem llmotor = new LimelightmotorSubsystem();
+  private final RunViaLimelightCommand defaultllmotorCommand;
+  
+  
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController =
-      new CommandXboxController(DRIVER_CONTROLLER_PORT);
-
+  new CommandXboxController(DRIVER_CONTROLLER_PORT);
+  
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    Command defaultllmotorCommand = new RunViaLimelightCommand(llmotor);
     configureBindings();
     configCommonDashboard();
+    defaultllmotorCommand;
   }
-  private void configCommonDashboard() {
+    
+  private void configCommonDashboard() {//need to add stuff
   
   }
   /**
@@ -64,6 +72,7 @@ public class RobotContainer {
    }
    public void teleopPeriodic() {
     SmartDashboard.putNumber("Match Timer", Timer.getMatchTime());
-    limelight.putThingOnDashboard();
+    limelight.getLimelightValues();
+    new RunViaLimelightCommand(llmotor);
   }
 }

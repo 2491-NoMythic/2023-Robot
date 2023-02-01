@@ -10,6 +10,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Commands.EndEffectorCommand;
+import frc.robot.Commands.RobotArmControl;
+import frc.robot.subsystems.EndEffector;
+import frc.robot.subsystems.RobotArmSubsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.subsystems.Limelight;
@@ -22,11 +26,19 @@ import frc.robot.subsystems.LimelightmotorSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+ 
   private Limelight limelight = Limelight.getInstance();
   private final LimelightmotorSubsystem llmotor;
 
   
   
+
+private final RobotArmSubsystem arm = new RobotArmSubsystem();
+private final RobotArmControl ControlArm = new RobotArmControl(arm);
+
+private final EndEffector effector = new EndEffector();
+private final EndEffectorCommand endEffectorCommand = new EndEffectorCommand(effector);
+main
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController =
   new CommandXboxController(DRIVER_CONTROLLER_PORT);
@@ -43,6 +55,8 @@ public class RobotContainer {
     
   private void configCommonDashboard() {//need to add stuff
   
+    arm.setDefaultCommand(ControlArm);
+    effector.setDefaultCommand(endEffectorCommand);
   }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the

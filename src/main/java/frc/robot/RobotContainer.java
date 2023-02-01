@@ -38,7 +38,7 @@ private final RobotArmControl ControlArm = new RobotArmControl(arm);
 
 private final EndEffector effector = new EndEffector();
 private final EndEffectorCommand endEffectorCommand = new EndEffectorCommand(effector);
-main
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController =
   new CommandXboxController(DRIVER_CONTROLLER_PORT);

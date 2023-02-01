@@ -23,8 +23,8 @@ import frc.robot.subsystems.LimelightmotorSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private Limelight limelight = Limelight.getInstance();
-  private final LimelightmotorSubsystem llmotor = new LimelightmotorSubsystem();
-  private final RunViaLimelightCommand defaultllmotorCommand;
+  private final LimelightmotorSubsystem llmotor;
+
   
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -34,10 +34,11 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    llmotor = new LimelightmotorSubsystem();
     Command defaultllmotorCommand = new RunViaLimelightCommand(llmotor);
     configureBindings();
     configCommonDashboard();
-    defaultllmotorCommand;
+    llmotor.setDefaultCommand(defaultllmotorCommand);
   }
     
   private void configCommonDashboard() {//need to add stuff
@@ -73,6 +74,5 @@ public class RobotContainer {
    public void teleopPeriodic() {
     SmartDashboard.putNumber("Match Timer", Timer.getMatchTime());
     limelight.getLimelightValues();
-    new RunViaLimelightCommand(llmotor);
   }
 }

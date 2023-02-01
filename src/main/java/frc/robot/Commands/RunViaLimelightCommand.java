@@ -14,10 +14,9 @@ public class RunViaLimelightCommand extends CommandBase {
   Limelight limelight;
 
   public RunViaLimelightCommand(LimelightmotorSubsystem limelightMotor) {
-    limelightMotor = new LimelightmotorSubsystem();
     limelight = Limelight.getInstance();
-    this.limelightMotor = limelightMotor;
     addRequirements(limelightMotor);
+    this.limelightMotor = limelightMotor;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -32,7 +31,7 @@ public class RunViaLimelightCommand extends CommandBase {
   public void execute() {
     LimelightValues limelightValues = limelight.getLimelightValues();
 
-    limelightMotor.runLimelightmotor(limelightValues.gettx()*.02);
+    limelightMotor.runLimelightmotor(limelightValues.gettx()*0.05);
   }
 
   // Called once the command ends or is interrupted.

@@ -17,7 +17,7 @@ import frc.robot.settings.Constants.Arm.*;
 /** Add your docs here. */
 public class EndEffector extends SubsystemBase {
 
-private static final int END_EFFECTOR_MOTOR_ID = 6;
+private static final int END_EFFECTOR_MOTOR_ID = 4;
 // TalonSRX endEffectorMotor;
 CANSparkMax sparkEndEffector;
 RelativeEncoder endEffectorEncoder;

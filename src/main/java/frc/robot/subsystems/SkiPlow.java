@@ -14,8 +14,10 @@ import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 public class SkiPlow extends SubsystemBase {
   /** Creates a new SkiPlow. */
   DoubleSolenoid skiPlowDoublePCM;
+  DoubleSolenoid skiPlowDoublePCMLock;
   public SkiPlow() {
-    skiPlowDoublePCM = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+    skiPlowDoublePCM = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1, 0);
+    skiPlowDoublePCMLock = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 3, 2);
   }
   public void pistonReverse() {
     skiPlowDoublePCM.set(kReverse);
@@ -27,6 +29,15 @@ public class SkiPlow extends SubsystemBase {
     skiPlowDoublePCM.set(kOff);
   }
   
+  public void lockReverse() {
+    skiPlowDoublePCMLock.set(kReverse);
+  }
+  public void lockForward() {
+    skiPlowDoublePCMLock.set(kForward);
+  }
+  public void lockoff() {
+    skiPlowDoublePCMLock.set(kOff);
+  }
 
   @Override
   public void periodic() {

@@ -29,14 +29,13 @@ public class SkiPlowPneumatic extends CommandBase {
     if(ps4.getCrossButton()){
       skiplow.pistonForward();
     }
-    else{
-      if(ps4.getCircleButton()) {
-        skiplow.pistonReverse();
-      }
-      else{
-        skiplow.pistonoff();
-      }
+    if(ps4.getCircleButton()) {
+      skiplow.pistonReverse();
     }
+    if(ps4.getR2Button()) {
+      skiplow.lockForward();}
+    else{skiplow.lockReverse();} 
+      
   }
 
   // Called once the command ends or is interrupted.

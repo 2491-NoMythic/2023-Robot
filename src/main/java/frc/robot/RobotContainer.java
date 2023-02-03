@@ -40,6 +40,11 @@ import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.RobotArmSubsystem;
 import frc.robot.subsystems.SkiPlow;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Commands.SkiPlowPneumatic;
+import frc.robot.subsystems.EndEffector;
+import frc.robot.subsystems.RobotArmSubsystem;
+import frc.robot.subsystems.SkiPlow;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.DriveConstants;
@@ -68,9 +73,10 @@ public class RobotContainer {
   private final RobotArmSubsystem arm = new RobotArmSubsystem();
   private final RobotArmControl ControlArm = new RobotArmControl(arm);
 private final SkiPlow skiPlow = new SkiPlow();
+private final SkiPlowPneumatic pneumatic = new SkiPlowPneumatic(skiPlow);
 
-private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
-  private final EndEffector effector = new EndEffector();
+  private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
+private final EndEffector effector = new EndEffector();
   private final EndEffectorCommand endEffectorCommand = new EndEffectorCommand(effector);
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -100,8 +106,7 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
     arm.setDefaultCommand(ControlArm);
     effector.setDefaultCommand(endEffectorCommand);
     skiPlow.setDefaultCommand(skiplowcommand);
-  }
-    
+  } 
   private void configDashboard() {
     SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putData("Forward180", autoBuilder.fullAuto(pathGroup1));

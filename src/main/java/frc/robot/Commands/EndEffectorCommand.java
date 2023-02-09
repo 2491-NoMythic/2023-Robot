@@ -29,7 +29,7 @@ public class EndEffectorCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    endEffector.setEndEffectorPower(ps4.getRawAxis(5));
+    endEffector.setEndEffectorPower(0.5*ps4.getRawAxis(5));
   }
 
   // Called once the command ends or is interrupted.

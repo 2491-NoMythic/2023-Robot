@@ -33,11 +33,13 @@ public class Limelight {
         NetworkTableEntry tx = visionTable.getEntry("tx");
         NetworkTableEntry ty = visionTable.getEntry("ty");
         NetworkTableEntry ta = visionTable.getEntry("ta");
+        NetworkTableEntry botpose = visionTable.getEntry("botpose");
         //Makes Local Variables
         double x = tx.getDouble(1);
         double y = ty.getDouble(1);
         double area = ta.getDouble(1);
-        return new LimelightValues(x, y, area);
+        double[] botPose = botpose.getDoubleArray(new double[6]);
+        return new LimelightValues(x, y, area, botPose);
     }
 
 

@@ -10,11 +10,13 @@ public class LimelightValues {
         double tx;
         double ty;
         double ta;
-        public LimelightValues(double tx, double ty, double ta){
+        double[] botPose;
+        public LimelightValues(double tx, double ty, double ta, double[] botPose){
             //set stuff equal to stuff
             this.tx = tx;
             this.ty = ty;
             this.ta = ta;
+            this.botPose = botPose;
         }
         public double gettx(){return tx;}
         public double getty(){return ty;}

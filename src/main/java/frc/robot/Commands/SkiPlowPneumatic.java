@@ -26,15 +26,21 @@ public class SkiPlowPneumatic extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(ps4.getCrossButton()){
-      skiplow.pistonForward();
+    if(ps4.getCrossButton()) {
+      skiplow.pistonDownRight();
     }
     if(ps4.getCircleButton()) {
-      skiplow.pistonReverse();
+      skiplow.pistonUpRight();
+    }
+    if(ps4.getSquareButton()) {
+      skiplow.pistonDownLeft();
+    }
+    if(ps4.getTriangleButton()) {
+      skiplow.pistonUpLeft();
     }
     if(ps4.getR2Button()) {
-      skiplow.lockForward();}
-    else{skiplow.lockReverse();} 
+      skiplow.lockOn();}
+    else{skiplow.lockOff();} 
       
   }
 

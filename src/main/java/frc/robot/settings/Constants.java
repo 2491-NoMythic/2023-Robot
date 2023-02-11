@@ -6,6 +6,7 @@ package frc.robot.settings;
 
 import com.ctre.phoenixpro.signals.InvertedValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -33,7 +34,44 @@ public final class Constants {
     public static final int ARM_SHOULDER_MOTOR_ID = 2;
     public static final int ARM_ELBOW_MOTOR_ID = 1;
   }
+  public final class Preferences{
+   
+  }
   public static final class DriveConstants {
+    public enum Positions{
+      FL(0),
+      FR(0.25),
+      BL(0.5),
+      BR(0.75);
+
+      private double rotation;
+
+      Positions(double value) {
+        rotation = value;
+
+      }
+      public double getValue() {
+        return rotation;
+      }
+    }
+    public enum Offsets{
+      AUGIE(0.164307),
+      BENH(-0.346436),
+      EVELYN(0.382568),
+      OMARIAHN(0.271973),
+      PHEOBE(0),
+      ROYCE(0),
+      QUINN(0),
+      ROWAN(0),
+      LIAM(0);
+      private double offset;
+      Offsets(double value) {
+        offset = value;
+      }
+      public Rotation2d getValue(Positions pos) {
+        return Rotation2d.fromRotations(MathUtil.inputModulus(offset+pos.getValue(), -0.5, 0.5));
+      }
+    }
     private DriveConstants() {
     }
     public static final Pose2d DRIVE_ODOMETRY_ORIGIN = new Pose2d(5.0, 5.0, new Rotation2d());

@@ -52,6 +52,8 @@ import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.settings.CTREConfigs;
 import frc.robot.settings.LimelightValues;
 import frc.robot.subsystems.Limelight;
+import frc.robot.settings.LimelightValues;
+import frc.robot.subsystems.Limelight;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.DriveConstants.Offsets;
 import frc.robot.settings.Constants.DriveConstants.Positions;
@@ -71,6 +73,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 */
 	private final SwerveModule[] modules;
 	private final Rotation2d[] lastAngles;
+	
 	
 	private final SwerveDrivePoseEstimator odometer;
 	Limelight limelight = Limelight.getInstance();
@@ -260,7 +263,7 @@ public Command followPPTrajectory(PathPlannerTrajectory traj, boolean isFirstPat
 	}
 	public void updateOdometry() {
 		odometer.updateWithTime(Timer.getFPGATimestamp(), getGyroscopeRotation(), getModulePositions());
-		// m_field.setRobotPose(odometer.getEstimatedPosition());
+		m_field.setRobotPose(odometer.getEstimatedPosition());
 	}
 	public void updateOdometryWithVision(Pose2d estematedPose, double timestampSeconds) {
 		odometer.addVisionMeasurement(estematedPose, timestampSeconds);

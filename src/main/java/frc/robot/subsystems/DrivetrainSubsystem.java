@@ -30,6 +30,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.settings.CTREConfigs;
+import frc.robot.settings.LimelightValues;
+import frc.robot.subsystems.Limelight;
 import frc.robot.settings.Constants.DriveConstants;
 
 import static frc.robot.settings.Constants.DriveConstants.*;
@@ -53,8 +55,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 */
 	private final SwerveModule[] modules;
 	private final Rotation2d[] lastAngles;
-
+	
 	private final SwerveDrivePoseEstimator odometer;
+	Limelight limelight = Limelight.getInstance();
+	// LimelightValues limelightValues = limelight.getLimelightValues();
 
 	public final Field2d m_field = new Field2d();
 
@@ -240,7 +244,7 @@ public Command followPPTrajectory(PathPlannerTrajectory traj, boolean isFirstPat
 	}
 	public void updateOdometry() {
 		odometer.updateWithTime(Timer.getFPGATimestamp(), getGyroscopeRotation(), getModulePositions());
-		m_field.setRobotPose(odometer.getEstimatedPosition());
+		m_field.setRobotPose(limelight.getLimelightValues().getbotPose());
 	}
 	public void updateOdometryWithVision(Pose2d estematedPose, double timestampSeconds) {
 		odometer.addVisionMeasurement(estematedPose, timestampSeconds);

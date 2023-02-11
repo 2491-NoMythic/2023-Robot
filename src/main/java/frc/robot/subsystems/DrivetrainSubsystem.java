@@ -9,6 +9,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -16,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -51,16 +53,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	private final SwerveModule[] modules;
 	private final Rotation2d[] lastAngles;
 
-	private final SwerveDriveOdometry odometer;
+	private final SwerveDrivePoseEstimator odometer;
 
 	public final Field2d m_field = new Field2d();
 
 	public DrivetrainSubsystem() {
 		ShuffleboardTab tab = Shuffleboard.getTab(DRIVETRAIN_SMARTDASHBOARD_TAB);
-		tab.add("Field", m_field)
-			.withWidget(BuiltInWidgets.kField)
-			.withSize(5, 3)
-			.withPosition(8, 0);
 		SmartDashboard.putData("Field", m_field);
 		SmartDashboard.putData("resetOdometry", new InstantCommand(() -> this.resetOdometry()));
 
@@ -116,7 +114,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			BR_STEER_OFFSET,
 			CANIVORE_DRIVETRAIN);
 		// calibrateWheels();
-		odometer = new SwerveDriveOdometry(
+		odometer = new SwerveDrivePoseEstimator(
 			kinematics, 
 			getGyroscopeRotation(),
 			getModulePositions(),
@@ -158,7 +156,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return states;
 	}
 	public Pose2d getPose() {
-		return odometer.getPoseMeters();
+		return odometer.getEstimatedPosition();
 	}
     public void resetOdometry(Pose2d pose) {
         odometer.resetPosition(pose.getRotation(), getModulePositions(), pose);
@@ -233,10 +231,17 @@ public Command followPPTrajectory(PathPlannerTrajectory traj, boolean isFirstPat
 		modules[i].setDesiredState(desiredState);
 		lastAngles[i] = desiredState.angle;
 	}
+	public void updateOdometry() {
+		odometer.updateWithTime(Timer.getFPGATimestamp(), getGyroscopeRotation(), getModulePositions());
+		m_field.setRobotPose(odometer.getEstimatedPosition());
+	}
+	public void updateOdometryWithVision(Pose2d estematedPose, double timestampSeconds) {
+		odometer.addVisionMeasurement(estematedPose, timestampSeconds);
+	}
+
 	@Override
 	public void periodic() {
-		odometer.update(getGyroscopeRotation(), getModulePositions());
-		m_field.setRobotPose(odometer.getPoseMeters());
+		updateOdometry();
 
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());

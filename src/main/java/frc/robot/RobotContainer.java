@@ -74,7 +74,6 @@ public class RobotContainer {
   private final RobotArmControl ControlArm = new RobotArmControl(arm);
 
 private final SkiPlow skiPlow = new SkiPlow();
-private final SkiPlowPneumatic pneumatic = new SkiPlowPneumatic(skiPlow);
 
 private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
   private final EndEffector effector = new EndEffector();

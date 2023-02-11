@@ -59,10 +59,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	public DrivetrainSubsystem() {
 		ShuffleboardTab tab = Shuffleboard.getTab(DRIVETRAIN_SMARTDASHBOARD_TAB);
-		tab.add("Field", m_field)
-			.withWidget(BuiltInWidgets.kField)
-			.withSize(5, 3)
-			.withPosition(8, 0);
 		SmartDashboard.putData("Field", m_field);
 		SmartDashboard.putData("resetOdometry", new InstantCommand(() -> this.resetOdometry()));
 

@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -38,7 +41,8 @@ public class Limelight {
         double x = tx.getDouble(1);
         double y = ty.getDouble(1);
         double area = ta.getDouble(1);
-        double[] botPose = botpose.getDoubleArray(new double[6]);
+        double[] botPosevalues = botpose.getDoubleArray(new double[6]);
+        Pose2d botPose = new Pose2d(new Translation2d(botPosevalues[0], botPosevalues[1]), Rotation2d.fromDegrees(botPosevalues[5]));
         return new LimelightValues(x, y, area, botPose);
     }
 

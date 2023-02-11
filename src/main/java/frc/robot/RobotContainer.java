@@ -37,6 +37,7 @@ import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.RobotArmControl;
 import frc.robot.Commands.SkiPlowPneumatic;
 import frc.robot.subsystems.EndEffector;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.RobotArmSubsystem;
 import frc.robot.subsystems.SkiPlow;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -74,6 +75,8 @@ public class RobotContainer {
   private final RobotArmControl ControlArm = new RobotArmControl(arm);
 
 private final SkiPlow skiPlow = new SkiPlow();
+
+  private final Lights LS = new Lights();
 
 private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
   private final EndEffector effector = new EndEffector();
@@ -142,10 +145,10 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
+    // cancelling on release
     new Trigger(controller::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
-		new Trigger(controller::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
-  }
+		// new Trigger(controller::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+    new Trigger(controller::getTriangleButton).onTrue(Commands.runOnce(()->  {LS.lightsOut(); LS.setCertainLights(29, 59, 200, 30, 30); LS.dataSetter();}, LS));}
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

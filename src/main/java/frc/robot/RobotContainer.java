@@ -148,7 +148,8 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
     // cancelling on release
     new Trigger(controller::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
 		// new Trigger(controller::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
-    new Trigger(controller::getTriangleButton).onTrue(Commands.runOnce(()->  {LS.lightsOut(); LS.setCertainLights(29, 59, 200, 30, 30); LS.dataSetter();}, LS));}
+    new Trigger(controller::getTriangleButton).onTrue(Commands.runOnce(()->  {LS.lightsOut(); LS.setCertainLights(29, 59, 200, 30, 30); LS.dataSetter();}, LS));
+    new Trigger(controller::getSquareButton).onTrue(Commands.runOnce(()->  {LS.lightsOut(); LS.setCertainLights(0, 39, 0, 0, 100); LS.dataSetter();}, LS));}
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

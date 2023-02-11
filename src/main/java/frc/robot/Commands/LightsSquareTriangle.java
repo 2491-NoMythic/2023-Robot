@@ -18,6 +18,9 @@ public class LightsSquareTriangle extends CommandBase {
     ps4 = new PS4Controller(1);
     // Use addRequirements() here to declare subsystem dependencies.
   }
+  // ---------------------------------------
+  // This command is unused becuase it was made with multiple ps4 buttons in it
+  // -----------------------------------------------------------------------------------
 
   // Called when the command is initially scheduled.
   @Override

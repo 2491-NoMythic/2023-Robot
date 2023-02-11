@@ -51,7 +51,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	private final SwerveModule[] modules;
 	private final Rotation2d[] lastAngles;
 
-	private ChassisSpeeds chassisSpeeds;
 	private final SwerveDriveOdometry odometer;
 
 	public final Field2d m_field = new Field2d();
@@ -86,7 +85,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				.withProperties(Map.of("Number of columns", 2, "Number of rows", 1, "Label position", "HIDDEN"))
 				.withSize(4, 3)
 				.withPosition(4, 0),
-				false,
+			false,
 			FR_DRIVE_MOTOR_ID,
 			FR_STEER_MOTOR_ID,
 			FR_STEER_ENCODER_ID,
@@ -98,31 +97,30 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				.withProperties(Map.of("Number of columns", 2, "Number of rows", 1, "Label position", "HIDDEN"))
 				.withSize(4, 3)
 				.withPosition(0, 3),
-				false,
-				BL_DRIVE_MOTOR_ID,
-				BL_STEER_MOTOR_ID,
-				BL_STEER_ENCODER_ID,
-				BL_STEER_OFFSET,
-				CANIVORE_DRIVETRAIN);
+			false,
+			BL_DRIVE_MOTOR_ID,
+			BL_STEER_MOTOR_ID,
+			BL_STEER_ENCODER_ID,
+			BL_STEER_OFFSET,
+			CANIVORE_DRIVETRAIN);
 		modules[3] = new SwerveModule(
 			"BR",
 			tab.getLayout("Back Right Module", BuiltInLayouts.kGrid)
 				.withProperties(Map.of("Number of columns", 2, "Number of rows", 1, "Label position", "HIDDEN"))
 				.withSize(4, 3)
 				.withPosition(4, 3),
-				false,
+			false,
 			BR_DRIVE_MOTOR_ID,
 			BR_STEER_MOTOR_ID,
 			BR_STEER_ENCODER_ID,
 			BR_STEER_OFFSET,
 			CANIVORE_DRIVETRAIN);
-		chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 		// calibrateWheels();
 		odometer = new SwerveDriveOdometry(
-				kinematics, 
-				getGyroscopeRotation(),
-				getModulePositions(),
-				DRIVE_ODOMETRY_ORIGIN);
+			kinematics, 
+			getGyroscopeRotation(),
+			getModulePositions(),
+			DRIVE_ODOMETRY_ORIGIN);
 		}
 	/**
 	 * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the
@@ -208,8 +206,14 @@ public Command followPPTrajectory(PathPlannerTrajectory traj, boolean isFirstPat
 			setModule(i, new SwerveModuleState(0, new Rotation2d()));
 		}
 	}
-	public void drive(ChassisSpeeds new_ChassisSpeeds) {
-		chassisSpeeds = new_ChassisSpeeds;
+	public void drive(ChassisSpeeds chassisSpeeds) {
+		SwerveModuleState[] desiredStates = kinematics.toSwerveModuleStates(chassisSpeeds);
+		double maxSpeed = Collections.max(Arrays.asList(desiredStates)).speedMetersPerSecond;
+		if (maxSpeed <= DriveConstants.DRIVE_DEADBAND_MPS) {
+			stop();
+		} else {
+			setModuleStates(desiredStates);
+		}
 	}
 	/**
 	 * Sets all module drive speeds to 0, but leaves the wheel angles where they were.
@@ -231,16 +235,9 @@ public Command followPPTrajectory(PathPlannerTrajectory traj, boolean isFirstPat
 	}
 	@Override
 	public void periodic() {
-		SwerveModuleState[] desiredStates = kinematics.toSwerveModuleStates(chassisSpeeds);
-		double maxSpeed = Collections.max(Arrays.asList(desiredStates)).speedMetersPerSecond;
-		if (maxSpeed <= DriveConstants.DRIVE_DEADBAND_MPS) {
-			stop();
-		} else {
-			setModuleStates(desiredStates);
-		}
 		odometer.update(getGyroscopeRotation(), getModulePositions());
 		m_field.setRobotPose(odometer.getPoseMeters());
-		
+
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 	}

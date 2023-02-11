@@ -6,22 +6,30 @@ package frc.robot;
 
 import static frc.robot.settings.Constants.PS4.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
+import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Drive;
@@ -96,8 +104,11 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
     
   private void configDashboard() {
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    SmartDashboard.putData("Forward180", autoBuilder.fullAuto(pathGroup1));
+    SmartDashboard.putData("coneAuto", autoBuilder.fullAuto(pathGroup2));
+    SmartDashboard.putData("coolCircle", autoBuilder.fullAuto(pathGroup3));
+    SmartDashboard.putData("testAuto", autoBuilder.fullAuto(pathGroup4));
   }
-
   /**Takes both axis of a joystick, returns an angle from -180 to 180 degrees, or {@link Constants.PS4.NO_INPUT} (double = 404.0) if the joystick is at rest position*/
   private double getJoystickDegrees(int horizontalAxis, int verticalAxis) {
     double xAxis = MathUtil.applyDeadband(-controller.getRawAxis(horizontalAxis), DEADBAND_LARGE);
@@ -128,6 +139,7 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     new Trigger(controller::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
+		new Trigger(controller::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -145,10 +157,12 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
     return value;
   }
   public void robotInit() {
+    PathPlannerServer.startServer(5811);
     drivetrain.zeroGyroscope();
     autoChooser.setDefaultOption("Forward180", Forward180);
     autoChooser.addOption("coneAuto", coneAuto);
     autoChooser.addOption("coolCircle", coolCircle);
+    autoChooser.addOption("testAuto", testAuto);
   }
   public void teleopInit() {
     drivetrain.pointWheelsForward();
@@ -157,7 +171,16 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
     SmartDashboard.putNumber("Match Timer", Timer.getMatchTime());
     limelight.getLimelightValues();
   }
-  
+  public void moveToPose(Pose2d targetPose) {
+ 		Pose2d currentPose = drivetrain.getPose();
+		PathPlannerTrajectory newTraj = PathPlanner.generatePath(
+				new PathConstraints(3, 1.5),
+        new PathPoint(currentPose.getTranslation(), currentPose.relativeTo(targetPose).getTranslation().getAngle(), currentPose.getRotation()),
+				new PathPoint(targetPose.getTranslation(), currentPose.relativeTo(targetPose).getTranslation().getAngle(), targetPose.getRotation()));
+		Command followTraj = drivetrain.followPPTrajectory(newTraj, false);
+    drivetrain.m_field.getObject("traj").setTrajectory(newTraj);
+		followTraj.schedule();
+  }
   // This is just an example event map. It would be better to have a constant, global event map
   // in your code that will be used by all path following commands.
   HashMap<String, Command> eventMap = new HashMap<>();
@@ -170,7 +193,7 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
       drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
       drivetrain.kinematics, // SwerveDriveKinematics
       new PIDConstants(
-          DriveConstants.k_XY_P,
+          DriveConstants.k_XY_P, 
           DriveConstants.k_XY_I,
           DriveConstants.k_XY_D), // PID constants to correct for translation error (used to create the X and Y PID controllers)
       new PIDConstants(
@@ -189,4 +212,6 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
   Command coneAuto = autoBuilder.fullAuto(pathGroup2);
   List<PathPlannerTrajectory> pathGroup3 = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));
   Command coolCircle = autoBuilder.fullAuto(pathGroup3);
+  List<PathPlannerTrajectory> pathGroup4 = PathPlanner.loadPathGroup("test auto", new PathConstraints(4, 4));
+  Command testAuto = autoBuilder.fullAuto(pathGroup4);
 }

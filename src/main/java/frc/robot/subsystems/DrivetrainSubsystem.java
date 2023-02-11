@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -56,6 +57,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public final Field2d m_field = new Field2d();
 
 	public DrivetrainSubsystem() {
+
+		Preferences.initString("FL", "AUGIE");
+		Preferences.initString("FR", "AUGIE");
+		Preferences.initString("BL", "AUGIE");
+		Preferences.initString("BR", "AUGIE");
+
 		ShuffleboardTab tab = Shuffleboard.getTab(DRIVETRAIN_SMARTDASHBOARD_TAB);
 		tab.add("Field", m_field)
 			.withWidget(BuiltInWidgets.kField)
@@ -77,7 +84,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			FL_DRIVE_MOTOR_ID,
 			FL_STEER_MOTOR_ID,
 			FL_STEER_ENCODER_ID,
-			FL_STEER_OFFSET,
+			Offsets.valueOf(Preferences.getString("FL", "AUGIE")).getValue(Positions.FL),
 			CANIVORE_DRIVETRAIN);
 		modules[1] = new SwerveModule(
 			"FR",
@@ -89,7 +96,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			FR_DRIVE_MOTOR_ID,
 			FR_STEER_MOTOR_ID,
 			FR_STEER_ENCODER_ID,
-			FR_STEER_OFFSET,
+			Offsets.valueOf(Preferences.getString("FR", "AUGIE")).getValue(Positions.FR),
 			CANIVORE_DRIVETRAIN);
 		modules[2] = new SwerveModule(
 			"BL",
@@ -101,7 +108,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			BL_DRIVE_MOTOR_ID,
 			BL_STEER_MOTOR_ID,
 			BL_STEER_ENCODER_ID,
-			BL_STEER_OFFSET,
+			Offsets.valueOf(Preferences.getString("BL", "AUGIE")).getValue(Positions.BL),
 			CANIVORE_DRIVETRAIN);
 		modules[3] = new SwerveModule(
 			"BR",
@@ -113,7 +120,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			BR_DRIVE_MOTOR_ID,
 			BR_STEER_MOTOR_ID,
 			BR_STEER_ENCODER_ID,
-			BR_STEER_OFFSET,
+			Offsets.valueOf(Preferences.getString("BR", "AUGIE")).getValue(Positions.BR),
 			CANIVORE_DRIVETRAIN);
 		// calibrateWheels();
 		odometer = new SwerveDriveOdometry(

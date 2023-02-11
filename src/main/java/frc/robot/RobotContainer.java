@@ -12,8 +12,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.RobotArmControl;
+import frc.robot.Commands.SkiPlowPneumatic;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.RobotArmSubsystem;
+import frc.robot.subsystems.SkiPlow;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.subsystems.Limelight;
@@ -35,7 +37,10 @@ public class RobotContainer {
 
 private final RobotArmSubsystem arm = new RobotArmSubsystem();
 private final RobotArmControl ControlArm = new RobotArmControl(arm);
+private final SkiPlow skiPlow = new SkiPlow();
+private final SkiPlowPneumatic pneumatic = new SkiPlowPneumatic(skiPlow);
 
+private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
 private final EndEffector effector = new EndEffector();
 private final EndEffectorCommand endEffectorCommand = new EndEffectorCommand(effector);
 
@@ -57,6 +62,7 @@ private final EndEffectorCommand endEffectorCommand = new EndEffectorCommand(eff
   
     arm.setDefaultCommand(ControlArm);
     effector.setDefaultCommand(endEffectorCommand);
+    skiPlow.setDefaultCommand(skiplowcommand);
   }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the

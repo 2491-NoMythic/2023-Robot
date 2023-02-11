@@ -157,8 +157,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		new Rotation2d();
 		odometer.resetPosition(Rotation2d.fromDegrees(angleDeg), getModulePositions(), new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(angleDeg)));
 	}
-	public Rotation2d getGyroscopeRotation() {//todo make continuous vs not continuous versions
+
+	public Rotation2d getGyroscopeRotation() {
 		return pigeon.getRotation2d();
+	}
+	public Rotation2d getGyroscopePitch() {
+		return Rotation2d.fromDegrees(pigeon.getPitch().getValue());
 	}
 	public SwerveModulePosition[] getModulePositions() {
 		SwerveModulePosition[] positions = new SwerveModulePosition[4];

@@ -5,9 +5,9 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.settings.LimelightValues;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightmotorSubsystem;
-import frc.robot.settings.LimelightValues;
 public class RunViaLimelightCommand extends CommandBase {
   /** Creates a new RunViaLimelightCommand. */
   private LimelightmotorSubsystem limelightMotor;

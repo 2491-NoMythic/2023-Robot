@@ -1,13 +1,27 @@
 package frc.robot.settings;
 
+import static frc.robot.settings.Constants.DriveConstants.DRIVETRAIN_DRIVE_INVERTED;
+import static frc.robot.settings.Constants.DriveConstants.DRIVETRAIN_DRIVE_REDUCTION;
+import static frc.robot.settings.Constants.DriveConstants.DRIVETRAIN_STEER_INVERTED;
+import static frc.robot.settings.Constants.DriveConstants.DRIVETRAIN_STEER_REDUCTION;
+import static frc.robot.settings.Constants.DriveConstants.DRIVE_MOTOR_RAMP;
+import static frc.robot.settings.Constants.DriveConstants.k_DRIVE_D;
+import static frc.robot.settings.Constants.DriveConstants.k_DRIVE_FF_S;
+import static frc.robot.settings.Constants.DriveConstants.k_DRIVE_FF_V;
+import static frc.robot.settings.Constants.DriveConstants.k_DRIVE_I;
+import static frc.robot.settings.Constants.DriveConstants.k_DRIVE_P;
+import static frc.robot.settings.Constants.DriveConstants.k_STEER_D;
+import static frc.robot.settings.Constants.DriveConstants.k_STEER_FF_S;
+import static frc.robot.settings.Constants.DriveConstants.k_STEER_FF_V;
+import static frc.robot.settings.Constants.DriveConstants.k_STEER_I;
+import static frc.robot.settings.Constants.DriveConstants.k_STEER_P;
+
 import com.ctre.phoenixpro.configs.CANcoderConfiguration;
 import com.ctre.phoenixpro.configs.Pigeon2Configuration;
 import com.ctre.phoenixpro.configs.TalonFXConfiguration;
 import com.ctre.phoenixpro.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenixpro.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenixpro.signals.NeutralModeValue;
-
-import static frc.robot.settings.Constants.DriveConstants.*;
 
 public class CTREConfigs {
     public TalonFXConfiguration driveMotorConfig;

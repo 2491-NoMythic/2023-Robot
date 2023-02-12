@@ -4,6 +4,19 @@
 
 package frc.robot.subsystems;
 
+import java.util.Map;
+import java.util.function.DoubleSupplier;
+
+import com.ctre.phoenixpro.configs.CANcoderConfiguration;
+import com.ctre.phoenixpro.configs.TalonFXConfiguration;
+import com.ctre.phoenixpro.controls.CoastOut;
+import com.ctre.phoenixpro.controls.NeutralOut;
+import com.ctre.phoenixpro.controls.PositionDutyCycle;
+import com.ctre.phoenixpro.controls.StaticBrake;
+import com.ctre.phoenixpro.controls.VelocityDutyCycle;
+import com.ctre.phoenixpro.hardware.CANcoder;
+import com.ctre.phoenixpro.hardware.TalonFX;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -16,25 +29,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-
-import java.util.Map;
-import java.util.function.DoubleSupplier;
-
-import com.ctre.phoenixpro.configs.CANcoderConfiguration;
-import com.ctre.phoenixpro.configs.MagnetSensorConfigs;
-import com.ctre.phoenixpro.configs.TalonFXConfiguration;
-import com.ctre.phoenixpro.configs.TalonFXConfigurator;
-import com.ctre.phoenixpro.controls.CoastOut;
-import com.ctre.phoenixpro.controls.DutyCycleOut;
-import com.ctre.phoenixpro.controls.NeutralOut;
-import com.ctre.phoenixpro.controls.PositionDutyCycle;
-import com.ctre.phoenixpro.controls.PositionTorqueCurrentFOC;
-import com.ctre.phoenixpro.controls.StaticBrake;
-import com.ctre.phoenixpro.controls.VelocityDutyCycle;
-import com.ctre.phoenixpro.controls.VelocityTorqueCurrentFOC;
-import com.ctre.phoenixpro.hardware.CANcoder;
-import com.ctre.phoenixpro.hardware.TalonFX;
-
 import frc.robot.settings.Constants.DriveConstants;
 
 public class SwerveModule {

@@ -4,9 +4,14 @@
 
 package frc.robot;
 
-import static frc.robot.settings.Constants.PS4.*;
+import static frc.robot.settings.Constants.PS4.DEADBAND_LARGE;
+import static frc.robot.settings.Constants.PS4.DEADBAND_NORMAL;
+import static frc.robot.settings.Constants.PS4.NO_INPUT;
+import static frc.robot.settings.Constants.PS4.X_AXIS;
+import static frc.robot.settings.Constants.PS4.Y_AXIS;
+import static frc.robot.settings.Constants.PS4.Z_AXIS;
+import static frc.robot.settings.Constants.PS4.Z_ROTATE;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,32 +25,19 @@ import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Drive;
 import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.RobotArmControl;
-import frc.robot.Commands.SkiPlowPneumatic;
-import frc.robot.subsystems.EndEffector;
-import frc.robot.subsystems.RobotArmSubsystem;
-import frc.robot.subsystems.SkiPlow;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Commands.SkiPlowPneumatic;
-import frc.robot.subsystems.EndEffector;
-import frc.robot.subsystems.RobotArmSubsystem;
-import frc.robot.subsystems.SkiPlow;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.RunViaLimelightCommand;
+import frc.robot.Commands.SkiPlowPneumatic;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.PS4;
@@ -55,6 +47,7 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightmotorSubsystem;
 import frc.robot.subsystems.RobotArmSubsystem;
 import edu.wpi.first.wpilibj.Preferences;
+import frc.robot.subsystems.SkiPlow;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}

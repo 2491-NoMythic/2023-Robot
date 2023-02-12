@@ -4,11 +4,9 @@
 
 package frc.robot.Commands;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
+import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.EndEffector;
-import edu.wpi.first.wpilibj.PS4Controller;
 
 public class EndEffectorCommand extends CommandBase {
   PS4Controller ps4 = new PS4Controller(1);

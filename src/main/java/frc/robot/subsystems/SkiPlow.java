@@ -5,38 +5,36 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsBase;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
 public class SkiPlow extends SubsystemBase {
   /** Creates a new SkiPlow. */
-  DoubleSolenoid skiPlowDoublePCM;
-  DoubleSolenoid skiPlowDoublePCMLock;
+  Solenoid skiPlowLeftPCM;
+  Solenoid skiPlowDoublePCMLock;
+  Solenoid skiPlowRightPCM;
   public SkiPlow() {
-    skiPlowDoublePCM = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1, 0);
-    skiPlowDoublePCMLock = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 3, 2);
+    skiPlowLeftPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
+    skiPlowRightPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
+    skiPlowDoublePCMLock = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
   }
-  public void pistonReverse() {
-    skiPlowDoublePCM.set(kReverse);
+  public void pistonUpLeft() {
+    skiPlowLeftPCM.set(false);
   }
-  public void pistonForward() {
-    skiPlowDoublePCM.set(kForward);
+  public void pistonUpRight() {
+    skiPlowRightPCM.set(false);
   }
-  public void pistonoff() {
-    skiPlowDoublePCM.set(kOff);
+  public void pistonDownLeft() {
+    skiPlowLeftPCM.set(true);
   }
-  
-  public void lockReverse() {
-    skiPlowDoublePCMLock.set(kReverse);
+  public void pistonDownRight() {
+    skiPlowRightPCM.set(true);
   }
-  public void lockForward() {
-    skiPlowDoublePCMLock.set(kForward);
+  public void lockOn() {
+    skiPlowDoublePCMLock.set(true);
   }
-  public void lockoff() {
-    skiPlowDoublePCMLock.set(kOff);
+  public void lockOff() {
+    skiPlowDoublePCMLock.set(false);
   }
 
   @Override

@@ -4,9 +4,9 @@
 
 package frc.robot.Commands;
 
+import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SkiPlow;
-import edu.wpi.first.wpilibj.PS4Controller;
 
 public class SkiPlowPneumatic extends CommandBase {
   PS4Controller ps4 = new PS4Controller(0);

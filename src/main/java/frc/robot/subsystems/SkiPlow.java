@@ -5,11 +5,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.PneumaticsBase;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
 public class SkiPlow extends SubsystemBase {
   /** Creates a new SkiPlow. */
@@ -18,7 +15,7 @@ public class SkiPlow extends SubsystemBase {
   Solenoid skiPlowRightPCM;
   public SkiPlow() {
     skiPlowLeftPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
-    skiPlowRightPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
+    skiPlowRightPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
     skiPlowDoublePCMLock = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
   }
   public void pistonUpLeft() {

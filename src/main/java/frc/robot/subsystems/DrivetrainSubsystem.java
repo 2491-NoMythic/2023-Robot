@@ -4,6 +4,27 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.settings.Constants.DriveConstants.BL_DRIVE_MOTOR_ID;
+import static frc.robot.settings.Constants.DriveConstants.BL_STEER_ENCODER_ID;
+import static frc.robot.settings.Constants.DriveConstants.BL_STEER_MOTOR_ID;
+import static frc.robot.settings.Constants.DriveConstants.BR_DRIVE_MOTOR_ID;
+import static frc.robot.settings.Constants.DriveConstants.BR_STEER_ENCODER_ID;
+import static frc.robot.settings.Constants.DriveConstants.BR_STEER_MOTOR_ID;
+import static frc.robot.settings.Constants.DriveConstants.CANIVORE_DRIVETRAIN;
+import static frc.robot.settings.Constants.DriveConstants.DRIVETRAIN_PIGEON_ID;
+import static frc.robot.settings.Constants.DriveConstants.DRIVETRAIN_SMARTDASHBOARD_TAB;
+import static frc.robot.settings.Constants.DriveConstants.DRIVE_ODOMETRY_ORIGIN;
+import static frc.robot.settings.Constants.DriveConstants.FL_DRIVE_MOTOR_ID;
+import static frc.robot.settings.Constants.DriveConstants.FL_STEER_ENCODER_ID;
+import static frc.robot.settings.Constants.DriveConstants.FL_STEER_MOTOR_ID;
+import static frc.robot.settings.Constants.DriveConstants.FR_DRIVE_MOTOR_ID;
+import static frc.robot.settings.Constants.DriveConstants.FR_STEER_ENCODER_ID;
+import static frc.robot.settings.Constants.DriveConstants.FR_STEER_MOTOR_ID;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+
 import com.ctre.phoenixpro.hardware.Pigeon2;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
@@ -14,13 +35,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -33,12 +52,8 @@ import frc.robot.settings.CTREConfigs;
 import frc.robot.settings.LimelightValues;
 import frc.robot.subsystems.Limelight;
 import frc.robot.settings.Constants.DriveConstants;
-
-import static frc.robot.settings.Constants.DriveConstants.*;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
+import frc.robot.settings.Constants.DriveConstants.Offsets;
+import frc.robot.settings.Constants.DriveConstants.Positions;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 	public static final CTREConfigs ctreConfig = new CTREConfigs();

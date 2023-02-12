@@ -4,10 +4,9 @@
 
 package frc.robot.Commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.settings.Constants.PS4;
-import frc.robot.subsystems.RobotArmSubsystem;
 import edu.wpi.first.wpilibj.PS4Controller;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.RobotArmSubsystem;
 
 
 public class RobotArmControl extends CommandBase {

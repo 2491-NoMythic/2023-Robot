@@ -266,9 +266,6 @@ public class RobotContainer {
   }
   public void teleopPeriodic() {
     SmartDashboard.putNumber("Match Timer", Timer.getMatchTime());
-    if (LimelightExists){
-      limelight.getLimelightValues();
-    }
   }
   public void moveToPose(Pose2d targetPose) {
  		Pose2d currentPose = drivetrain.getPose();

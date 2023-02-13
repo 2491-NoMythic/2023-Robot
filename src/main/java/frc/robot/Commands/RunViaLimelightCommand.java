@@ -31,7 +31,7 @@ public class RunViaLimelightCommand extends CommandBase {
   public void execute() {
     LimelightValues limelightValues = limelight.getLimelightValues();
 
-    limelightMotor.runLimelightmotor(limelightValues.gettx()*0.05);
+    limelightMotor.runLimelightmotor(limelightValues.gettx(1)*0.05);
   }
 
   // Called once the command ends or is interrupted.

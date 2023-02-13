@@ -173,7 +173,6 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
   }
   public void teleopPeriodic() {
     SmartDashboard.putNumber("Match Timer", Timer.getMatchTime());
-    limelight.getLimelightValues();
   }
   public void moveToPose(Pose2d targetPose) {
  		Pose2d currentPose = drivetrain.getPose();

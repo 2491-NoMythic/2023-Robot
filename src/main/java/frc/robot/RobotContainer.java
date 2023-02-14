@@ -28,10 +28,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
 import frc.robot.Commands.Autos;
-import frc.robot.Commands.BalanceCommand;
 
+import frc.robot.Commands.DriveBalanceCommand;
 import frc.robot.Commands.Drive;
 import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.EndEffectorCommand;
@@ -238,7 +237,7 @@ public class RobotContainer {
           () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
           () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
           () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
-      // new Trigger(controller::getSquareButton).whileTrue(new BalanceCommand(
+      // new Trigger(controller::getSquareButton).whileTrue(new DriveBalanceCommand(
       //   drivetrain,
       //   () -> modifyAxis(-controller.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       //   () -> modifyAxis(-controller.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
@@ -250,7 +249,6 @@ public class RobotContainer {
         new Trigger(driveController::getSquareButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 39, 0, 0, 100);}, lightsSubsystem));
         new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 59, 0, 0, 0);}, lightsSubsystem));
       }
-
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

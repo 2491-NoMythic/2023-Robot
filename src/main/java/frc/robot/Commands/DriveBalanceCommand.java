@@ -10,12 +10,12 @@ import edu.wpi.first.math.controller.PIDController;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-public class BalanceCommand extends CommandBase {
+public class DriveBalanceCommand extends CommandBase {
     private final DrivetrainSubsystem drivetrain;
     private final PIDController balanceController;
     private final DoubleSupplier translationYSupplier;
     private final DoubleSupplier rotationSupplier;
-    public BalanceCommand(DrivetrainSubsystem drivetrainSubsystem,
+    public DriveBalanceCommand(DrivetrainSubsystem drivetrainSubsystem,
     DoubleSupplier translationXSupplier,
     DoubleSupplier translationYSupplier,
     DoubleSupplier rotationSupplier) {

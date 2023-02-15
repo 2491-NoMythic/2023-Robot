@@ -46,6 +46,7 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightmotorSubsystem;
 import frc.robot.subsystems.RobotArmSubsystem;
 import frc.robot.subsystems.SkiPlow;
+import frc.robot.subsystems.SubsystemLights;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -57,6 +58,7 @@ public class RobotContainer {
  
   private Limelight limelight = Limelight.getInstance();
   private final LimelightmotorSubsystem llmotor = new LimelightmotorSubsystem();
+  private final SubsystemLights LS = new SubsystemLights(60);
 
   private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
   private final Drive defaultDriveCommand;
@@ -137,7 +139,11 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     new Trigger(controller::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
-		new Trigger(controller::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+		// new Trigger(controller::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+    new Trigger(controller::getTriangleButton).onTrue(Commands.runOnce(()->  {LS.lightsOut(); LS.setLights(29, 59, 200, 30, 30);}, LS));
+    new Trigger(controller::getSquareButton).onTrue(Commands.runOnce(()->  {LS.lightsOut(); LS.setLights(0, 39, 0, 0, 100);}, LS));
+    new Trigger(controller::getPSButton).onTrue(Commands.runOnce(()->  {LS.lightsOut(); LS.setLights(0, 59, 0, 0, 0);}, LS));
+
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

@@ -8,7 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.settings.Constants.DriveConstants;
-import frc.robot.settings.Constants.PS4;
+import frc.robot.settings.Constants.PS4Driver;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class Drive extends CommandBase {
@@ -54,7 +54,7 @@ public class Drive extends CommandBase {
                 translationYSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,
                 rotationSupplier.getAsDouble() * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
             ));
-        } else if (fieldCentricRotateMode.getAsBoolean() && turnSupplier.getAsDouble() != PS4.NO_INPUT) {
+        } else if (fieldCentricRotateMode.getAsBoolean() && turnSupplier.getAsDouble() != PS4Driver.NO_INPUT) {
             drivetrain.drive(
                 ChassisSpeeds.fromFieldRelativeSpeeds(
                     translationXSupplier.getAsDouble() * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND,

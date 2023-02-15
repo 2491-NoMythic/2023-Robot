@@ -219,8 +219,8 @@ public final class Constants {
     public static final double k_THETA_TOLORANCE_DEGREES = 2.0;
     public static final double k_THETA_TOLORANCE_DEG_PER_SEC = 10;
 }
-  public final class PS4{
-    private PS4() {
+  public final class PS4Driver{
+    private PS4Driver() {
     }
     public static final int CONTROLLER_ID = 1;
     /**Left stick Y-axis. <p> Left = -1 || Right = 1*/

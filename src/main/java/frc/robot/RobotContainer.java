@@ -4,13 +4,13 @@
 
 package frc.robot;
 
-import static frc.robot.settings.Constants.PS4.DEADBAND_LARGE;
-import static frc.robot.settings.Constants.PS4.DEADBAND_NORMAL;
-import static frc.robot.settings.Constants.PS4.NO_INPUT;
-import static frc.robot.settings.Constants.PS4.X_AXIS;
-import static frc.robot.settings.Constants.PS4.Y_AXIS;
-import static frc.robot.settings.Constants.PS4.Z_AXIS;
-import static frc.robot.settings.Constants.PS4.Z_ROTATE;
+import static frc.robot.settings.Constants.PS4Driver.DEADBAND_LARGE;
+import static frc.robot.settings.Constants.PS4Driver.DEADBAND_NORMAL;
+import static frc.robot.settings.Constants.PS4Driver.NO_INPUT;
+import static frc.robot.settings.Constants.PS4Driver.X_AXIS;
+import static frc.robot.settings.Constants.PS4Driver.Y_AXIS;
+import static frc.robot.settings.Constants.PS4Driver.Z_AXIS;
+import static frc.robot.settings.Constants.PS4Driver.Z_ROTATE;
 
 import java.util.HashMap;
 import java.util.List;
@@ -61,16 +61,17 @@ public class RobotContainer {
   private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
   private final Drive defaultDriveCommand;
   private final SendableChooser<Command> autoChooser;
-  private final PS4Controller controller = new PS4Controller(0);
+  private final PS4Controller driveController = new PS4Controller(0);
+  private final PS4Controller opController = new PS4Controller(1);
 
   private final RobotArmSubsystem arm = new RobotArmSubsystem();
   private final RobotArmControl ControlArm = new RobotArmControl(arm);
 
 private final SkiPlow skiPlow = new SkiPlow();
 
-private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
+private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow, opController);
   private final EndEffector effector = new EndEffector();
-  private final EndEffectorCommand endEffectorCommand = new EndEffectorCommand(effector);
+  private final EndEffectorCommand endEffectorCommand = new EndEffectorCommand(effector, opController);
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -84,11 +85,11 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
     // Need to invert the joystick axis
     defaultDriveCommand = new Drive(
       drivetrain,
-      () -> controller.getL1Button(),
-      () -> controller.getR1Button(),
-      () -> modifyAxis(-controller.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-controller.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-controller.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
+      () -> driveController.getL1Button(),
+      () -> driveController.getR1Button(),
+      () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
       () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
       () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE));
     drivetrain.setDefaultCommand(defaultDriveCommand);
@@ -107,10 +108,10 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
     SmartDashboard.putData("coolCircle", autoBuilder.fullAuto(pathGroup3));
     SmartDashboard.putData("testAuto", autoBuilder.fullAuto(pathGroup4));
   }
-  /**Takes both axis of a joystick, returns an angle from -180 to 180 degrees, or {@link Constants.PS4.NO_INPUT} (double = 404.0) if the joystick is at rest position*/
+  /**Takes both axis of a joystick, returns an angle from -180 to 180 degrees, or {@link Constants.PS4Driver.NO_INPUT} (double = 404.0) if the joystick is at rest position*/
   private double getJoystickDegrees(int horizontalAxis, int verticalAxis) {
-    double xAxis = MathUtil.applyDeadband(-controller.getRawAxis(horizontalAxis), DEADBAND_LARGE);
-    double yAxis = MathUtil.applyDeadband(-controller.getRawAxis(verticalAxis), DEADBAND_LARGE);
+    double xAxis = MathUtil.applyDeadband(-driveController.getRawAxis(horizontalAxis), DEADBAND_LARGE);
+    double yAxis = MathUtil.applyDeadband(-driveController.getRawAxis(verticalAxis), DEADBAND_LARGE);
     if (xAxis + yAxis != 0) {
       return Math.toDegrees(Math.atan2(xAxis, yAxis));
     }
@@ -118,8 +119,8 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
   }
   /**Takes both axis of a joystick, returns a double from 0-1 */
   private double getJoystickMagnitude(int horizontalAxis, int verticalAxis) {
-    double xAxis = MathUtil.applyDeadband(-controller.getRawAxis(horizontalAxis), DEADBAND_NORMAL);
-    double yAxis = MathUtil.applyDeadband(-controller.getRawAxis(verticalAxis), DEADBAND_NORMAL);
+    double xAxis = MathUtil.applyDeadband(-driveController.getRawAxis(horizontalAxis), DEADBAND_NORMAL);
+    double yAxis = MathUtil.applyDeadband(-driveController.getRawAxis(verticalAxis), DEADBAND_NORMAL);
     return Math.min(1.0, (Math.sqrt(Math.pow(xAxis, 2) + Math.pow(yAxis, 2)))); // make sure the number is not greater than 1
   }
   
@@ -128,16 +129,16 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link
    * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4DriverController
+   * PS4Driver} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+    // Schedule `exampleMethodCommand` when the Xbox driveController's B button is pressed,
     // cancelling on release.
-    new Trigger(controller::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
-		new Trigger(controller::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+    new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
+		new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -196,7 +197,7 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
       new PIDConstants(
           DriveConstants.k_THETA_P,
           DriveConstants.k_THETA_I,
-          DriveConstants.k_THETA_D), // PID constants to correct for rotation error (used to create the rotation controller)
+          DriveConstants.k_THETA_D), // PID constants to correct for rotation error (used to create the rotation driveController)
       drivetrain::setModuleStates, // Module states consumer used to output to the drive subsystem
       eventMap,
       false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true

@@ -9,10 +9,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.EndEffector;
 
 public class EndEffectorCommand extends CommandBase {
-  PS4Controller ps4 = new PS4Controller(1);
+
   /** Creates a new EndEffectorCommand. */
   public EndEffector endEffector;
-  public EndEffectorCommand(EndEffector effector) {
+  public PS4Controller opController;
+  public EndEffectorCommand(EndEffector effector, PS4Controller opController) {
     addRequirements(effector);
     this.endEffector = effector;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -27,7 +28,7 @@ public class EndEffectorCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    endEffector.setEndEffectorPower(0.5*ps4.getRawAxis(5));
+    endEffector.setEndEffectorPower(0.5*opController.getRawAxis(5));
   }
 
   // Called once the command ends or is interrupted.

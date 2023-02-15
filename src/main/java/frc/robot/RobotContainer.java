@@ -4,13 +4,13 @@
 
 package frc.robot;
 
-import static frc.robot.settings.Constants.PS4.DEADBAND_LARGE;
-import static frc.robot.settings.Constants.PS4.DEADBAND_NORMAL;
-import static frc.robot.settings.Constants.PS4.NO_INPUT;
-import static frc.robot.settings.Constants.PS4.X_AXIS;
-import static frc.robot.settings.Constants.PS4.Y_AXIS;
-import static frc.robot.settings.Constants.PS4.Z_AXIS;
-import static frc.robot.settings.Constants.PS4.Z_ROTATE;
+import static frc.robot.settings.Constants.PS4Driver.DEADBAND_LARGE;
+import static frc.robot.settings.Constants.PS4Driver.DEADBAND_NORMAL;
+import static frc.robot.settings.Constants.PS4Driver.NO_INPUT;
+import static frc.robot.settings.Constants.PS4Driver.X_AXIS;
+import static frc.robot.settings.Constants.PS4Driver.Y_AXIS;
+import static frc.robot.settings.Constants.PS4Driver.Z_AXIS;
+import static frc.robot.settings.Constants.PS4Driver.Z_ROTATE;
 
 import java.util.HashMap;
 import java.util.List;
@@ -130,11 +130,11 @@ public class RobotContainer {
     drivetrain = new DrivetrainSubsystem();
     defaultDriveCommand = new Drive(
       drivetrain,
-      () -> controller.getL1Button(),
-      () -> controller.getR1Button(),
-      () -> modifyAxis(-controller.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-controller.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-controller.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
+      () -> driveController.getL1Button(),
+      () -> driveController.getR1Button(),
+      () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
       () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
       () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE));
       drivetrain.setDefaultCommand(defaultDriveCommand);
@@ -204,10 +204,10 @@ public class RobotContainer {
   private void configDashboard() {
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
-  /**Takes both axis of a joystick, returns an angle from -180 to 180 degrees, or {@link Constants.PS4.NO_INPUT} (double = 404.0) if the joystick is at rest position*/
+  /**Takes both axis of a joystick, returns an angle from -180 to 180 degrees, or {@link Constants.PS4Driver.NO_INPUT} (double = 404.0) if the joystick is at rest position*/
   private double getJoystickDegrees(int horizontalAxis, int verticalAxis) {
-    double xAxis = MathUtil.applyDeadband(-controller.getRawAxis(horizontalAxis), DEADBAND_LARGE);
-    double yAxis = MathUtil.applyDeadband(-controller.getRawAxis(verticalAxis), DEADBAND_LARGE);
+    double xAxis = MathUtil.applyDeadband(-driveController.getRawAxis(horizontalAxis), DEADBAND_LARGE);
+    double yAxis = MathUtil.applyDeadband(-driveController.getRawAxis(verticalAxis), DEADBAND_LARGE);
     if (xAxis + yAxis != 0) {
       return Math.toDegrees(Math.atan2(xAxis, yAxis));
     }
@@ -215,8 +215,8 @@ public class RobotContainer {
   }
   /**Takes both axis of a joystick, returns a double from 0-1 */
   private double getJoystickMagnitude(int horizontalAxis, int verticalAxis) {
-    double xAxis = MathUtil.applyDeadband(-controller.getRawAxis(horizontalAxis), DEADBAND_NORMAL);
-    double yAxis = MathUtil.applyDeadband(-controller.getRawAxis(verticalAxis), DEADBAND_NORMAL);
+    double xAxis = MathUtil.applyDeadband(-driveController.getRawAxis(horizontalAxis), DEADBAND_NORMAL);
+    double yAxis = MathUtil.applyDeadband(-driveController.getRawAxis(verticalAxis), DEADBAND_NORMAL);
     return Math.min(1.0, (Math.sqrt(Math.pow(xAxis, 2) + Math.pow(yAxis, 2)))); // make sure the number is not greater than 1
   }
   
@@ -225,13 +225,13 @@ public class RobotContainer {
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link
    * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4DriverController
+   * PS4Driver} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+    // Schedule `exampleMethodCommand` when the Xbox driveController's B button is pressed,
     // cancelling on release.
     if (DrivetrainExists){
     new Trigger(controller::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
@@ -283,4 +283,31 @@ public class RobotContainer {
   // eventMap.put("marker1", new PrintCommand("Passed marker 1"));
   // eventMap.put("intakeDown", new IntakeDown());
   
+  // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
+  SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
+      drivetrain::getPose, // Pose2d supplier
+      drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
+      drivetrain.kinematics, // SwerveDriveKinematics
+      new PIDConstants(
+          DriveConstants.k_XY_P, 
+          DriveConstants.k_XY_I,
+          DriveConstants.k_XY_D), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+      new PIDConstants(
+          DriveConstants.k_THETA_P,
+          DriveConstants.k_THETA_I,
+          DriveConstants.k_THETA_D), // PID constants to correct for rotation error (used to create the rotation driveController)
+      drivetrain::setModuleStates, // Module states consumer used to output to the drive subsystem
+      eventMap,
+      false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+      drivetrain // The drive subsystem. Used to properly set the requirements of path following commands
+  );
+
+  List<PathPlannerTrajectory> pathGroup1 = PathPlanner.loadPathGroup("Forward180", new PathConstraints(3, 1.5));
+  Command Forward180 = autoBuilder.fullAuto(pathGroup1);
+  List<PathPlannerTrajectory> pathGroup2 = PathPlanner.loadPathGroup("1 cone auto", new PathConstraints(3, 1.5));
+  Command coneAuto = autoBuilder.fullAuto(pathGroup2);
+  List<PathPlannerTrajectory> pathGroup3 = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));
+  Command coolCircle = autoBuilder.fullAuto(pathGroup3);
+  List<PathPlannerTrajectory> pathGroup4 = PathPlanner.loadPathGroup("test auto", new PathConstraints(4, 4));
+  Command testAuto = autoBuilder.fullAuto(pathGroup4);
 }

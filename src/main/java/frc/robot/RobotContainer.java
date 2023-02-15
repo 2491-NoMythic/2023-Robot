@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Drive;
+import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.RobotArmControl;
 import frc.robot.Commands.RunViaLimelightCommand;
@@ -85,12 +86,9 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
     defaultDriveCommand = new Drive(
       drivetrain,
       () -> controller.getL1Button(),
-      () -> controller.getR1Button(),
       () -> modifyAxis(-controller.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-controller.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-controller.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
-      () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
-      () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE));
+      () -> modifyAxis(-controller.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
     drivetrain.setDefaultCommand(defaultDriveCommand);
     Command defaultllmotorCommand = new RunViaLimelightCommand(llmotor);
     configureBindings();
@@ -138,6 +136,11 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
     // cancelling on release.
     new Trigger(controller::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
 		new Trigger(controller::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+    new Trigger(controller::getR1Button).whileTrue(new DriveRotateToAngleCommand(drivetrain, 
+      () -> modifyAxis(-controller.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-controller.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
+      () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

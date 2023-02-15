@@ -91,7 +91,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 		modules = new SwerveModule[4];
 		lastAngles = new Rotation2d[] {new Rotation2d(), new Rotation2d(), new Rotation2d(), new Rotation2d()}; // manually make empty angles to avoid null errors.
-		
+
 		modules[0] = new SwerveModule(
 			"FL",
 			tab.getLayout("Front Left Module", BuiltInLayouts.kGrid)

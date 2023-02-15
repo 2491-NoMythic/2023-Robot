@@ -48,11 +48,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.Constants.PS4;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightmotorSubsystem;
 import frc.robot.subsystems.RobotArmSubsystem;
+import edu.wpi.first.wpilibj.Preferences;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -61,34 +63,78 @@ import frc.robot.subsystems.RobotArmSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
- 
-  private Limelight limelight = Limelight.getInstance();
-  private final LimelightmotorSubsystem llmotor = new LimelightmotorSubsystem();
-
-  private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
-  private final Drive defaultDriveCommand;
-  private final SendableChooser<Command> autoChooser;
-  private final PS4Controller controller = new PS4Controller(0);
-
-  private final RobotArmSubsystem arm = new RobotArmSubsystem();
-  private final RobotArmControl ControlArm = new RobotArmControl(arm);
-
-private final SkiPlow skiPlow = new SkiPlow();
-
-private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
-  private final EndEffector effector = new EndEffector();
-  private final EndEffectorCommand endEffectorCommand = new EndEffectorCommand(effector);
   
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    autoChooser = new SendableChooser<>();
 
+  private Limelight limelight;
+  private LimelightmotorSubsystem llmotor;
+
+  private DrivetrainSubsystem drivetrain;
+  private Drive defaultDriveCommand;
+  private SendableChooser<Command> autoChooser;
+  private PS4Controller controller;
+  
+  private RobotArmSubsystem arm;
+  private RobotArmControl ControlArm;
+  
+  private EndEffectorCommand endEffectorCommand;
+  private SkiPlowPneumatic skiplowcommand; 
+  private SkiPlow skiPlow;
+
+  private EndEffector effector;
+  
+  
+  boolean ArmExists = Preferences.getBoolean("Arm", false);
+  boolean EndEffectorExists = Preferences.getBoolean("EndEffector", false);
+  boolean SkiPlowExists = Preferences.getBoolean("SkiPlow", false);
+  boolean LimelightExists = Preferences.getBoolean("Limelight", false);
+  boolean LimelightMotorExists = Preferences.getBoolean("LimelightMotor", false);
+  boolean DrivetrainExists = Preferences.getBoolean("Drivetrain", false);
+      
+  
+  public RobotContainer() {
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    Preferences.initBoolean("Arm", false);
+    Preferences.initBoolean("Drivetrain", false);
+    Preferences.initBoolean("EndEffector", false);
+    Preferences.initBoolean("SkiPlow", false);
+    Preferences.initBoolean("Limelight", false);
+    Preferences.initBoolean("LimelightMotor", false);
+    
+    controller = new PS4Controller(0);
+    if (ArmExists){
+      ArmInst();
+    }
+    if (EndEffectorExists){
+      EndEffectorInst();
+    }
+    if (SkiPlowExists){
+      SkiPlowInst();
+    }
+    if (LimelightExists){
+      LimelightInst();
+    }
+    if (LimelightMotorExists){
+      LimelightMotorInst();
+    }
+    if (DrivetrainExists){
+      DrivetrainInst();
+    }
+    
+    
+    autoChooser = new SendableChooser<>();
+    
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
     // Left stick Y axis -> Robot X movement, backward/forward
     // Left stick X axis -> Robot Y movement, right/left
     // Right stick Z axis -> rotation, clockwise, counterclockwise
     // Need to invert the joystick axis
+    configureBindings();
+    configDashboard();
+  } 
+  
+  private void DrivetrainInst(){
+    drivetrain = new DrivetrainSubsystem();
     defaultDriveCommand = new Drive(
       drivetrain,
       () -> controller.getL1Button(),
@@ -98,21 +144,72 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
       () -> modifyAxis(-controller.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
       () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
       () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE));
-    drivetrain.setDefaultCommand(defaultDriveCommand);
-    Command defaultllmotorCommand = new RunViaLimelightCommand(llmotor);
-    configureBindings();
-    configDashboard();
-    llmotor.setDefaultCommand(defaultllmotorCommand);
-    arm.setDefaultCommand(ControlArm);
-    effector.setDefaultCommand(endEffectorCommand);
-    skiPlow.setDefaultCommand(skiplowcommand);
-  } 
-  private void configDashboard() {
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+      drivetrain.setDefaultCommand(defaultDriveCommand);
+      // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
+      SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
+        drivetrain::getPose, // Pose2d supplier
+        drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
+        drivetrain.kinematics, // SwerveDriveKinematics
+      new PIDConstants(
+          DriveConstants.k_XY_P, 
+          DriveConstants.k_XY_I,
+          DriveConstants.k_XY_D), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+      new PIDConstants(
+          DriveConstants.k_THETA_P,
+          DriveConstants.k_THETA_I,
+          DriveConstants.k_THETA_D), // PID constants to correct for rotation error (used to create the rotation controller)
+          drivetrain::setModuleStates, // Module states consumer used to output to the drive subsystem
+      eventMap,
+      false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+      drivetrain // The drive subsystem. Used to properly set the requirements of path following commands
+      );
+      
+    List<PathPlannerTrajectory> pathGroup1 = PathPlanner.loadPathGroup("Forward180", new PathConstraints(3, 1.5));
+    Command Forward180 = autoBuilder.fullAuto(pathGroup1);
+    List<PathPlannerTrajectory> pathGroup2 = PathPlanner.loadPathGroup("1 cone auto", new PathConstraints(3, 1.5));
+    Command coneAuto = autoBuilder.fullAuto(pathGroup2);
+    List<PathPlannerTrajectory> pathGroup3 = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));
+    Command coolCircle = autoBuilder.fullAuto(pathGroup3);
+    List<PathPlannerTrajectory> pathGroup4 = PathPlanner.loadPathGroup("test auto", new PathConstraints(4, 4));
+    Command testAuto = autoBuilder.fullAuto(pathGroup4);
     SmartDashboard.putData("Forward180", autoBuilder.fullAuto(pathGroup1));
     SmartDashboard.putData("coneAuto", autoBuilder.fullAuto(pathGroup2));
     SmartDashboard.putData("coolCircle", autoBuilder.fullAuto(pathGroup3));
     SmartDashboard.putData("testAuto", autoBuilder.fullAuto(pathGroup4));
+    autoChooser.setDefaultOption("Forward180", Forward180);
+    autoChooser.addOption("coneAuto", coneAuto);
+    autoChooser.addOption("coolCircle", coolCircle);
+    autoChooser.addOption("testAuto", testAuto);
+    }
+  private void ArmInst(){
+    arm = new RobotArmSubsystem();
+    ControlArm = new RobotArmControl(arm);
+    arm.setDefaultCommand(ControlArm);
+  }
+  private void EndEffectorInst(){
+    effector = new EndEffector();
+    endEffectorCommand = new EndEffectorCommand(effector);
+    effector.setDefaultCommand(endEffectorCommand);
+  }
+  private void SkiPlowInst(){
+    skiPlow = new SkiPlow();
+    skiPlow.setDefaultCommand(skiplowcommand);  
+    skiplowcommand = new SkiPlowPneumatic(skiPlow);
+  }
+  private void LimelightInst(){
+    limelight = Limelight.getInstance();
+  }
+  private void LimelightMotorInst(){
+    llmotor = new LimelightmotorSubsystem();
+    Command defaultllmotorCommand = new RunViaLimelightCommand(llmotor);
+    llmotor.setDefaultCommand(defaultllmotorCommand);
+  }
+  
+  
+  
+  
+  private void configDashboard() {
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
   /**Takes both axis of a joystick, returns an angle from -180 to 180 degrees, or {@link Constants.PS4.NO_INPUT} (double = 404.0) if the joystick is at rest position*/
   private double getJoystickDegrees(int horizontalAxis, int verticalAxis) {
@@ -143,8 +240,10 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
+    if (DrivetrainExists){
     new Trigger(controller::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
 		new Trigger(controller::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+    }
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -163,18 +262,20 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
   }
   public void robotInit() {
     PathPlannerServer.startServer(5811);
-    drivetrain.zeroGyroscope();
-    autoChooser.setDefaultOption("Forward180", Forward180);
-    autoChooser.addOption("coneAuto", coneAuto);
-    autoChooser.addOption("coolCircle", coolCircle);
-    autoChooser.addOption("testAuto", testAuto);
+    if(DrivetrainExists){
+      drivetrain.zeroGyroscope();
+    }
   }
   public void teleopInit() {
-    drivetrain.pointWheelsForward();
+    if(DrivetrainExists){
+      drivetrain.pointWheelsForward();
+    }
   }
   public void teleopPeriodic() {
     SmartDashboard.putNumber("Match Timer", Timer.getMatchTime());
-    limelight.getLimelightValues();
+    if (LimelightExists){
+      limelight.getLimelightValues();
+    }
   }
   public void moveToPose(Pose2d targetPose) {
  		Pose2d currentPose = drivetrain.getPose();
@@ -192,31 +293,4 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow);
   // eventMap.put("marker1", new PrintCommand("Passed marker 1"));
   // eventMap.put("intakeDown", new IntakeDown());
   
-  // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
-  SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
-      drivetrain::getPose, // Pose2d supplier
-      drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
-      drivetrain.kinematics, // SwerveDriveKinematics
-      new PIDConstants(
-          DriveConstants.k_XY_P, 
-          DriveConstants.k_XY_I,
-          DriveConstants.k_XY_D), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-      new PIDConstants(
-          DriveConstants.k_THETA_P,
-          DriveConstants.k_THETA_I,
-          DriveConstants.k_THETA_D), // PID constants to correct for rotation error (used to create the rotation controller)
-      drivetrain::setModuleStates, // Module states consumer used to output to the drive subsystem
-      eventMap,
-      false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-      drivetrain // The drive subsystem. Used to properly set the requirements of path following commands
-  );
-
-  List<PathPlannerTrajectory> pathGroup1 = PathPlanner.loadPathGroup("Forward180", new PathConstraints(3, 1.5));
-  Command Forward180 = autoBuilder.fullAuto(pathGroup1);
-  List<PathPlannerTrajectory> pathGroup2 = PathPlanner.loadPathGroup("1 cone auto", new PathConstraints(3, 1.5));
-  Command coneAuto = autoBuilder.fullAuto(pathGroup2);
-  List<PathPlannerTrajectory> pathGroup3 = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));
-  Command coolCircle = autoBuilder.fullAuto(pathGroup3);
-  List<PathPlannerTrajectory> pathGroup4 = PathPlanner.loadPathGroup("test auto", new PathConstraints(4, 4));
-  Command testAuto = autoBuilder.fullAuto(pathGroup4);
 }

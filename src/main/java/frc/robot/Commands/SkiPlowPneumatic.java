@@ -9,12 +9,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SkiPlow;
 
 public class SkiPlowPneumatic extends CommandBase {
-  PS4Controller ps4 = new PS4Controller(0);
   /** Creates a new SkiPlowPneumatic. */
   public SkiPlow skiplow;
-  public SkiPlowPneumatic(SkiPlow skiPlow) {
+  public PS4Controller opController;
+  public SkiPlowPneumatic(SkiPlow skiPlow, PS4Controller opController) {
     this.skiplow =  skiPlow;
     addRequirements(skiPlow);
+
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -26,19 +27,19 @@ public class SkiPlowPneumatic extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(ps4.getCrossButton()) {
+    if(opController.getCrossButton()) {
       skiplow.pistonDownRight();
     }
-    if(ps4.getCircleButton()) {
+    if(opController.getCircleButton()) {
       skiplow.pistonUpRight();
     }
-    if(ps4.getSquareButton()) {
+    if(opController.getSquareButton()) {
       skiplow.pistonDownLeft();
     }
-    if(ps4.getTriangleButton()) {
+    if(opController.getTriangleButton()) {
       skiplow.pistonUpLeft();
     }
-    if(ps4.getR2Button()) {
+    if(opController.getR2Button()) {
       skiplow.lockOn();}
     else{skiplow.lockOff();} 
       

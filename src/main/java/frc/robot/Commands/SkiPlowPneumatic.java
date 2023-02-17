@@ -14,6 +14,7 @@ public class SkiPlowPneumatic extends CommandBase {
   public PS4Controller opController;
   public SkiPlowPneumatic(SkiPlow skiPlow, PS4Controller opController) {
     this.skiplow =  skiPlow;
+    this.opController = opController;
     addRequirements(skiPlow);
 
     // Use addRequirements() here to declare subsystem dependencies.

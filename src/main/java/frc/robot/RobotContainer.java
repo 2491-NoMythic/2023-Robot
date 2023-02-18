@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Drive;
+import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.RobotArmControl;
 import frc.robot.Commands.RunViaLimelightCommand;
@@ -143,54 +144,20 @@ public class RobotContainer {
     defaultDriveCommand = new Drive(
       drivetrain,
       () -> driveController.getL1Button(),
-      () -> driveController.getR1Button(),
       () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
-      () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
-      () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE));
-      drivetrain.setDefaultCommand(defaultDriveCommand);
-      // This is just an example event map. It would be better to have a constant, global event map
-      // in your code that will be used by all path following commands.
-      HashMap<String, Command> eventMap = new HashMap<>();
-      // eventMap.put("marker1", new PrintCommand("Passed marker 1"));
-      // eventMap.put("intakeDown", new IntakeDown());
-      
-      // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
-      SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
-        drivetrain::getPose, // Pose2d supplier
-        drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
-        drivetrain.kinematics, // SwerveDriveKinematics
-      new PIDConstants(
-          DriveConstants.k_XY_P, 
-          DriveConstants.k_XY_I,
-          DriveConstants.k_XY_D), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-      new PIDConstants(
-          DriveConstants.k_THETA_P,
-          DriveConstants.k_THETA_I,
-          DriveConstants.k_THETA_D), // PID constants to correct for rotation error (used to create the rotation controller)
-          drivetrain::setModuleStates, // Module states consumer used to output to the drive subsystem
-      eventMap,
-      false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-      drivetrain // The drive subsystem. Used to properly set the requirements of path following commands
-      );
-      
-    List<PathPlannerTrajectory> pathGroup1 = PathPlanner.loadPathGroup("Forward180", new PathConstraints(3, 1.5));
-    Command Forward180 = autoBuilder.fullAuto(pathGroup1);
-    List<PathPlannerTrajectory> pathGroup2 = PathPlanner.loadPathGroup("1 cone auto", new PathConstraints(3, 1.5));
-    Command coneAuto = autoBuilder.fullAuto(pathGroup2);
-    List<PathPlannerTrajectory> pathGroup3 = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));
-    Command coolCircle = autoBuilder.fullAuto(pathGroup3);
-    List<PathPlannerTrajectory> pathGroup4 = PathPlanner.loadPathGroup("test auto", new PathConstraints(4, 4));
-    Command testAuto = autoBuilder.fullAuto(pathGroup4);
-    SmartDashboard.putData("Forward180", autoBuilder.fullAuto(pathGroup1));
-    SmartDashboard.putData("coneAuto", autoBuilder.fullAuto(pathGroup2));
-    SmartDashboard.putData("coolCircle", autoBuilder.fullAuto(pathGroup3));
-    SmartDashboard.putData("testAuto", autoBuilder.fullAuto(pathGroup4));
-    autoChooser.setDefaultOption("Forward180", Forward180);
-    autoChooser.addOption("coneAuto", coneAuto);
-    autoChooser.addOption("coolCircle", coolCircle);
-    autoChooser.addOption("testAuto", testAuto);
+      () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
+    drivetrain.setDefaultCommand(defaultDriveCommand);
+    Command defaultllmotorCommand = new RunViaLimelightCommand(llmotor);
+    configureBindings();
+    configDashboard();
+    llmotor.setDefaultCommand(defaultllmotorCommand);
+    arm.setDefaultCommand(ControlArm);
+    effector.setDefaultCommand(endEffectorCommand);
+    skiPlow.setDefaultCommand(skiplowcommand);
+  } 
+  private void configDashboard() {
+
     }
   private void ArmInst(){
     arm = new RobotArmSubsystem();
@@ -218,10 +185,6 @@ public class RobotContainer {
   
   
   
-  
-  private void configDashboard() {
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-  }
   /**Takes both axis of a joystick, returns an angle from -180 to 180 degrees, or {@link Constants.PS4Driver.NO_INPUT} (double = 404.0) if the joystick is at rest position*/
   private double getJoystickDegrees(int horizontalAxis, int verticalAxis) {
     double xAxis = MathUtil.applyDeadband(-driveController.getRawAxis(horizontalAxis), DEADBAND_LARGE);
@@ -254,6 +217,11 @@ public class RobotContainer {
       if (DrivetrainExists){
         new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
         //new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+        new Trigger(driveController::getR1Button).whileTrue(new DriveRotateToAngleCommand(drivetrain, 
+      () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
+      () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
       }
       if (LightsExists){
         new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(29, 59, 200, 30, 30);}, lightsSubsystem));

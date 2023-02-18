@@ -46,6 +46,7 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightmotorSubsystem;
 import frc.robot.subsystems.RobotArmSubsystem;
 import frc.robot.subsystems.SkiPlow;
+import frc.robot.subsystems.SubsystemLights;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -57,6 +58,7 @@ public class RobotContainer {
  
   private Limelight limelight = Limelight.getInstance();
   private final LimelightmotorSubsystem llmotor = new LimelightmotorSubsystem();
+  private final SubsystemLights lightsSubsystem = new SubsystemLights(60);
 
   private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
   private final Drive defaultDriveCommand;
@@ -65,7 +67,7 @@ public class RobotContainer {
   private final PS4Controller opController = new PS4Controller(1);
 
   private final RobotArmSubsystem arm = new RobotArmSubsystem();
-  private final RobotArmControl ControlArm = new RobotArmControl(arm);
+  private final RobotArmControl controlArm = new RobotArmControl(arm);
 
 private final SkiPlow skiPlow = new SkiPlow();
 
@@ -97,7 +99,7 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow, op
     configureBindings();
     configDashboard();
     llmotor.setDefaultCommand(defaultllmotorCommand);
-    arm.setDefaultCommand(ControlArm);
+    arm.setDefaultCommand(controlArm);
     effector.setDefaultCommand(endEffectorCommand);
     skiPlow.setDefaultCommand(skiplowcommand);
   } 
@@ -137,8 +139,14 @@ private final SkiPlowPneumatic skiplowcommand = new SkiPlowPneumatic(skiPlow, op
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // Schedule `exampleMethodCommand` when the Xbox driveController's B button is pressed,
     // cancelling on release.
+
     new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
-		new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+		//new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+
+    new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(29, 59, 200, 30, 30);}, lightsSubsystem));
+    new Trigger(driveController::getSquareButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 39, 0, 0, 100);}, lightsSubsystem));
+    new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 59, 0, 0, 0);}, lightsSubsystem));
+
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

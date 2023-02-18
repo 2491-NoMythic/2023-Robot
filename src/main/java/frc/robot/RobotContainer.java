@@ -40,7 +40,6 @@ import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.Commands.SkiPlowPneumatic;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.DriveConstants;
-import frc.robot.settings.Constants.PS4;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Limelight;
@@ -64,7 +63,8 @@ public class RobotContainer {
   private DrivetrainSubsystem drivetrain;
   private Drive defaultDriveCommand;
   private SendableChooser<Command> autoChooser;
-  private PS4Controller controller;
+  private final PS4Controller driveController;
+  private final PS4Controller opController;
   
   private RobotArmSubsystem arm;
   private RobotArmControl ControlArm;
@@ -93,7 +93,8 @@ public class RobotContainer {
     Preferences.initBoolean("Limelight", false);
     Preferences.initBoolean("LimelightMotor", false);
     
-    controller = new PS4Controller(0);
+    driveController = new PS4Controller(0);
+    opController = new PS4Controller(1);
     if (ArmExists){
       ArmInst();
     }
@@ -181,13 +182,13 @@ public class RobotContainer {
   }
   private void EndEffectorInst(){
     effector = new EndEffector();
-    endEffectorCommand = new EndEffectorCommand(effector);
+    endEffectorCommand = new EndEffectorCommand(effector, opController);
     effector.setDefaultCommand(endEffectorCommand);
   }
   private void SkiPlowInst(){
     skiPlow = new SkiPlow();
     skiPlow.setDefaultCommand(skiplowcommand);  
-    skiplowcommand = new SkiPlowPneumatic(skiPlow);
+    skiplowcommand = new SkiPlowPneumatic(skiPlow, opController);
   }
   private void LimelightInst(){
     limelight = Limelight.getInstance();
@@ -234,8 +235,8 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox driveController's B button is pressed,
     // cancelling on release.
     if (DrivetrainExists){
-    new Trigger(controller::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
-		new Trigger(controller::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+    new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
+		new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
     }
   }
   /**

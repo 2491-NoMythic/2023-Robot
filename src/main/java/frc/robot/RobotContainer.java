@@ -204,8 +204,8 @@ public class RobotContainer {
   }
   private void SkiPlowInst(){
     skiPlow = new SkiPlow();
-    skiPlow.setDefaultCommand(skiplowcommand);  
     skiplowcommand = new SkiPlowPneumatic(skiPlow, opController);
+    skiPlow.setDefaultCommand(skiplowcommand);  
   }
   private void LimelightInst(){
     limelight = Limelight.getInstance();

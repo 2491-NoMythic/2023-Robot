@@ -48,7 +48,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.settings.CTREConfigs;
+import frc.robot.settings.LimelightValues;
+import frc.robot.subsystems.Limelight;
+import frc.robot.settings.LimelightValues;
+import frc.robot.subsystems.Limelight;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.DriveConstants.Offsets;
 import frc.robot.settings.Constants.DriveConstants.Positions;
@@ -68,8 +74,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 */
 	private final SwerveModule[] modules;
 	private final Rotation2d[] lastAngles;
-
+	
+	
 	private final SwerveDrivePoseEstimator odometer;
+	Limelight limelight = Limelight.getInstance();
+	// LimelightValues limelightValues = limelight.getLimelightValues();
 
 	public final Field2d m_field = new Field2d();
 
@@ -264,7 +273,12 @@ public Command followPPTrajectory(PathPlannerTrajectory traj, boolean isFirstPat
 	@Override
 	public void periodic() {
 		updateOdometry();
-
+		LimelightValues visionData = limelight.getLimelightValues();
+		if (visionData.isResultValid) {
+			SmartDashboard.putNumberArray("timestamps", visionData.gettimestamp());
+			m_field.setRobotPose(visionData.getbotPose());
+		}
+		
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 	}

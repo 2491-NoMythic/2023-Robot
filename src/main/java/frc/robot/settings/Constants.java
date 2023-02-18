@@ -34,8 +34,8 @@ public final class Constants {
     public static final int ARM_SHOULDER_MOTOR_ID = 2;
     public static final int ARM_ELBOW_MOTOR_ID = 1;
   }
-  public final class Preferences{
-   
+  public static final class Preferences{
+  
   }
   public static final class DriveConstants {
     public enum Positions{

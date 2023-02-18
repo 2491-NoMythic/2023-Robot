@@ -96,7 +96,7 @@ public class RobotContainer {
     Preferences.initBoolean("SkiPlow", false);
     Preferences.initBoolean("Limelight", false);
     Preferences.initBoolean("LimelightMotor", false);
-    
+    Preferences.initBoolean("Lights", false);
     driveController = new PS4Controller(0);
     opController = new PS4Controller(1);
     autoChooser = new SendableChooser<>();

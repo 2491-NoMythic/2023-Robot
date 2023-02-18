@@ -13,9 +13,9 @@ import frc.robot.LimelightHelpers;
 public class LimelightValues {
         public boolean isResultValid;
         int numTags;
-        double[] tx;
-        double[] ty;
-        double[] ta;
+        double[] tx = new double[5];
+        double[] ty = new double[5];
+        double[] ta = new double[5];
         Pose2d botPoseRed;
         Pose2d botPoseBlue;
         double timestamp_LIMELIGHT_publish;
@@ -24,19 +24,21 @@ public class LimelightValues {
         double timestamp_Latency_pipeline;
         public LimelightValues(LimelightHelpers.LimelightResults llresults){
             this.isResultValid = llresults.targetingResults.valid;
-            this.numTags = llresults.targetingResults.targets_Fiducials.length;
-            for (int i = 0; i < numTags; i++) {
-                this.tx[i] = llresults.targetingResults.targets_Fiducials[i].tx;
-                this.ty[i] = llresults.targetingResults.targets_Fiducials[i].ty;
-                this.ta[i] = llresults.targetingResults.targets_Fiducials[i].ta;
+            if (isResultValid) {
+                this.numTags = llresults.targetingResults.targets_Fiducials.length;
+                for (int i = 0; i < numTags; i++) {
+                    this.tx[i] = llresults.targetingResults.targets_Fiducials[i].tx;
+                    this.ty[i] = llresults.targetingResults.targets_Fiducials[i].ty;
+                    this.ta[i] = llresults.targetingResults.targets_Fiducials[i].ta;
+                }
+                
+                this.botPoseRed = llresults.targetingResults.getBotPose2d_wpiRed();
+                this.botPoseBlue = llresults.targetingResults.getBotPose2d_wpiBlue();
+                this.timestamp_LIMELIGHT_publish = llresults.targetingResults.timestamp_LIMELIGHT_publish;
+                this.timestamp_RIOFPGA_capture = llresults.targetingResults.timestamp_RIOFPGA_capture;
+                this.timestamp_Latency_capture = llresults.targetingResults.latency_capture;
+                this.timestamp_Latency_pipeline = llresults.targetingResults.latency_pipeline;
             }
-            
-            this.botPoseRed = llresults.targetingResults.getBotPose2d_wpiRed();
-            this.botPoseBlue = llresults.targetingResults.getBotPose2d_wpiBlue();
-            this.timestamp_LIMELIGHT_publish = llresults.targetingResults.timestamp_LIMELIGHT_publish;
-            this.timestamp_RIOFPGA_capture = llresults.targetingResults.timestamp_RIOFPGA_capture;
-            this.timestamp_Latency_capture = llresults.targetingResults.latency_capture;
-            this.timestamp_Latency_pipeline = llresults.targetingResults.latency_pipeline;
         }
         public double gettx(int index){return tx[index];}
         public double getty(int index){return ty[index];}

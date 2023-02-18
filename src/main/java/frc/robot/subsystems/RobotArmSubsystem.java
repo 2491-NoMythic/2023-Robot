@@ -3,26 +3,26 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.settings.Constants.Arm.*;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class RobotArmSubsystem extends SubsystemBase{
-    TalonSRX armShoulderMotor;
-    TalonSRX armElbowMotor;
+    CANSparkMax armShoulderMotor;
+    CANSparkMax armElbowMotor;
     
     public RobotArmSubsystem(){
-        armElbowMotor = new TalonSRX(ARM_ELBOW_MOTOR_ID);
-        armShoulderMotor = new TalonSRX(ARM_SHOULDER_MOTOR_ID);
+        armElbowMotor = new CANSparkMax(ARM_ELBOW_MOTOR_ID, MotorType.kBrushless);
+        armShoulderMotor = new CANSparkMax(ARM_SHOULDER_MOTOR_ID, MotorType.kBrushless);
     }
     public void setElbowPower(double power){
-        armElbowMotor.set(ControlMode.PercentOutput, power);
+        armElbowMotor.set(power);
     }
     public void setShoulderPower(double power){
-        armShoulderMotor.set(ControlMode.PercentOutput, power);
+        armShoulderMotor.set(power);
     }
     public void setBrakeMode() {
-        armShoulderMotor.setNeutralMode(NeutralMode.Brake);
-        armElbowMotor.setNeutralMode(NeutralMode.Brake);
+        armShoulderMotor.setIdleMode(IdleMode.kBrake);
+        armElbowMotor.setIdleMode(IdleMode.kBrake);
     }
 }

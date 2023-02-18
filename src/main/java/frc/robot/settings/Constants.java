@@ -34,8 +34,8 @@ public final class Constants {
     public static final int ARM_SHOULDER_MOTOR_ID = 2;
     public static final int ARM_ELBOW_MOTOR_ID = 1;
   }
-  public final class Preferences{
-   
+  public static final class Preferences{
+  
   }
   public static final class DriveConstants {
     public enum Positions{
@@ -59,10 +59,10 @@ public final class Constants {
       BENH(-0.346436),
       EVELYN(0.382568),
       OMARIAHN(0.271973),
-      PHEOBE(0),
-      ROYCE(0),
-      QUINN(0),
-      ROWAN(0),
+      PHEOBE(-0.245850),
+      ROYCE(-0.003174),
+      ROWAN(-0.108398),
+      QUINN(-0.144287),
       LIAM(0);
       private double offset;
       Offsets(double value) {
@@ -219,8 +219,8 @@ public final class Constants {
     public static final double k_THETA_TOLORANCE_DEGREES = 2.0;
     public static final double k_THETA_TOLORANCE_DEG_PER_SEC = 10;
 }
-  public final class PS4{
-    private PS4() {
+  public final class PS4Driver{
+    private PS4Driver() {
     }
     public static final int CONTROLLER_ID = 1;
     /**Left stick Y-axis. <p> Left = -1 || Right = 1*/

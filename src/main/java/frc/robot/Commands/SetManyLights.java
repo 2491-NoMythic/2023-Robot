@@ -4,38 +4,41 @@
 
 package frc.robot.Commands;
 
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.EndEffector;
+import frc.robot.subsystems.SubsystemLights;
 
-public class EndEffectorCommand extends CommandBase {
-
-  /** Creates a new EndEffectorCommand. */
-  public EndEffector endEffector;
-  public PS4Controller opController;
-  public EndEffectorCommand(EndEffector effector, PS4Controller opController) {
-    addRequirements(effector);
-    this.endEffector = effector;
+public class SetManyLights extends CommandBase {
+  SubsystemLights lights;
+  int min;
+  int max;
+  int R;
+  int G;
+  int B;
+  /** Creates a new SetManyLight. */
+  public SetManyLights(SubsystemLights LS, int minLight, int maxLight, int red, int green, int blue) {
+    addRequirements(LS);
+    lights = LS;
+    min = minLight;
+    max = maxLight;
+    R = red;
+    G = green;
+    B = blue;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    endEffector.setEndEffectorBrakeMode();
+  
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    endEffector.setEndEffectorPower(0.5*opController.getRawAxis(5));
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    endEffector.setEndEffectorPower(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

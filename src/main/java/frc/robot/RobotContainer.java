@@ -76,12 +76,12 @@ public class RobotContainer {
   private EndEffector effector;
   
   
-  boolean ArmExists = Preferences.getBoolean("Arm", false);
-  boolean EndEffectorExists = Preferences.getBoolean("EndEffector", false);
-  boolean SkiPlowExists = Preferences.getBoolean("SkiPlow", false);
-  boolean LimelightExists = Preferences.getBoolean("Limelight", false);
-  boolean LimelightMotorExists = Preferences.getBoolean("LimelightMotor", false);
-  boolean DrivetrainExists = Preferences.getBoolean("Drivetrain", false);
+  public static boolean ArmExists = Preferences.getBoolean("Arm", false);
+  public static boolean EndEffectorExists = Preferences.getBoolean("EndEffector", false);
+  public static boolean SkiPlowExists = Preferences.getBoolean("SkiPlow", false);
+  public static boolean LimelightExists = Preferences.getBoolean("Limelight", false);
+  public static boolean LimelightMotorExists = Preferences.getBoolean("LimelightMotor", false);
+  public static boolean DrivetrainExists = Preferences.getBoolean("Drivetrain", false);
       
   
   public RobotContainer() {
@@ -95,6 +95,8 @@ public class RobotContainer {
     
     driveController = new PS4Controller(0);
     opController = new PS4Controller(1);
+    autoChooser = new SendableChooser<>();
+
     if (ArmExists){
       ArmInst();
     }
@@ -115,7 +117,6 @@ public class RobotContainer {
     }
     
     
-    autoChooser = new SendableChooser<>();
     
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
@@ -139,6 +140,12 @@ public class RobotContainer {
       () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
       () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE));
       drivetrain.setDefaultCommand(defaultDriveCommand);
+      // This is just an example event map. It would be better to have a constant, global event map
+      // in your code that will be used by all path following commands.
+      HashMap<String, Command> eventMap = new HashMap<>();
+      // eventMap.put("marker1", new PrintCommand("Passed marker 1"));
+      // eventMap.put("intakeDown", new IntakeDown());
+      
       // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
       SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
         drivetrain::getPose, // Pose2d supplier
@@ -278,37 +285,4 @@ public class RobotContainer {
     drivetrain.m_field.getObject("traj").setTrajectory(newTraj);
 		followTraj.schedule();
   }
-  // This is just an example event map. It would be better to have a constant, global event map
-  // in your code that will be used by all path following commands.
-  HashMap<String, Command> eventMap = new HashMap<>();
-  // eventMap.put("marker1", new PrintCommand("Passed marker 1"));
-  // eventMap.put("intakeDown", new IntakeDown());
-  
-  // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
-  SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
-      drivetrain::getPose, // Pose2d supplier
-      drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
-      drivetrain.kinematics, // SwerveDriveKinematics
-      new PIDConstants(
-          DriveConstants.k_XY_P, 
-          DriveConstants.k_XY_I,
-          DriveConstants.k_XY_D), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-      new PIDConstants(
-          DriveConstants.k_THETA_P,
-          DriveConstants.k_THETA_I,
-          DriveConstants.k_THETA_D), // PID constants to correct for rotation error (used to create the rotation driveController)
-      drivetrain::setModuleStates, // Module states consumer used to output to the drive subsystem
-      eventMap,
-      false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-      drivetrain // The drive subsystem. Used to properly set the requirements of path following commands
-  );
-
-  List<PathPlannerTrajectory> pathGroup1 = PathPlanner.loadPathGroup("Forward180", new PathConstraints(3, 1.5));
-  Command Forward180 = autoBuilder.fullAuto(pathGroup1);
-  List<PathPlannerTrajectory> pathGroup2 = PathPlanner.loadPathGroup("1 cone auto", new PathConstraints(3, 1.5));
-  Command coneAuto = autoBuilder.fullAuto(pathGroup2);
-  List<PathPlannerTrajectory> pathGroup3 = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));
-  Command coolCircle = autoBuilder.fullAuto(pathGroup3);
-  List<PathPlannerTrajectory> pathGroup4 = PathPlanner.loadPathGroup("test auto", new PathConstraints(4, 4));
-  Command testAuto = autoBuilder.fullAuto(pathGroup4);
 }

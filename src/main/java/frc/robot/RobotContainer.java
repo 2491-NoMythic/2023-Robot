@@ -257,7 +257,7 @@ public class RobotContainer {
         new PathPoint(currentPose.getTranslation(), currentPose.relativeTo(targetPose).getTranslation().getAngle(), currentPose.getRotation()),
 				new PathPoint(targetPose.getTranslation(), currentPose.relativeTo(targetPose).getTranslation().getAngle(), targetPose.getRotation()));
 		Command followTraj = drivetrain.followPPTrajectory(newTraj, false);
-    drivetrain.m_field.getObject("traj").setTrajectory(newTraj);
+    drivetrain.displayFieldTrajectory(newTraj);
 		followTraj.schedule();
   }
 }

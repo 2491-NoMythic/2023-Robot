@@ -81,7 +81,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	Limelight limelight = Limelight.getInstance();
 	// LimelightValues limelightValues = limelight.getLimelightValues();
 
-	public final Field2d m_field = new Field2d();
+	private final Field2d m_field = new Field2d();
 
 	public DrivetrainSubsystem() {
 
@@ -224,6 +224,9 @@ public Command followPPTrajectory(PathPlannerTrajectory traj, boolean isFirstPat
 			new InstantCommand(() -> this.stop())
 		);
  	}
+	public void displayFieldTrajectory(PathPlannerTrajectory traj) {
+		m_field.getObject("traj").setTrajectory(traj);
+	}
 	/**
 	 *  Sets the modules speed and rotation to zero.
 	 */

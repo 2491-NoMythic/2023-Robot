@@ -61,8 +61,8 @@ public final class Constants {
       OMARIAHN(0.271973),
       PHEOBE(-0.245850),
       ROYCE(-0.003174),
-      ROWAN(-0.108398),
-      QUINN(-0.144287),
+      ROWAN(0.391602),
+      QUINN(0.355713),
       LIAM(0);
       private double offset;
       Offsets(double value) {

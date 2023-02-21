@@ -157,23 +157,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 * 'forwards' direction.
 	 */
 	public void zeroGyroscope() {
-		// calibrateWheels();
 		pigeon.setYaw(0.0);
 		odometer.resetPosition(new Rotation2d(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
 	}
 	public void zeroGyroscope(double angleDeg) {
-		// calibrateWheels();
 		pigeon.setYaw(angleDeg);
 		new Rotation2d();
 		new Rotation2d();
 		odometer.resetPosition(Rotation2d.fromDegrees(angleDeg), getModulePositions(), new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(angleDeg)));
 	}
-
-	// public void calibrateWheels() {
-	// 	for (int i = 0; i < 4; i++) {
-	// 		modules[i].resetToAbsolute();
-	// 	};
-	// }
 	public Rotation2d getGyroscopeRotation() {//todo make continuous vs not continuous versions
 		return pigeon.getRotation2d();
 	}
@@ -194,7 +186,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
         odometer.resetPosition(pose.getRotation(), getModulePositions(), pose);
     }
     public void resetOdometry() {
-        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), new Pose2d(DRIVE_ODOMETRY_ORIGIN.getTranslation(), getGyroscopeRotation()));
+		Pose2d smartDashboardPose = new Pose2d(SmartDashboard.getNumber("Robot origin x", 5),SmartDashboard.getNumber("Robot origin y", 5),Rotation2d.fromDegrees(SmartDashboard.getNumber("Robot origin rot", 0)));
+        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), smartDashboardPose);
+    }
+    public void resetOdometryFromVision(Pose2d pose) {
+        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
     }
 	
 public Command followPPTrajectory(PathPlannerTrajectory traj, boolean isFirstPath) {
@@ -265,23 +261,21 @@ public Command followPPTrajectory(PathPlannerTrajectory traj, boolean isFirstPat
 	}
 	public void updateOdometry() {
 		odometer.updateWithTime(Timer.getFPGATimestamp(), getGyroscopeRotation(), getModulePositions());
-		m_field.setRobotPose(odometer.getEstimatedPosition());
 	}
 	public void updateOdometryWithVision(Pose2d estematedPose, double timestampSeconds) {
 		odometer.addVisionMeasurement(estematedPose, timestampSeconds);
 	}
-
 	@Override
 	public void periodic() {
 		updateOdometry();
 		if (RobotContainer.LimelightExists) {
 			LimelightValues visionData = limelight.getLimelightValues();
+			SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
 			if (visionData.isResultValid) {
-				SmartDashboard.putNumberArray("timestamps", visionData.gettimestamp());
-				m_field.setRobotPose(visionData.getbotPose());
+				updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
 			}
 		}
-		
+		m_field.setRobotPose(odometer.getEstimatedPosition());
 		
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());

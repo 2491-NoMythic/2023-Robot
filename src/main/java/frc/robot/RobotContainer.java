@@ -123,14 +123,6 @@ public class RobotContainer {
     if (LightsExists){
       LightsInst();
     }
-    
-    
-    // Set up the default command for the drivetrain.
-    // The controls are for field-oriented driving:
-    // Left stick Y axis -> Robot X movement, backward/forward
-    // Left stick X axis -> Robot Y movement, right/left
-    // Right stick Z axis -> rotation, clockwise, counterclockwise
-    // Need to invert the joystick axis
     configureBindings();
     configDashboard();
   } 
@@ -138,9 +130,14 @@ public class RobotContainer {
   private void LightsInst() {
     lightsSubsystem = new SubsystemLights(60);
   }
-
   private void DrivetrainInst(){
     drivetrain = new DrivetrainSubsystem();
+    // Set up the default command for the drivetrain.
+    // The controls are for field-oriented driving:
+    // Left stick Y axis -> Robot X movement, backward/forward
+    // Left stick X axis -> Robot Y movement, right/left
+    // Right stick Z axis -> rotation, clockwise, counterclockwise
+    // Need to invert the joystick axis
     defaultDriveCommand = new Drive(
       drivetrain,
       () -> driveController.getL1Button(),
@@ -148,17 +145,10 @@ public class RobotContainer {
       () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
     drivetrain.setDefaultCommand(defaultDriveCommand);
-    Command defaultllmotorCommand = new RunViaLimelightCommand(llmotor);
-    configureBindings();
-    configDashboard();
-    llmotor.setDefaultCommand(defaultllmotorCommand);
-    arm.setDefaultCommand(ControlArm);
-    effector.setDefaultCommand(endEffectorCommand);
-    skiPlow.setDefaultCommand(skiplowcommand);
-  } 
-  private void configDashboard() {
-
-    }
+    SmartDashboard.putNumber("Robot origin x", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getX());
+    SmartDashboard.putNumber("Robot origin y", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getY());
+    SmartDashboard.putNumber("Robot origin rot", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getRotation().getDegrees());
+  }
   private void ArmInst(){
     arm = new RobotArmSubsystem();
     ControlArm = new RobotArmControl(arm);
@@ -185,6 +175,8 @@ public class RobotContainer {
   
   
   
+  private void configDashboard() {
+    }
   /**Takes both axis of a joystick, returns an angle from -180 to 180 degrees, or {@link Constants.PS4Driver.NO_INPUT} (double = 404.0) if the joystick is at rest position*/
   private double getJoystickDegrees(int horizontalAxis, int verticalAxis) {
     double xAxis = MathUtil.applyDeadband(-driveController.getRawAxis(horizontalAxis), DEADBAND_LARGE);

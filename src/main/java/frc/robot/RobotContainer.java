@@ -13,15 +13,6 @@ import static frc.robot.settings.Constants.PS4Driver.Z_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Z_ROTATE;
 
 import java.util.HashMap;
-import java.util.List;
-
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
-import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -31,8 +22,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Commands.Autos;
 import frc.robot.Commands.Drive;
 import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.EndEffectorCommand;
@@ -67,6 +60,8 @@ public class RobotContainer {
   private SendableChooser<Command> autoChooser;
   private final PS4Controller driveController;
   private final PS4Controller opController;
+
+  private Autos autos;
   
   private RobotArmSubsystem arm;
   private RobotArmControl ControlArm;
@@ -123,6 +118,7 @@ public class RobotContainer {
     if (LightsExists){
       LightsInst();
     }
+    autoInit();
     configureBindings();
     configDashboard();
   } 
@@ -173,10 +169,30 @@ public class RobotContainer {
     llmotor.setDefaultCommand(defaultllmotorCommand);
   }
   
-  
-  
-  private void configDashboard() {
+  private void autoInit() {
+    autos = Autos.getInstance();
+    HashMap<String, Command> eventMap = new HashMap<>();
+    if (DrivetrainExists) {
+      eventMap.put("marker1", new PrintCommand("Passed marker 1"));
+      eventMap.put("marker2", new PrintCommand("Passed marker 2"));
+      if (SkiPlowExists) {
+        // eventMap.put("skiPlowDown", TODO add command);
+        // eventMap.put("skiPlowUp", TODO add command);
+        // eventMap.put("skiPlowLock", TODO add command);
+      }
+      if (LightsExists) {
+        // eventMap.put("TODO add command", TODO add command);
+        // eventMap.put("TODO add command", TODO add command);
+      }
+      if (ArmExists) {
+        // eventMap.put("armPoint1", TODO add command);
+        // eventMap.put("armPoint2", TODO add command);
+      }
+      autos.autoInit(autoChooser, eventMap, drivetrain);
     }
+  }
+  
+  private void configDashboard() {}
   /**Takes both axis of a joystick, returns an angle from -180 to 180 degrees, or {@link Constants.PS4Driver.NO_INPUT} (double = 404.0) if the joystick is at rest position*/
   private double getJoystickDegrees(int horizontalAxis, int verticalAxis) {
     double xAxis = MathUtil.applyDeadband(-driveController.getRawAxis(horizontalAxis), DEADBAND_LARGE);
@@ -203,18 +219,16 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    // Schedule `exampleMethodCommand` when the Xbox driveController's B button is pressed,
-    // cancelling on release.
-      if (DrivetrainExists){
-        new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
-        //new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
-        new Trigger(driveController::getR1Button).whileTrue(new DriveRotateToAngleCommand(drivetrain, 
-      () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
-      () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
-      }
+    if (DrivetrainExists) {
+      new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
+      new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() ->
+          autos.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+      new Trigger(driveController::getR1Button).whileTrue(new DriveRotateToAngleCommand(drivetrain,
+          () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+          () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+          () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
+          () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
+    }
       if (LightsExists){
         new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(29, 59, 200, 30, 30);}, lightsSubsystem));
         new Trigger(driveController::getSquareButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 39, 0, 0, 100);}, lightsSubsystem));
@@ -237,7 +251,6 @@ public class RobotContainer {
     return value;
   }
   public void robotInit() {
-    PathPlannerServer.startServer(5811);
     if(DrivetrainExists){
       drivetrain.zeroGyroscope();
     }
@@ -249,15 +262,5 @@ public class RobotContainer {
   }
   public void teleopPeriodic() {
     SmartDashboard.putNumber("Match Timer", Timer.getMatchTime());
-  }
-  public void moveToPose(Pose2d targetPose) {
- 		Pose2d currentPose = drivetrain.getPose();
-		PathPlannerTrajectory newTraj = PathPlanner.generatePath(
-				new PathConstraints(3, 1.5),
-        new PathPoint(currentPose.getTranslation(), currentPose.relativeTo(targetPose).getTranslation().getAngle(), currentPose.getRotation()),
-				new PathPoint(targetPose.getTranslation(), currentPose.relativeTo(targetPose).getTranslation().getAngle(), targetPose.getRotation()));
-		Command followTraj = drivetrain.followPPTrajectory(newTraj, false);
-    drivetrain.displayFieldTrajectory(newTraj);
-		followTraj.schedule();
   }
 }

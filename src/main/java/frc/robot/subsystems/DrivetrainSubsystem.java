@@ -194,6 +194,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			setModule(i, new SwerveModuleState(0, new Rotation2d()));
 		}
 	}
+	public void pointWheelsInward() {
+		setModule(0, new SwerveModuleState(0, Rotation2d.fromDegrees(-135)));
+		setModule(1, new SwerveModuleState(0, Rotation2d.fromDegrees(135)));
+		setModule(2, new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+		setModule(3, new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+	}
 	public void drive(ChassisSpeeds chassisSpeeds) {
 		SwerveModuleState[] desiredStates = kinematics.toSwerveModuleStates(chassisSpeeds);
 		double maxSpeed = Collections.max(Arrays.asList(desiredStates)).speedMetersPerSecond;

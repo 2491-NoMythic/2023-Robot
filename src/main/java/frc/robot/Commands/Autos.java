@@ -11,6 +11,7 @@ import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -69,14 +70,15 @@ public final class Autos {
 
     public CommandBase moveToPose(Pose2d targetPose) {
         Pose2d currentPose = drivetrain.getPose();
+        Rotation2d heading = (targetPose.getTranslation().minus(currentPose.getTranslation())).getAngle();
         PathPlannerTrajectory newTraj = PathPlanner.generatePath(
                 new PathConstraints(3, 1.5),
-                new PathPoint(currentPose.getTranslation(),
-                        currentPose.relativeTo(targetPose).getTranslation().getAngle(), currentPose.getRotation()),
-                new PathPoint(targetPose.getTranslation(),
-                        currentPose.relativeTo(targetPose).getTranslation().getAngle(), targetPose.getRotation()));
+                new PathPoint(currentPose.getTranslation(), heading, currentPose.getRotation()),
+                new PathPoint(targetPose.getTranslation(), heading, targetPose.getRotation()));
         drivetrain.displayFieldTrajectory(newTraj);
-        return new SequentialCommandGroup(autoBuilder.followPathWithEvents(newTraj), new InstantCommand(() -> drivetrain.stop()));
+        return new SequentialCommandGroup(
+                autoBuilder.followPathWithEvents(newTraj),
+                new InstantCommand(() -> drivetrain.stop()));
     }
 
     public CommandBase forward180() {

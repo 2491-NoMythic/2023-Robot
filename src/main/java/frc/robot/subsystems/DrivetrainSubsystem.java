@@ -27,9 +27,7 @@ import java.util.Map;
 
 import com.ctre.phoenixpro.hardware.Pigeon2;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -44,18 +42,11 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.LimelightHelpers.LimelightResults;
-import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.settings.CTREConfigs;
 import frc.robot.settings.LimelightValues;
-import frc.robot.subsystems.Limelight;
-import frc.robot.settings.LimelightValues;
-import frc.robot.subsystems.Limelight;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.DriveConstants.Offsets;
 import frc.robot.settings.Constants.DriveConstants.Positions;
@@ -192,38 +183,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void resetOdometryFromVision(Pose2d pose) {
         odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
     }
-	
-public Command followPPTrajectory(PathPlannerTrajectory traj, boolean isFirstPath) {
-	return new SequentialCommandGroup(
-		new InstantCommand(() -> {
-		    // Reset odometry for the first path you run during auto
-		    if(isFirstPath){
-			   this.resetOdometry(traj.getInitialHolonomicPose());
-			}
-		}),
-		new PPSwerveControllerCommand(
-			traj, 
-			this::getPose, // Pose supplier
-			this.kinematics, // SwerveDriveKinematics
-			new PIDController(// X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-			DriveConstants.k_XY_P,
-			DriveConstants.k_XY_I,
-			DriveConstants.k_XY_D),
-			new PIDController(// Y controller (usually the same values as X controller)
-			DriveConstants.k_XY_P,
-			DriveConstants.k_XY_I,
-			DriveConstants.k_XY_D),
-			new PIDController(// Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-			DriveConstants.k_THETA_P,
-			DriveConstants.k_THETA_I,
-			DriveConstants.k_THETA_D),
-			this::setModuleStates, // Module states consumer
-			true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-			this // Requires this drive subsystem
-			),
-			new InstantCommand(() -> this.stop())
-		);
- 	}
 	public void displayFieldTrajectory(PathPlannerTrajectory traj) {
 		m_field.getObject("traj").setTrajectory(traj);
 	}

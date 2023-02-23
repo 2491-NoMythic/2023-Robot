@@ -25,6 +25,7 @@ import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -34,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Drive;
+import frc.robot.Commands.DriveOffsetCenterCommand;
 import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.RobotArmControl;
@@ -217,11 +219,13 @@ public class RobotContainer {
       if (DrivetrainExists){
         new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
         //new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
-        new Trigger(driveController::getR1Button).whileTrue(new DriveRotateToAngleCommand(drivetrain, 
-      () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
-      () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
+        new Trigger(driveController::getR1Button).whileTrue(new DriveOffsetCenterCommand(
+          drivetrain,
+          () -> driveController.getL1Button(),
+          () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+          () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+          () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
+          new Translation2d(-0.45,0)));
       }
       if (LightsExists){
         new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(29, 59, 200, 30, 30);}, lightsSubsystem));

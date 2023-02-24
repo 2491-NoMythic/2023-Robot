@@ -79,12 +79,12 @@ public final class Constants {
      * The left-to-right distance between the drivetrain wheels
      * Should be measured from center to center.
      */
-    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.4953;
+    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.52705;
     /**
      * The front-to-back distance between the drivetrain wheels.
      * Should be measured from center to center.
      */
-    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4953;
+    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.52705;
 
     /**
      * The diameter of the module's wheel in meters.

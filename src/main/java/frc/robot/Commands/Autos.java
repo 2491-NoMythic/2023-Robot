@@ -94,6 +94,6 @@ public final class Autos {
     }
     // load all paths.
     static List<PathPlannerTrajectory> forward180Path = PathPlanner.loadPathGroup("forward 180", new PathConstraints(3, 1.5));
-    static List<PathPlannerTrajectory> oneConeAutoPath = PathPlanner.loadPathGroup("1 cone auto", new PathConstraints(3, 1.5));
+    static List<PathPlannerTrajectory> oneConeAutoPath = PathPlanner.loadPathGroup("Score2Balance", new PathConstraints(2, 1.5));
     static List<PathPlannerTrajectory> coolCirclePath = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));
 }

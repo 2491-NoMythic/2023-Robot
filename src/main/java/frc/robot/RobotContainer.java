@@ -77,6 +77,7 @@ public class RobotContainer {
   
   private SubsystemLights lightsSubsystem;
 
+  public static HashMap<String, Command> eventMap;
   public static boolean ArmExists = Preferences.getBoolean("Arm", false);
   public static boolean EndEffectorExists = Preferences.getBoolean("EndEffector", false);
   public static boolean SkiPlowExists = Preferences.getBoolean("SkiPlow", false);
@@ -99,6 +100,7 @@ public class RobotContainer {
     driveController = new PS4Controller(0);
     opController = new PS4Controller(1);
     autoChooser = new SendableChooser<>();
+    eventMap = new HashMap<>();
 
     if (ArmExists){
       ArmInst();
@@ -174,7 +176,6 @@ public class RobotContainer {
   
   private void autoInit() {
     autos = Autos.getInstance();
-    HashMap<String, Command> eventMap = new HashMap<>();
     if (DrivetrainExists) {
       eventMap.put("marker1", new PrintCommand("Passed marker 1"));
       eventMap.put("marker2", new PrintCommand("Passed marker 2"));

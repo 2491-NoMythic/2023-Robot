@@ -43,7 +43,13 @@ public class SkiPlowPneumatic extends CommandBase {
     if(opController.getR2Button()) {
       skiplow.lockOn();}
     else{skiplow.lockOff();} 
-      
+    //if(opController.getL2Button()||opController.getR2Button()) {
+    //  skiplow.pistonDown();}
+    //else skiplow.pistonUp();
+
+    //if(opController.getCrossButton()) {
+    //  skiplow.lockOn();}
+    //else skiplow.lockOff(); 
   }
 
   // Called once the command ends or is interrupted.

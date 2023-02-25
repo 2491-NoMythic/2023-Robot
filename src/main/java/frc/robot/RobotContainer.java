@@ -189,6 +189,7 @@ public class RobotContainer {
         // eventMap.put("armPoint2", TODO add command);
       }
       autos.autoInit(autoChooser, eventMap, drivetrain);
+      SmartDashboard.putData(autoChooser);
     }
   }
   

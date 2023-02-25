@@ -67,7 +67,7 @@ public class RobotContainer {
 
   private Autos autos;
   
-  private RobotArmSubsystem arm;
+  private RobotArmSubsystem arm = new RobotArmSubsystem();
   private RobotArmControl ControlArm;
   
   private EndEffectorCommand endEffectorCommand;
@@ -244,6 +244,10 @@ public class RobotContainer {
         new Trigger(driveController::getSquareButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 51, 0, 0, 100);}, lightsSubsystem));
         new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 51, 0, 0, 0);}, lightsSubsystem));
       }
+      new Trigger(opController::getL1Button).onTrue(Commands.runOnce(()-> {arm.setShoulderPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setShoulderPower(0);}, arm));
+      new Trigger(opController::getL2Button).onTrue(Commands.runOnce(()-> {arm.setShoulderPower(0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setShoulderPower(0);}, arm));
+      new Trigger(opController::getShareButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
+      new Trigger(opController::getOptionsButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

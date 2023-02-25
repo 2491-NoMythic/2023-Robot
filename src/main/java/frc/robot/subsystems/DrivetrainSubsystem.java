@@ -27,9 +27,7 @@ import java.util.Map;
 
 import com.ctre.phoenixpro.hardware.Pigeon2;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -44,18 +42,11 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.LimelightHelpers.LimelightResults;
-import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.settings.CTREConfigs;
 import frc.robot.settings.LimelightValues;
-import frc.robot.subsystems.Limelight;
-import frc.robot.settings.LimelightValues;
-import frc.robot.subsystems.Limelight;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.DriveConstants.Offsets;
 import frc.robot.settings.Constants.DriveConstants.Positions;
@@ -81,7 +72,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	Limelight limelight = Limelight.getInstance();
 	// LimelightValues limelightValues = limelight.getLimelightValues();
 
-	public final Field2d m_field = new Field2d();
+	private final Field2d m_field = new Field2d();
 
 	public DrivetrainSubsystem() {
 
@@ -157,23 +148,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 * 'forwards' direction.
 	 */
 	public void zeroGyroscope() {
-		// calibrateWheels();
 		pigeon.setYaw(0.0);
 		odometer.resetPosition(new Rotation2d(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
 	}
 	public void zeroGyroscope(double angleDeg) {
-		// calibrateWheels();
 		pigeon.setYaw(angleDeg);
 		new Rotation2d();
 		new Rotation2d();
 		odometer.resetPosition(Rotation2d.fromDegrees(angleDeg), getModulePositions(), new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(angleDeg)));
 	}
-
-	// public void calibrateWheels() {
-	// 	for (int i = 0; i < 4; i++) {
-	// 		modules[i].resetToAbsolute();
-	// 	};
-	// }
 	public Rotation2d getGyroscopeRotation() {//todo make continuous vs not continuous versions
 		return pigeon.getRotation2d();
 	}
@@ -194,40 +177,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
         odometer.resetPosition(pose.getRotation(), getModulePositions(), pose);
     }
     public void resetOdometry() {
-        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), new Pose2d(DRIVE_ODOMETRY_ORIGIN.getTranslation(), getGyroscopeRotation()));
+		Pose2d smartDashboardPose = new Pose2d(SmartDashboard.getNumber("Robot origin x", 5),SmartDashboard.getNumber("Robot origin y", 5),Rotation2d.fromDegrees(SmartDashboard.getNumber("Robot origin rot", 0)));
+        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), smartDashboardPose);
     }
-	
-public Command followPPTrajectory(PathPlannerTrajectory traj, boolean isFirstPath) {
-	return new SequentialCommandGroup(
-		new InstantCommand(() -> {
-		    // Reset odometry for the first path you run during auto
-		    if(isFirstPath){
-			   this.resetOdometry(traj.getInitialHolonomicPose());
-			}
-		}),
-		new PPSwerveControllerCommand(
-			traj, 
-			this::getPose, // Pose supplier
-			this.kinematics, // SwerveDriveKinematics
-			new PIDController(// X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-			DriveConstants.k_XY_P,
-			DriveConstants.k_XY_I,
-			DriveConstants.k_XY_D),
-			new PIDController(// Y controller (usually the same values as X controller)
-			DriveConstants.k_XY_P,
-			DriveConstants.k_XY_I,
-			DriveConstants.k_XY_D),
-			new PIDController(// Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-			DriveConstants.k_THETA_P,
-			DriveConstants.k_THETA_I,
-			DriveConstants.k_THETA_D),
-			this::setModuleStates, // Module states consumer
-			true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-			this // Requires this drive subsystem
-			),
-			new InstantCommand(() -> this.stop())
-		);
- 	}
+    public void resetOdometryFromVision(Pose2d pose) {
+        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
+    }
+	public void displayFieldTrajectory(PathPlannerTrajectory traj) {
+		m_field.getObject("traj").setTrajectory(traj);
+	}
 	/**
 	 *  Sets the modules speed and rotation to zero.
 	 */
@@ -235,6 +193,12 @@ public Command followPPTrajectory(PathPlannerTrajectory traj, boolean isFirstPat
 		for (int i = 0; i < 4; i++) {
 			setModule(i, new SwerveModuleState(0, new Rotation2d()));
 		}
+	}
+	public void pointWheelsInward() {
+		setModule(0, new SwerveModuleState(0, Rotation2d.fromDegrees(-135)));
+		setModule(1, new SwerveModuleState(0, Rotation2d.fromDegrees(135)));
+		setModule(2, new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+		setModule(3, new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
 	}
 	public void drive(ChassisSpeeds chassisSpeeds) {
 		SwerveModuleState[] desiredStates = kinematics.toSwerveModuleStates(chassisSpeeds);
@@ -265,23 +229,21 @@ public Command followPPTrajectory(PathPlannerTrajectory traj, boolean isFirstPat
 	}
 	public void updateOdometry() {
 		odometer.updateWithTime(Timer.getFPGATimestamp(), getGyroscopeRotation(), getModulePositions());
-		m_field.setRobotPose(odometer.getEstimatedPosition());
 	}
 	public void updateOdometryWithVision(Pose2d estematedPose, double timestampSeconds) {
 		odometer.addVisionMeasurement(estematedPose, timestampSeconds);
 	}
-
 	@Override
 	public void periodic() {
 		updateOdometry();
 		if (RobotContainer.LimelightExists) {
 			LimelightValues visionData = limelight.getLimelightValues();
+			SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
 			if (visionData.isResultValid) {
-				SmartDashboard.putNumberArray("timestamps", visionData.gettimestamp());
-				m_field.setRobotPose(visionData.getbotPose());
+				updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
 			}
 		}
-		
+		m_field.setRobotPose(odometer.getEstimatedPosition());
 		
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());

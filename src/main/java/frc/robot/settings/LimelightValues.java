@@ -6,11 +6,14 @@ package frc.robot.settings;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.LimelightResults;
 
 /** Add your docs here. */
 public class LimelightValues {
+        LimelightHelpers.LimelightResults llresults;
         public boolean isResultValid;
         int numTags;
         double[] tx = new double[5];
@@ -22,8 +25,9 @@ public class LimelightValues {
         double timestamp_RIOFPGA_capture;
         double timestamp_Latency_capture;
         double timestamp_Latency_pipeline;
-        public LimelightValues(LimelightHelpers.LimelightResults llresults){
-            this.isResultValid = llresults.targetingResults.valid;
+        public LimelightValues(LimelightHelpers.LimelightResults llresults, boolean valid){
+            this.llresults = llresults;
+            this.isResultValid = valid;
             if (isResultValid) {
                 this.numTags = llresults.targetingResults.targets_Fiducials.length;
                 for (int i = 0; i < numTags; i++) {
@@ -50,6 +54,8 @@ public class LimelightValues {
                 return botPoseBlue;
             }
         }
-        public double[] gettimestamp(){
-            return new double[] {timestamp_LIMELIGHT_publish, timestamp_RIOFPGA_capture, timestamp_Latency_capture, timestamp_Latency_pipeline};}
+        public double gettimestamp(){
+            // return new double[] {Timer.getFPGATimestamp(), timestamp_LIMELIGHT_publish/1000, timestamp_RIOFPGA_capture, timestamp_Latency_capture/1000, timestamp_Latency_pipeline/1000};}
+            return Timer.getFPGATimestamp()-((llresults.targetingResults.latency_jsonParse+llresults.targetingResults.latency_pipeline+llresults.targetingResults.latency_capture)/1000);
+        }
 }

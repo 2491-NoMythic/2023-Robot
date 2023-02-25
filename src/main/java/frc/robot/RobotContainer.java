@@ -13,15 +13,6 @@ import static frc.robot.settings.Constants.PS4Driver.Z_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Z_ROTATE;
 
 import java.util.HashMap;
-import java.util.List;
-
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
-import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -31,9 +22,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Commands.Autos;
 import frc.robot.Commands.Drive;
+import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.RobotArmControl;
 import frc.robot.Commands.RunViaLimelightCommand;
@@ -66,6 +63,8 @@ public class RobotContainer {
   private SendableChooser<Command> autoChooser;
   private final PS4Controller driveController;
   private final PS4Controller opController;
+
+  private Autos autos;
   
   private RobotArmSubsystem arm;
   private RobotArmControl ControlArm;
@@ -78,6 +77,7 @@ public class RobotContainer {
   
   private SubsystemLights lightsSubsystem;
 
+  public static HashMap<String, Command> eventMap;
   public static boolean ArmExists = Preferences.getBoolean("Arm", false);
   public static boolean EndEffectorExists = Preferences.getBoolean("EndEffector", false);
   public static boolean SkiPlowExists = Preferences.getBoolean("SkiPlow", false);
@@ -100,6 +100,7 @@ public class RobotContainer {
     driveController = new PS4Controller(0);
     opController = new PS4Controller(1);
     autoChooser = new SendableChooser<>();
+    eventMap = new HashMap<>();
 
     if (ArmExists){
       ArmInst();
@@ -122,14 +123,7 @@ public class RobotContainer {
     if (LightsExists){
       LightsInst();
     }
-    
-    
-    // Set up the default command for the drivetrain.
-    // The controls are for field-oriented driving:
-    // Left stick Y axis -> Robot X movement, backward/forward
-    // Left stick X axis -> Robot Y movement, right/left
-    // Right stick Z axis -> rotation, clockwise, counterclockwise
-    // Need to invert the joystick axis
+    autoInit();
     configureBindings();
     configDashboard();
   } 
@@ -137,61 +131,25 @@ public class RobotContainer {
   private void LightsInst() {
     lightsSubsystem = new SubsystemLights(60);
   }
-
   private void DrivetrainInst(){
     drivetrain = new DrivetrainSubsystem();
+    // Set up the default command for the drivetrain.
+    // The controls are for field-oriented driving:
+    // Left stick Y axis -> Robot X movement, backward/forward
+    // Left stick X axis -> Robot Y movement, right/left
+    // Right stick Z axis -> rotation, clockwise, counterclockwise
+    // Need to invert the joystick axis
     defaultDriveCommand = new Drive(
       drivetrain,
       () -> driveController.getL1Button(),
-      () -> driveController.getR1Button(),
       () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
-      () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
-      () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE));
-      drivetrain.setDefaultCommand(defaultDriveCommand);
-      // This is just an example event map. It would be better to have a constant, global event map
-      // in your code that will be used by all path following commands.
-      HashMap<String, Command> eventMap = new HashMap<>();
-      // eventMap.put("marker1", new PrintCommand("Passed marker 1"));
-      // eventMap.put("intakeDown", new IntakeDown());
-      
-      // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
-      SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
-        drivetrain::getPose, // Pose2d supplier
-        drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
-        drivetrain.kinematics, // SwerveDriveKinematics
-      new PIDConstants(
-          DriveConstants.k_XY_P, 
-          DriveConstants.k_XY_I,
-          DriveConstants.k_XY_D), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-      new PIDConstants(
-          DriveConstants.k_THETA_P,
-          DriveConstants.k_THETA_I,
-          DriveConstants.k_THETA_D), // PID constants to correct for rotation error (used to create the rotation controller)
-          drivetrain::setModuleStates, // Module states consumer used to output to the drive subsystem
-      eventMap,
-      false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-      drivetrain // The drive subsystem. Used to properly set the requirements of path following commands
-      );
-      
-    List<PathPlannerTrajectory> pathGroup1 = PathPlanner.loadPathGroup("Forward180", new PathConstraints(3, 1.5));
-    Command Forward180 = autoBuilder.fullAuto(pathGroup1);
-    List<PathPlannerTrajectory> pathGroup2 = PathPlanner.loadPathGroup("1 cone auto", new PathConstraints(3, 1.5));
-    Command coneAuto = autoBuilder.fullAuto(pathGroup2);
-    List<PathPlannerTrajectory> pathGroup3 = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));
-    Command coolCircle = autoBuilder.fullAuto(pathGroup3);
-    List<PathPlannerTrajectory> pathGroup4 = PathPlanner.loadPathGroup("test auto", new PathConstraints(4, 4));
-    Command testAuto = autoBuilder.fullAuto(pathGroup4);
-    SmartDashboard.putData("Forward180", autoBuilder.fullAuto(pathGroup1));
-    SmartDashboard.putData("coneAuto", autoBuilder.fullAuto(pathGroup2));
-    SmartDashboard.putData("coolCircle", autoBuilder.fullAuto(pathGroup3));
-    SmartDashboard.putData("testAuto", autoBuilder.fullAuto(pathGroup4));
-    autoChooser.setDefaultOption("Forward180", Forward180);
-    autoChooser.addOption("coneAuto", coneAuto);
-    autoChooser.addOption("coolCircle", coolCircle);
-    autoChooser.addOption("testAuto", testAuto);
-    }
+      () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
+    drivetrain.setDefaultCommand(defaultDriveCommand);
+    SmartDashboard.putNumber("Robot origin x", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getX());
+    SmartDashboard.putNumber("Robot origin y", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getY());
+    SmartDashboard.putNumber("Robot origin rot", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getRotation().getDegrees());
+  }
   private void ArmInst(){
     arm = new RobotArmSubsystem();
     ControlArm = new RobotArmControl(arm);
@@ -216,12 +174,30 @@ public class RobotContainer {
     llmotor.setDefaultCommand(defaultllmotorCommand);
   }
   
-  
-  
-  
-  private void configDashboard() {
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+  private void autoInit() {
+    autos = Autos.getInstance();
+    if (DrivetrainExists) {
+      eventMap.put("marker1", new PrintCommand("Passed marker 1"));
+      eventMap.put("marker2", new PrintCommand("Passed marker 2"));
+      if (SkiPlowExists) {
+        eventMap.put("IntakeDown", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonDown, skiPlow), new WaitCommand(0.75)));
+        eventMap.put("IntakeUp", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonUp, skiPlow), new WaitCommand(0.5)));
+        // eventMap.put("skiPlowLock", TODO add command);
+      }
+      if (LightsExists) {
+        // eventMap.put("TODO add command", TODO add command);
+        // eventMap.put("TODO add command", TODO add command);
+      }
+      if (ArmExists) {
+        // eventMap.put("armPoint1", TODO add command);
+        // eventMap.put("armPoint2", TODO add command);
+      }
+      autos.autoInit(autoChooser, eventMap, drivetrain);
+      SmartDashboard.putData(autoChooser);
+    }
   }
+  
+  private void configDashboard() {}
   /**Takes both axis of a joystick, returns an angle from -180 to 180 degrees, or {@link Constants.PS4Driver.NO_INPUT} (double = 404.0) if the joystick is at rest position*/
   private double getJoystickDegrees(int horizontalAxis, int verticalAxis) {
     double xAxis = MathUtil.applyDeadband(-driveController.getRawAxis(horizontalAxis), DEADBAND_LARGE);
@@ -248,13 +224,17 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    // Schedule `exampleMethodCommand` when the Xbox driveController's B button is pressed,
-    // cancelling on release.
-      if (DrivetrainExists){
-        new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
-        //new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() -> this.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
-      }
+    if (DrivetrainExists) {
+      new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
+      new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() ->
+          autos.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+      new Trigger(driveController::getCrossButton).onTrue(Commands.runOnce(drivetrain::pointWheelsInward, drivetrain));
+      new Trigger(driveController::getR1Button).whileTrue(new DriveRotateToAngleCommand(drivetrain,
+          () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+          () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+          () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
+          () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
+    }
       if (LightsExists){
         new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(29, 59, 200, 30, 30);}, lightsSubsystem));
         new Trigger(driveController::getSquareButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 39, 0, 0, 100);}, lightsSubsystem));
@@ -277,7 +257,6 @@ public class RobotContainer {
     return value;
   }
   public void robotInit() {
-    PathPlannerServer.startServer(5811);
     if(DrivetrainExists){
       drivetrain.zeroGyroscope();
     }
@@ -289,15 +268,5 @@ public class RobotContainer {
   }
   public void teleopPeriodic() {
     SmartDashboard.putNumber("Match Timer", Timer.getMatchTime());
-  }
-  public void moveToPose(Pose2d targetPose) {
- 		Pose2d currentPose = drivetrain.getPose();
-		PathPlannerTrajectory newTraj = PathPlanner.generatePath(
-				new PathConstraints(3, 1.5),
-        new PathPoint(currentPose.getTranslation(), currentPose.relativeTo(targetPose).getTranslation().getAngle(), currentPose.getRotation()),
-				new PathPoint(targetPose.getTranslation(), currentPose.relativeTo(targetPose).getTranslation().getAngle(), targetPose.getRotation()));
-		Command followTraj = drivetrain.followPPTrajectory(newTraj, false);
-    drivetrain.m_field.getObject("traj").setTrajectory(newTraj);
-		followTraj.schedule();
   }
 }

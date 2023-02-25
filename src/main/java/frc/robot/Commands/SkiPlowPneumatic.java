@@ -28,17 +28,14 @@ public class SkiPlowPneumatic extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(opController.getL2Button()) {
-      skiplow.pistonDownLeft();
-    }else{skiplow.pistonUpLeft();}
 
-    if(opController.getR2Button()) {
-      skiplow.pistonDownRight();}
-    else{skiplow.pistonUpRight();}
+    if(opController.getL2Button()||opController.getR2Button()) {
+      skiplow.pistonDown();}
+    else skiplow.pistonUp();
 
     if(opController.getCrossButton()) {
       skiplow.lockOn();}
-    else{skiplow.lockOff();} 
+    else skiplow.lockOff(); 
       
   }
 

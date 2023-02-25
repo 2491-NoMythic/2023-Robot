@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -23,6 +24,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 public final class Autos {
     private DrivetrainSubsystem drivetrain;
     private static SwerveAutoBuilder autoBuilder;
+    private HashMap<String, Command> eventMap;
 
     private static Autos autos;
 
@@ -38,6 +40,7 @@ public final class Autos {
 
     public void autoInit(SendableChooser<Command> autoChooser, HashMap<String, Command> eventMap, DrivetrainSubsystem drivetrain) {
         this.drivetrain = drivetrain;
+        this.eventMap = eventMap;
         // Create the AutoBuilder. This only needs to be created once when robot code
         // starts, not every time you want to create an auto command. A good place to
         // put this is in RobotContainer along with your subsystems.
@@ -62,9 +65,10 @@ public final class Autos {
                 drivetrain // The drive subsystem. Used to properly set the requirements of path following
                            // commands
         );
-        // add autos to smart dashboard.
+        // add autos to smart dashboard.\
+        autoChooser.addOption("intakeDown", null);
         autoChooser.addOption("forward180", autoBuilder.fullAuto(forward180Path));
-        autoChooser.addOption("1coneAuto", autoBuilder.fullAuto(oneConeAutoPath));
+        autoChooser.addOption("score2balance", autoBuilder.fullAuto(score2balance));
         autoChooser.addOption("coolCircle", autoBuilder.fullAuto(coolCirclePath));
     }
 
@@ -78,22 +82,25 @@ public final class Autos {
         drivetrain.displayFieldTrajectory(newTraj);
         return new SequentialCommandGroup(
                 autoBuilder.followPathWithEvents(newTraj),
-                new InstantCommand(() -> drivetrain.stop()));
+                new InstantCommand(() -> drivetrain.stop(), drivetrain));
     }
-
+    public CommandBase intakeDown() {
+        return new SequentialCommandGroup(eventMap.get("IntakeDown"), eventMap.get("IntakeUp"));
+    }
+    public CommandBase score2balance() {
+        return new SequentialCommandGroup(
+            autoBuilder.fullAuto(score2balance),
+            //new DriveBalanceCommand(drivetrain),
+            new RunCommand(drivetrain::pointWheelsInward, drivetrain));
+    }
     public CommandBase forward180() {
         return autoBuilder.fullAuto(forward180Path);
     }
-
-    public CommandBase oneConeAuto() {
-        return autoBuilder.fullAuto(oneConeAutoPath);
-    }
-
     public CommandBase coolCircle() {
         return autoBuilder.fullAuto(coolCirclePath);
     }
     // load all paths.
+    static List<PathPlannerTrajectory> score2balance = PathPlanner.loadPathGroup("Score2Balance", new PathConstraints(2, 1.5));
     static List<PathPlannerTrajectory> forward180Path = PathPlanner.loadPathGroup("forward 180", new PathConstraints(3, 1.5));
-    static List<PathPlannerTrajectory> oneConeAutoPath = PathPlanner.loadPathGroup("Score2Balance", new PathConstraints(2, 1.5));
     static List<PathPlannerTrajectory> coolCirclePath = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));
 }

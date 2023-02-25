@@ -100,7 +100,7 @@ public final class Autos {
         return autoBuilder.fullAuto(coolCirclePath);
     }
     // load all paths.
-    static List<PathPlannerTrajectory> score2balance = PathPlanner.loadPathGroup("Score2Balance", new PathConstraints(2, 1.5));
+    static List<PathPlannerTrajectory> score2balance = PathPlanner.loadPathGroup("Score2Balance", new PathConstraints(2.5, 1.5));
     static List<PathPlannerTrajectory> forward180Path = PathPlanner.loadPathGroup("forward 180", new PathConstraints(3, 1.5));
     static List<PathPlannerTrajectory> coolCirclePath = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));
 }

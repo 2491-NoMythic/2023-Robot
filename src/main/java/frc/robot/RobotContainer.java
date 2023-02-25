@@ -228,6 +228,7 @@ public class RobotContainer {
       new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
       new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() ->
           autos.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+      new Trigger(driveController::getCrossButton).onTrue(Commands.runOnce(drivetrain::pointWheelsInward, drivetrain));
       new Trigger(driveController::getR1Button).whileTrue(new DriveRotateToAngleCommand(drivetrain,
           () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
           () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),

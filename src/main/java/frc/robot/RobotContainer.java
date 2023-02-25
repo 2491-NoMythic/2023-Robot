@@ -22,7 +22,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Autos;
@@ -157,8 +160,8 @@ public class RobotContainer {
   }
   private void SkiPlowInst(){
     skiPlow = new SkiPlow();
-    skiPlow.setDefaultCommand(skiplowcommand);  
     skiplowcommand = new SkiPlowPneumatic(skiPlow, opController);
+    skiPlow.setDefaultCommand(skiplowcommand);  
   }
   private void LimelightInst(){
     limelight = Limelight.getInstance();
@@ -176,8 +179,8 @@ public class RobotContainer {
       eventMap.put("marker1", new PrintCommand("Passed marker 1"));
       eventMap.put("marker2", new PrintCommand("Passed marker 2"));
       if (SkiPlowExists) {
-        // eventMap.put("skiPlowDown", TODO add command);
-        // eventMap.put("skiPlowUp", TODO add command);
+        eventMap.put("IntakeDown", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonDown, skiPlow), new WaitCommand(0.75)));
+        eventMap.put("IntakeUp", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonUp, skiPlow), new WaitCommand(0.5)));
         // eventMap.put("skiPlowLock", TODO add command);
       }
       if (LightsExists) {

@@ -15,7 +15,6 @@ public class EndEffectorCommand extends CommandBase {
   public PS4Controller opController;
   public EndEffectorCommand(EndEffector effector, PS4Controller opController) {
     addRequirements(effector);
-    this.opController = opController;
     this.endEffector = effector;
     // Use addRequirements() here to declare subsystem dependencies.
   }

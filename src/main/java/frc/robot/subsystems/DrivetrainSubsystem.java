@@ -37,8 +37,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -159,12 +157,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		new Rotation2d();
 		odometer.resetPosition(Rotation2d.fromDegrees(angleDeg), getModulePositions(), new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(angleDeg)));
 	}
-
-	public Rotation2d getGyroscopeRotation() {
+	public Rotation2d getGyroscopeRotation() {//todo make continuous vs not continuous versions
 		return pigeon.getRotation2d();
-	}
-	public Rotation2d getGyroscopePitch() {
-		return Rotation2d.fromDegrees(pigeon.getPitch().getValue());
 	}
 	public SwerveModulePosition[] getModulePositions() {
 		SwerveModulePosition[] positions = new SwerveModulePosition[4];
@@ -246,12 +240,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			LimelightValues visionData = limelight.getLimelightValues();
 			SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
 			if (visionData.isResultValid) {
-				m_field.setRobotPose(visionData.getbotPose());
-
-				// updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
+				updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
 			}
 		}
-		// m_field.setRobotPose(odometer.getEstimatedPosition());
+		m_field.setRobotPose(odometer.getEstimatedPosition());
 		
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());

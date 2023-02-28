@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+
 import static frc.robot.settings.Constants.PS4Driver.DEADBAND_LARGE;
 import static frc.robot.settings.Constants.PS4Driver.DEADBAND_NORMAL;
 import static frc.robot.settings.Constants.PS4Driver.NO_INPUT;
@@ -11,6 +12,7 @@ import static frc.robot.settings.Constants.PS4Driver.X_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Y_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Z_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Z_ROTATE;
+
 
 import java.util.HashMap;
 
@@ -26,10 +28,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Autos;
+
+import frc.robot.Commands.DriveBalanceCommand;
 import frc.robot.Commands.Drive;
+import frc.robot.Commands.DriveOffsetCenterCommand;
 import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.RobotArmControl;
@@ -45,7 +51,12 @@ import frc.robot.subsystems.RobotArmSubsystem;
 import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.subsystems.SkiPlow;
 import frc.robot.subsystems.SubsystemLights;
+<<<<<<< HEAD
 import frc.robot.Commands.PurpleLights;
+=======
+import frc.robot.subsystems.SkiPlow;
+
+>>>>>>> 855995d7a13f465e84e9b7b56fd3d7029c33000e
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -228,6 +239,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+
     if (DrivetrainExists) {
       new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
       new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() ->
@@ -238,6 +250,12 @@ public class RobotContainer {
           () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
           () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
           () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
+      // new Trigger(controller::getSquareButton).whileTrue(new DriveBalanceCommand(
+      //   drivetrain,
+      //   () -> modifyAxis(-controller.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      //   () -> modifyAxis(-controller.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
+      //   () -> getJoystickDegrees(Z_AXIS, Z_ROTATE)));
+      
     }
       if (LightsExists){
         new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(29, 51, 200, 30, 30);}, lightsSubsystem));

@@ -29,21 +29,27 @@ public class SkiPlowPneumatic extends CommandBase {
   @Override
   public void execute() {
     if(opController.getCrossButton()) {
-      skiplow.pistonDownRight();
+      skiplow.pistonDown();
     }
     if(opController.getCircleButton()) {
-      skiplow.pistonUpRight();
+      skiplow.pistonUp();
     }
     if(opController.getSquareButton()) {
-      skiplow.pistonDownLeft();
+      skiplow.pistonDown();
     }
     if(opController.getTriangleButton()) {
-      skiplow.pistonUpLeft();
+      skiplow.pistonUp();
     }
     if(opController.getR2Button()) {
       skiplow.lockOn();}
     else{skiplow.lockOff();} 
-      
+    //if(opController.getL2Button()||opController.getR2Button()) {
+    //  skiplow.pistonDown();}
+    //else skiplow.pistonUp();
+
+    //if(opController.getCrossButton()) {
+    //  skiplow.lockOn();}
+    //else skiplow.lockOff(); 
   }
 
   // Called once the command ends or is interrupted.

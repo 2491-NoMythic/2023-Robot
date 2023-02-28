@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;public class SubsystemLights e
   public void setLights(int start, int end, int R, int G, int B){
     for(int i = start; i < end; i++){
       setOneLightRGB(i, R, G, B);
-      System.out.println("light changed");
     }
   } 
   public void lightsOut() {

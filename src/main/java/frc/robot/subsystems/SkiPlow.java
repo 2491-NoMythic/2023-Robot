@@ -18,23 +18,31 @@ public class SkiPlow extends SubsystemBase {
     skiPlowRightPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 4);
     skiPlowDoublePCMLock = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
   }
-  public void pistonUpLeft() {
-    skiPlowLeftPCM.set(false);
-  }
-  public void pistonUpRight() {
-    skiPlowRightPCM.set(false);
-  }
-  public void pistonDownLeft() {
-    skiPlowLeftPCM.set(true);
-  }
-  public void pistonDownRight() {
-    skiPlowRightPCM.set(true);
-  }
+  // public void pistonUpLeft() {
+  //   skiPlowLeftPCM.set(false);
+  // }
+  // public void pistonUpRight() {
+  //   skiPlowRightPCM.set(false);
+  // }
+  // public void pistonDownLeft() {
+  //   skiPlowLeftPCM.set(true);
+  // }
+  // public void pistonDownRight() {
+  //   skiPlowRightPCM.set(true);
+  // }
   public void lockOn() {
     skiPlowDoublePCMLock.set(true);
   }
   public void lockOff() {
     skiPlowDoublePCMLock.set(false);
+  }
+  public void pistonUp() {
+    skiPlowLeftPCM.set(false);
+    skiPlowRightPCM.set(false);
+  }
+  public void pistonDown() {
+    skiPlowLeftPCM.set(true);
+    skiPlowRightPCM.set(true);
   }
 
   @Override

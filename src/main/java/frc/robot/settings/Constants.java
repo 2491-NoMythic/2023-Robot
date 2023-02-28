@@ -61,8 +61,8 @@ public final class Constants {
       OMARIAHN(0.271973),
       PHEOBE(-0.245850),
       ROYCE(-0.003174),
-      ROWAN(-0.108398),
-      QUINN(-0.144287),
+      ROWAN(0.391602),
+      QUINN(0.355713),
       LIAM(0);
       private double offset;
       Offsets(double value) {
@@ -79,12 +79,12 @@ public final class Constants {
      * The left-to-right distance between the drivetrain wheels
      * Should be measured from center to center.
      */
-    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.4953;
+    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.52705;
     /**
      * The front-to-back distance between the drivetrain wheels.
      * Should be measured from center to center.
      */
-    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4953;
+    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.52705;
 
     /**
      * The diameter of the module's wheel in meters.

@@ -45,6 +45,7 @@ import frc.robot.subsystems.RobotArmSubsystem;
 import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.subsystems.SkiPlow;
 import frc.robot.subsystems.SubsystemLights;
+import frc.robot.Commands.PurpleLights;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -66,7 +67,7 @@ public class RobotContainer {
 
   private Autos autos;
   
-  private RobotArmSubsystem arm;
+  private RobotArmSubsystem arm = new RobotArmSubsystem();
   private RobotArmControl ControlArm;
   
   private EndEffectorCommand endEffectorCommand;
@@ -129,7 +130,9 @@ public class RobotContainer {
   } 
   
   private void LightsInst() {
-    lightsSubsystem = new SubsystemLights(60);
+    lightsSubsystem = new SubsystemLights(52);
+    PurpleLights defaultLights = new PurpleLights(lightsSubsystem);
+    lightsSubsystem.setDefaultCommand(defaultLights);
   }
   private void DrivetrainInst(){
     drivetrain = new DrivetrainSubsystem();
@@ -150,6 +153,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("Robot origin y", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getY());
     SmartDashboard.putNumber("Robot origin rot", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getRotation().getDegrees());
   }
+
   private void ArmInst(){
     arm = new RobotArmSubsystem();
     ControlArm = new RobotArmControl(arm);
@@ -236,10 +240,14 @@ public class RobotContainer {
           () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
     }
       if (LightsExists){
-        new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(29, 59, 200, 30, 30);}, lightsSubsystem));
-        new Trigger(driveController::getSquareButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 39, 0, 0, 100);}, lightsSubsystem));
-        new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 59, 0, 0, 0);}, lightsSubsystem));
+        new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(29, 51, 200, 30, 30);}, lightsSubsystem));
+        new Trigger(driveController::getSquareButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 51, 0, 0, 100);}, lightsSubsystem));
+        new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 51, 0, 0, 0);}, lightsSubsystem));
       }
+      new Trigger(opController::getL1Button).onTrue(Commands.runOnce(()-> {arm.setShoulderPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setShoulderPower(0);}, arm));
+      new Trigger(opController::getL2Button).onTrue(Commands.runOnce(()-> {arm.setShoulderPower(0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setShoulderPower(0);}, arm));
+      new Trigger(opController::getShareButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
+      new Trigger(opController::getOptionsButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

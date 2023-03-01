@@ -239,14 +239,16 @@ public class RobotContainer {
           () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
           () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
     }
-      if (LightsExists){
+    if (LightsExists){
         new Trigger(opController::getTriangleButton).whileTrue(Commands.run(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 51, 100, 64, 0);}, lightsSubsystem));
         new Trigger(opController::getSquareButton).whileTrue(Commands.run(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 51, 0, 0, 100);}, lightsSubsystem));
-      }
+    }
+    if (ArmExists) {    
       new Trigger(opController::getL1Button).onTrue(Commands.runOnce(()-> {arm.setShoulderPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setShoulderPower(0);}, arm));
       new Trigger(opController::getL2Button).onTrue(Commands.runOnce(()-> {arm.setShoulderPower(0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setShoulderPower(0);}, arm));
       new Trigger(opController::getShareButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
       new Trigger(opController::getOptionsButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
+    }
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

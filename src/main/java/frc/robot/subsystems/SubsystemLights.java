@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;public class SubsystemLights e
     }
   } 
   public void lightsOut() {
-    for(int i = 0; i < 60; i++) {
+    for(int i = 0; i < LEDBuffer.getLength(); i++) {
       setOneLightRGB(i, 0, 0, 0);
     }
   }

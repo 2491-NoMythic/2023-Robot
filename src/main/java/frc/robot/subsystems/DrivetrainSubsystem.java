@@ -220,7 +220,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 */
 	public void stop() {
 		for (int i = 0; i < 4; i++) {
-			setModule(i, new SwerveModuleState(0, lastAngles[i]));
+			modules[i].stop();
 		}
 	}
 	public void setModuleStates(SwerveModuleState[] desiredStates) {

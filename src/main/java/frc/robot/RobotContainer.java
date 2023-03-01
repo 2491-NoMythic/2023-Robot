@@ -154,6 +154,7 @@ public class RobotContainer {
       () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
     drivetrain.setDefaultCommand(defaultDriveCommand);
+    SmartDashboard.putData(drivetrain);
     SmartDashboard.putNumber("Robot origin x", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getX());
     SmartDashboard.putNumber("Robot origin y", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getY());
     SmartDashboard.putNumber("Robot origin rot", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getRotation().getDegrees());
@@ -243,11 +244,9 @@ public class RobotContainer {
           () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
           () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
           () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
-      // new Trigger(controller::getSquareButton).whileTrue(new DriveBalanceCommand(
-      //   drivetrain,
-      //   () -> modifyAxis(-controller.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-      //   () -> modifyAxis(-controller.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
-      //   () -> getJoystickDegrees(Z_AXIS, Z_ROTATE)));
+      new Trigger(driveController::getSquareButton).whileTrue(new DriveBalanceCommand(
+        drivetrain))
+        ;
       
     }
       if (LightsExists){

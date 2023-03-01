@@ -66,11 +66,11 @@ public final class Autos {
                            // commands
         );
         // add autos to smart dashboard.\
-        autoChooser.addOption("intakeDown", null);
-        autoChooser.addOption("forward180", autoBuilder.fullAuto(forward180Path));
-        autoChooser.addOption("score2balance", autoBuilder.fullAuto(N2Score2Bal));
-        autoChooser.addOption("score1balance", autoBuilder.fullAuto(Score1Bal));
-        autoChooser.addOption("coolCircle", autoBuilder.fullAuto(coolCirclePath));
+        // autoChooser.addOption("intakeDown", intakeDown());
+        autoChooser.addOption("forward180", forward180());
+        autoChooser.addOption("score2balance", N2Score2Bal());
+        autoChooser.addOption("score1balance", score1Bal());
+        autoChooser.addOption("coolCircle", coolCircle());
     }
 
     public CommandBase moveToPose(Pose2d targetPose) {
@@ -85,9 +85,9 @@ public final class Autos {
                 autoBuilder.followPathWithEvents(newTraj),
                 new InstantCommand(() -> drivetrain.stop(), drivetrain));
     }
-    public CommandBase intakeDown() {
-        return new SequentialCommandGroup(eventMap.get("IntakeDown"), eventMap.get("IntakeUp"));
-    }
+    // public CommandBase intakeDown() {
+        // return new SequentialCommandGroup(eventMap.get("IntakeDown"), eventMap.get("IntakeUp"));
+    // }
     public CommandBase N2Score2Bal() {
         return new SequentialCommandGroup(
             new InstantCommand(drivetrain::zeroGyroscope, drivetrain),

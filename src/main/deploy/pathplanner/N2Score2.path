@@ -117,7 +117,8 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "IntakeUp"
+          "IntakeUp",
+          "stop"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",

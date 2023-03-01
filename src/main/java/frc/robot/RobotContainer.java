@@ -18,6 +18,7 @@ import java.util.HashMap;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -188,6 +189,7 @@ public class RobotContainer {
     if (DrivetrainExists) {
       eventMap.put("marker1", new PrintCommand("Passed marker 1"));
       eventMap.put("marker2", new PrintCommand("Passed marker 2"));
+      eventMap.put("stop", new InstantCommand(drivetrain::stop, drivetrain));
       if (SkiPlowExists) {
         eventMap.put("IntakeDown", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonDown, skiPlow), new WaitCommand(0.75)));
         eventMap.put("IntakeUp", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonUp, skiPlow), new WaitCommand(0.5)));
@@ -244,6 +246,13 @@ public class RobotContainer {
           () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
           () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
           () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
+      new Trigger(driveController::getR2Button).whileTrue(new DriveOffsetCenterCommand(
+        drivetrain,
+        () -> driveController.getL1Button(),
+        () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+        () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+        () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL), 
+        new Translation2d(1,0)));
       new Trigger(driveController::getSquareButton).whileTrue(new DriveBalanceCommand(
         drivetrain))
         ;

@@ -39,6 +39,7 @@ import frc.robot.Commands.Drive;
 import frc.robot.Commands.DriveOffsetCenterCommand;
 import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.EndEffectorCommand;
+import frc.robot.Commands.PurpleLights;
 import frc.robot.Commands.RobotArmControl;
 import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.Commands.SkiPlowPneumatic;

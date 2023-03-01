@@ -246,12 +246,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			LimelightValues visionData = limelight.getLimelightValues();
 			SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
 			if (visionData.isResultValid) {
-				m_field.setRobotPose(visionData.getbotPose());
+				// m_field.setRobotPose(visionData.getbotPose());
 
 				// updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
 			}
 		}
-		// m_field.setRobotPose(odometer.getEstimatedPosition());
+		m_field.setRobotPose(odometer.getEstimatedPosition());
 		
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());

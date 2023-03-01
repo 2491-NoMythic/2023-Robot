@@ -60,7 +60,7 @@ public final class Autos {
                                                    // rotation controller)
                 drivetrain::setModuleStates, // Module states consumer used to output to the drive subsystem
                 eventMap,
-                false, // Should the path be automatically mirrored depending on alliance color.
+                true, // Should the path be automatically mirrored depending on alliance color.
                        // Optional, defaults to true
                 drivetrain // The drive subsystem. Used to properly set the requirements of path following
                            // commands

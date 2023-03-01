@@ -24,11 +24,10 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;public class SubsystemLights e
   public void setLights(int start, int end, int R, int G, int B){
     for(int i = start; i < end; i++){
       setOneLightRGB(i, R, G, B);
-      System.out.println("light changed");
     }
   } 
   public void lightsOut() {
-    for(int i = 0; i < 60; i++) {
+    for(int i = 0; i < LEDBuffer.getLength(); i++) {
       setOneLightRGB(i, 0, 0, 0);
     }
   }

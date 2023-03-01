@@ -138,7 +138,9 @@ public class RobotContainer {
   } 
   
   private void LightsInst() {
-    lightsSubsystem = new SubsystemLights(60);
+    lightsSubsystem = new SubsystemLights(52);
+    PurpleLights defaultLights = new PurpleLights(lightsSubsystem);
+    lightsSubsystem.setDefaultCommand(defaultLights);
   }
   private void DrivetrainInst(){
     drivetrain = new DrivetrainSubsystem();
@@ -258,11 +260,16 @@ public class RobotContainer {
         ;
       
     }
-      if (LightsExists){
-        new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(29, 59, 200, 30, 30);}, lightsSubsystem));
-        new Trigger(driveController::getSquareButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 39, 0, 0, 100);}, lightsSubsystem));
-        new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 59, 0, 0, 0);}, lightsSubsystem));
-      }
+    if (LightsExists){
+        new Trigger(opController::getTriangleButton).whileTrue(Commands.run(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 51, 100, 64, 0);}, lightsSubsystem));
+        new Trigger(opController::getSquareButton).whileTrue(Commands.run(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 51, 0, 0, 100);}, lightsSubsystem));
+    }
+    if (ArmExists) {    
+      new Trigger(opController::getL1Button).onTrue(Commands.runOnce(()-> {arm.setShoulderPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setShoulderPower(0);}, arm));
+      new Trigger(opController::getL2Button).onTrue(Commands.runOnce(()-> {arm.setShoulderPower(0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setShoulderPower(0);}, arm));
+      new Trigger(opController::getShareButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
+      new Trigger(opController::getOptionsButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
+    }
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

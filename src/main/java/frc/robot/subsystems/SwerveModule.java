@@ -210,7 +210,8 @@ public class SwerveModule {
   }
 
   public void stop() {
-
+    m_driveMotor.setControl(m_neutralControl);
+    m_steerMotor.setControl(m_neutralControl);
   }
   /**
    * Sets the desired state for the module.

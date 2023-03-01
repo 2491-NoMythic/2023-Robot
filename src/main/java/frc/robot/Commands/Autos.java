@@ -60,16 +60,17 @@ public final class Autos {
                                                    // rotation controller)
                 drivetrain::setModuleStates, // Module states consumer used to output to the drive subsystem
                 eventMap,
-                false, // Should the path be automatically mirrored depending on alliance color.
+                true, // Should the path be automatically mirrored depending on alliance color.
                        // Optional, defaults to true
                 drivetrain // The drive subsystem. Used to properly set the requirements of path following
                            // commands
         );
         // add autos to smart dashboard.\
-        autoChooser.addOption("intakeDown", null);
-        autoChooser.addOption("forward180", autoBuilder.fullAuto(forward180Path));
-        autoChooser.addOption("score2balance", autoBuilder.fullAuto(score2balance));
-        autoChooser.addOption("coolCircle", autoBuilder.fullAuto(coolCirclePath));
+        // autoChooser.addOption("intakeDown", intakeDown());
+        autoChooser.addOption("forward180", forward180());
+        autoChooser.addOption("score2balance", N2Score2Bal());
+        autoChooser.addOption("score1balance", score1Bal());
+        autoChooser.addOption("coolCircle", coolCircle());
     }
 
     public CommandBase moveToPose(Pose2d targetPose) {
@@ -84,23 +85,36 @@ public final class Autos {
                 autoBuilder.followPathWithEvents(newTraj),
                 new InstantCommand(() -> drivetrain.stop(), drivetrain));
     }
-    public CommandBase intakeDown() {
-        return new SequentialCommandGroup(eventMap.get("IntakeDown"), eventMap.get("IntakeUp"));
-    }
-    public CommandBase score2balance() {
+    // public CommandBase intakeDown() {
+        // return new SequentialCommandGroup(eventMap.get("IntakeDown"), eventMap.get("IntakeUp"));
+    // }
+    public CommandBase N2Score2Bal() {
         return new SequentialCommandGroup(
-            autoBuilder.fullAuto(score2balance),
-            //new DriveBalanceCommand(drivetrain),
-            new RunCommand(drivetrain::pointWheelsInward, drivetrain));
+            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            autoBuilder.fullAuto(N2Score2Bal),
+            new DriveBalanceCommand(drivetrain),
+            new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
+    }
+    public CommandBase score1Bal() {
+        return new SequentialCommandGroup(
+            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            autoBuilder.fullAuto(Score1Bal),
+            new DriveBalanceCommand(drivetrain),
+            new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
     public CommandBase forward180() {
-        return autoBuilder.fullAuto(forward180Path);
+        return new SequentialCommandGroup(
+            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            autoBuilder.fullAuto(forward180Path));
     }
     public CommandBase coolCircle() {
-        return autoBuilder.fullAuto(coolCirclePath);
+        return new SequentialCommandGroup(
+            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            autoBuilder.fullAuto(coolCirclePath));
     }
     // load all paths.
-    static List<PathPlannerTrajectory> score2balance = PathPlanner.loadPathGroup("Score2Balance", new PathConstraints(2, 1.5));
+    static List<PathPlannerTrajectory> N2Score2Bal = PathPlanner.loadPathGroup("N2Score2Bal", new PathConstraints(4, 2.5));
+    static List<PathPlannerTrajectory> Score1Bal = PathPlanner.loadPathGroup("Score1Bal", new PathConstraints(2.5, 1.5));
     static List<PathPlannerTrajectory> forward180Path = PathPlanner.loadPathGroup("forward 180", new PathConstraints(3, 1.5));
     static List<PathPlannerTrajectory> coolCirclePath = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));
 }

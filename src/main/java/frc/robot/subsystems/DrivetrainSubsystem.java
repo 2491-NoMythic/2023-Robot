@@ -37,6 +37,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -157,8 +159,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		new Rotation2d();
 		odometer.resetPosition(Rotation2d.fromDegrees(angleDeg), getModulePositions(), new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(angleDeg)));
 	}
-	public Rotation2d getGyroscopeRotation() {//todo make continuous vs not continuous versions
+
+	public Rotation2d getGyroscopeRotation() {
 		return pigeon.getRotation2d();
+	}
+	public Rotation2d getGyroscopePitch() {
+		return Rotation2d.fromDegrees(pigeon.getPitch().getValue());
 	}
 	public SwerveModulePosition[] getModulePositions() {
 		SwerveModulePosition[] positions = new SwerveModulePosition[4];
@@ -214,7 +220,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 */
 	public void stop() {
 		for (int i = 0; i < 4; i++) {
-			setModule(i, new SwerveModuleState(0, lastAngles[i]));
+			modules[i].stop();
 		}
 	}
 	public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -240,7 +246,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			LimelightValues visionData = limelight.getLimelightValues();
 			SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
 			if (visionData.isResultValid) {
-				updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
+				// m_field.setRobotPose(visionData.getbotPose());
+
+				// updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
 			}
 		}
 		m_field.setRobotPose(odometer.getEstimatedPosition());

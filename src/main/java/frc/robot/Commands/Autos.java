@@ -67,9 +67,13 @@ public final class Autos {
         );
         // add autos to smart dashboard.\
         // autoChooser.addOption("intakeDown", intakeDown());
-        autoChooser.addOption("forward180", forward180());
-        autoChooser.addOption("score2balance", N2Score2Bal());
+        autoChooser.addOption("N2score2balance", N2Score2Bal());
+        autoChooser.addOption("N2score2", N2Score2());
+        autoChooser.addOption("N8score2balance", N8Score2Bal());
+        autoChooser.addOption("N8score2", N8Score2());
         autoChooser.addOption("score1balance", score1Bal());
+        autoChooser.addOption("score1Taxi", score1Taxi());
+        autoChooser.addOption("forward180", forward180());
         autoChooser.addOption("coolCircle", coolCircle());
     }
 
@@ -95,11 +99,36 @@ public final class Autos {
             new DriveBalanceCommand(drivetrain),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
+    public CommandBase N2Score2() {
+        return new SequentialCommandGroup(
+            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            autoBuilder.fullAuto(N2Score2),
+            new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
+    }
+    public CommandBase N8Score2Bal() {
+        return new SequentialCommandGroup(
+            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            autoBuilder.fullAuto(N8Score2Bal),
+            new DriveBalanceCommand(drivetrain),
+            new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
+    }
+    public CommandBase N8Score2() {
+        return new SequentialCommandGroup(
+            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            autoBuilder.fullAuto(N8Score2),
+            new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
+    }
     public CommandBase score1Bal() {
         return new SequentialCommandGroup(
             new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(Score1Bal),
             new DriveBalanceCommand(drivetrain),
+            new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
+    }
+    public CommandBase score1Taxi() {
+        return new SequentialCommandGroup(
+            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            autoBuilder.fullAuto(Score1Taxi),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
     public CommandBase forward180() {
@@ -114,7 +143,14 @@ public final class Autos {
     }
     // load all paths.
     static List<PathPlannerTrajectory> N2Score2Bal = PathPlanner.loadPathGroup("N2Score2Bal", new PathConstraints(4, 2.5));
+    static List<PathPlannerTrajectory> N2Score2 = PathPlanner.loadPathGroup("N2Score2", new PathConstraints(4, 2.5));
+
+    static List<PathPlannerTrajectory> N8Score2Bal = PathPlanner.loadPathGroup("N8Score2Bal", new PathConstraints(4, 2.5));
+    static List<PathPlannerTrajectory> N8Score2 = PathPlanner.loadPathGroup("N8Score2", new PathConstraints(4, 2.5));
+
+    static List<PathPlannerTrajectory> Score1Taxi = PathPlanner.loadPathGroup("Score1Taxi", new PathConstraints(2.5, 1.5));
     static List<PathPlannerTrajectory> Score1Bal = PathPlanner.loadPathGroup("Score1Bal", new PathConstraints(2.5, 1.5));
+
     static List<PathPlannerTrajectory> forward180Path = PathPlanner.loadPathGroup("forward 180", new PathConstraints(3, 1.5));
     static List<PathPlannerTrajectory> coolCirclePath = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));
 }

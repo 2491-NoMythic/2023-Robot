@@ -212,7 +212,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SwerveModuleState[] desiredStates = kinematics.toSwerveModuleStates(chassisSpeeds);
 		double maxSpeed = Collections.max(Arrays.asList(desiredStates)).speedMetersPerSecond;
 		if (maxSpeed <= DriveConstants.DRIVE_DEADBAND_MPS) {
-			stop();
+			for (int i = 0; i < 4; i++) {
+				stop();
+			}
 		} else {
 			setModuleStates(desiredStates);
 		}
@@ -222,7 +224,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 */
 	public void stop() {
 		for (int i = 0; i < 4; i++) {
-			modules[i].stop();
+			modules[i].setDesiredState(new SwerveModuleState(0, lastAngles[i]));
 		}
 	}
 	public void setModuleStates(SwerveModuleState[] desiredStates) {

@@ -67,11 +67,13 @@ public final class Autos {
         );
         // add autos to smart dashboard.\
         // autoChooser.addOption("intakeDown", intakeDown());
-        autoChooser.addOption("forward180", forward180());
         autoChooser.addOption("N2score2balance", N2Score2Bal());
         autoChooser.addOption("N2score2", N2Score2());
+        autoChooser.addOption("N8score2balance", N8Score2Bal());
+        autoChooser.addOption("N8score2", N8Score2());
         autoChooser.addOption("score1balance", score1Bal());
         autoChooser.addOption("score1Taxi", score1Taxi());
+        autoChooser.addOption("forward180", forward180());
         autoChooser.addOption("coolCircle", coolCircle());
     }
 

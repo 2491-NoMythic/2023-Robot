@@ -230,7 +230,7 @@ public class SwerveModule {
     m_desiredSteerAngle = MathUtil.inputModulus(state.angle.getRotations(), -0.5, 0.5);
     m_desiredDriveSpeed = state.speedMetersPerSecond / DriveConstants.DRIVETRAIN_ROTATIONS_TO_METERS;
 
-    if (m_desiredDriveSpeed <= 0.001) {
+    if (Math.abs(m_desiredDriveSpeed) <= 0.001) {
       m_driveMotor.setControl(m_neutralControl);
       m_steerMotor.setControl(m_steerControl.withPosition(m_desiredSteerAngle));
     } else {

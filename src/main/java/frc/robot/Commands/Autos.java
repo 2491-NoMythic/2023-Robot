@@ -72,6 +72,7 @@ public final class Autos {
         autoChooser.addOption("N2score2", N2Score2());
         autoChooser.addOption("N8score2balance", N8Score2Bal());
         autoChooser.addOption("N8score2", N8Score2());
+        autoChooser.addOption("score1TaxiBalance", score1TaxiBal());
         autoChooser.addOption("score1balance", score1Bal());
         autoChooser.addOption("score1Taxi", score1Taxi());
         autoChooser.addOption("forward180", forward180());
@@ -126,6 +127,13 @@ public final class Autos {
             new DriveBalanceCommand(drivetrain),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
+    public CommandBase score1TaxiBal() {
+        return new SequentialCommandGroup(
+            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            autoBuilder.fullAuto(Score1TaxiBal),
+            new DriveBalanceCommand(drivetrain),
+            new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
+    }
     public CommandBase score1Taxi() {
         return new SequentialCommandGroup(
             new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
@@ -151,6 +159,7 @@ public final class Autos {
 
     static List<PathPlannerTrajectory> Score1Taxi = PathPlanner.loadPathGroup("Score1Taxi", new PathConstraints(2.5, 1.5));
     static List<PathPlannerTrajectory> Score1Bal = PathPlanner.loadPathGroup("Score1Bal", new PathConstraints(2.5, 1.5));
+    static List<PathPlannerTrajectory> Score1TaxiBal = PathPlanner.loadPathGroup("Score1TaxiBal", new PathConstraints(2.5, 1.5));
 
     static List<PathPlannerTrajectory> forward180Path = PathPlanner.loadPathGroup("forward 180", new PathConstraints(3, 1.5));
     static List<PathPlannerTrajectory> coolCirclePath = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));

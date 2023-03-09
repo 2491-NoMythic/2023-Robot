@@ -163,7 +163,7 @@ public final class Autos {
     static List<PathPlannerTrajectory> N2Score2 = PathPlanner.loadPathGroup("N2Score2", new PathConstraints(4, 2.5));
 
     static List<PathPlannerTrajectory> N8Score2Bal = PathPlanner.loadPathGroup("N8Score2Bal", new PathConstraints(4, 2.5));
-    static List<PathPlannerTrajectory> N8Score2 = PathPlanner.loadPathGroup("N8Score2", new PathConstraints(4, 2.5));
+    static List<PathPlannerTrajectory> N8Score2 = PathPlanner.loadPathGroup("N8Score2", new PathConstraints(4, 1.75));
     static List<PathPlannerTrajectory> Score1 = PathPlanner.loadPathGroup("Score1", new PathConstraints(1, 1));
 
     static List<PathPlannerTrajectory> Score1Taxi = PathPlanner.loadPathGroup("Score1Taxi", new PathConstraints(2.5, 1.5));

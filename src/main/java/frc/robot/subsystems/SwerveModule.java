@@ -208,7 +208,7 @@ public class SwerveModule {
   public double getDriveDistanceMeters() {
     return (m_driveMotor.getPosition().getValue() * DriveConstants.DRIVETRAIN_ROTATIONS_TO_METERS);
   }
-
+  /**Don't use */
   public void stop() {
     m_driveMotor.setControl(m_neutralControl);
     m_steerMotor.setControl(m_neutralControl);
@@ -222,6 +222,7 @@ public class SwerveModule {
     if (desiredState.angle == null) {
       DriverStation.reportWarning("Cannot set module angle to null.", true);
     }
+    
     // Optimize the reference state to avoid spinning further than 90 degrees.
     SwerveModuleState state =
     SwerveModuleState.optimize(desiredState, getRotation());
@@ -229,10 +230,13 @@ public class SwerveModule {
     m_desiredSteerAngle = MathUtil.inputModulus(state.angle.getRotations(), -0.5, 0.5);
     m_desiredDriveSpeed = state.speedMetersPerSecond / DriveConstants.DRIVETRAIN_ROTATIONS_TO_METERS;
 
-    m_driveMotor.setControl(m_driveControl.withVelocity(m_desiredDriveSpeed).withFeedForward(m_desiredDriveSpeed/DriveConstants.MAX_VELOCITY_RPS_EMPIRICAL));
-    // m_driveMotor.setControl(new DutyCycleOut(0.5));
-    m_steerMotor.setControl(m_steerControl.withPosition(m_desiredSteerAngle));
-    // m_steerMotor.setControl(m_brakeControl);
+    if (Math.abs(m_desiredDriveSpeed) <= 0.001) {
+      m_driveMotor.setControl(m_neutralControl);
+      m_steerMotor.setControl(m_steerControl.withPosition(m_desiredSteerAngle));
+    } else {
+      m_driveMotor.setControl(m_driveControl.withVelocity(m_desiredDriveSpeed).withFeedForward(m_desiredDriveSpeed/DriveConstants.MAX_VELOCITY_RPS_EMPIRICAL));
+      m_steerMotor.setControl(m_steerControl.withPosition(m_desiredSteerAngle));
+    }
   }
 
 }

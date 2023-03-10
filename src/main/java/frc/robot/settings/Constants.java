@@ -219,7 +219,7 @@ public final class Constants {
     public static final double k_THETA_TOLORANCE_DEGREES = 2.0;
     public static final double k_THETA_TOLORANCE_DEG_PER_SEC = 10;
 
-    public static final double k_BALANCE_P = 0.03;
+    public static final double k_BALANCE_P = 0.025;
     public static final double k_BALANCE_I = 0.0;
     public static final double k_BALANCE_D = 0.0;
     public static final double k_BALANCE_TOLORANCE_DEGREES = 10.0;

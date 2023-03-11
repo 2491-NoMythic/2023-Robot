@@ -29,13 +29,21 @@ public class EndEffectorCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    endEffector.setEndEffectorPower(0.5*opController.getRawAxis(5));
+    //TODO add more commands
+    if (opController.getL1Button() && opController.getCrossButton()){
+    endEffector.setEndEffectorPower1(0.5);
+    } else if (opController.getL1Button() && opController.getSquareButton()){
+      endEffector.setEndEffectorPower2(0.5);
+    } else if (opController.getL1Button() && opController.getTriangleButton()){
+      endEffector.setEndEffectorPower1(0.5);
+      endEffector.setEndEffectorPower2(0.5);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    endEffector.setEndEffectorPower(0);
+    endEffector.setEndEffectorPowerAll(0);
   }
 
   // Returns true when the command should end.

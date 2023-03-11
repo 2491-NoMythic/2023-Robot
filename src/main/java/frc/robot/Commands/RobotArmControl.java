@@ -11,7 +11,7 @@ import frc.robot.subsystems.RobotArmSubsystem;
 
 public class RobotArmControl extends CommandBase {
   private RobotArmSubsystem arm;
-  private PS4Controller ps4 = new PS4Controller(1);
+  private PS4Controller opController;
   /** Creates a new RobotArm. */
   double shoulderSpeed;
   double elbowSpeed;
@@ -30,8 +30,8 @@ public class RobotArmControl extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elbowSpeed = ps4.getRawAxis(5);
-    shoulderSpeed = ps4.getRawAxis(1);
+    elbowSpeed = opController.getRawAxis(5);
+    shoulderSpeed = opController.getRawAxis(1);
     arm.setElbowPower(elbowSpeed);
     arm.setShoulderPower(shoulderSpeed);
   }

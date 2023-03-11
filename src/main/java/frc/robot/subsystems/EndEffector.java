@@ -11,32 +11,39 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-/** Add your docs here. */
-public class EndEffector extends SubsystemBase {
-
-private static final int END_EFFECTOR_MOTOR_ID = 4;
-// TalonSRX endEffectorMotor;
-CANSparkMax sparkEndEffector;
+/** Add your docs here. */public class EndEffector extends SubsystemBase {
+    private static final int END_EFFECTOR_MOTOR_1_ID = 4;
+    private static final int END_EFFECTOR_MOTOR_2_ID = 5;
+    
+CANSparkMax sparkEndEffector1;
+CANSparkMax sparkEndEffector2;
 RelativeEncoder endEffectorEncoder;
 
 public EndEffector() {
-    sparkEndEffector = new CANSparkMax(END_EFFECTOR_MOTOR_ID, MotorType.kBrushless);
-    sparkEndEffector.setIdleMode(IdleMode.kBrake);
-    endEffectorEncoder = sparkEndEffector.getEncoder();
-    // endEffectorMotor = new TalonSRX(END_EFFECTOR_MOTOR_ID);
-    // endEffectorMotor.setNeutralMode(NeutralMode.Brake);
+    sparkEndEffector1 = new CANSparkMax(END_EFFECTOR_MOTOR_1_ID, MotorType.kBrushless);
+    sparkEndEffector2 = new CANSparkMax(END_EFFECTOR_MOTOR_2_ID, MotorType.kBrushless);
+
+    sparkEndEffector1.setIdleMode(IdleMode.kBrake);
+    sparkEndEffector2.setIdleMode(IdleMode.kBrake);
+
+    endEffectorEncoder = sparkEndEffector1.getEncoder();
 }
 public void setEndEffectorBrakeMode() {
-    sparkEndEffector.setIdleMode(IdleMode.kBrake);
-    // endEffectorMotor.setNeutralMode(NeutralMode.Brake);
+    sparkEndEffector1.setIdleMode(IdleMode.kBrake);
+    sparkEndEffector2.setIdleMode(IdleMode.kBrake);
 }
-public void setEndEffectorPower(double speed) {
-    sparkEndEffector.set(speed);
-    // endEffectorMotor.set(ControlMode.PercentOutput, speed);
+public void setEndEffectorPower1(double speed) {
+    sparkEndEffector1.set(speed);
+}
+public void setEndEffectorPower2(double speed) {
+    sparkEndEffector1.set(speed);
+}
+public void setEndEffectorPowerAll(double speed) {
+    sparkEndEffector1.set(speed);
+    sparkEndEffector2.set(speed);
 }
 public double getEndEffectorPosition() {
     return endEffectorEncoder.getPosition();
-    // endEffectorMotor.getSelectedSensorPosition();
 }
 
 

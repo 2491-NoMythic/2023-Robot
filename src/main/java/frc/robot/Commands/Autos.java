@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -84,13 +85,18 @@ public final class Autos {
         Pose2d currentPose = drivetrain.getPose();
         Rotation2d heading = (targetPose.getTranslation().minus(currentPose.getTranslation())).getAngle();
         PathPlannerTrajectory newTraj = PathPlanner.generatePath(
-                new PathConstraints(3, 1.5),
+                new PathConstraints(1, 1),
                 new PathPoint(currentPose.getTranslation(), heading, currentPose.getRotation()),
                 new PathPoint(targetPose.getTranslation(), heading, targetPose.getRotation()));
         drivetrain.displayFieldTrajectory(newTraj);
+        SmartDashboard.putString("targetPose", targetPose.toString());
+        SmartDashboard.putString("currentPose", currentPose.toString());
         return new SequentialCommandGroup(
-                autoBuilder.followPathWithEvents(newTraj),
+                autoBuilder.followPath(newTraj),
                 new InstantCommand(() -> drivetrain.stop(), drivetrain));
+    }
+    public CommandBase moveToNearestNode() {
+        return moveToPose(drivetrain.getNearestNode());
     }
     // public CommandBase intakeDown() {
         // return new SequentialCommandGroup(eventMap.get("IntakeDown"), eventMap.get("IntakeUp"));

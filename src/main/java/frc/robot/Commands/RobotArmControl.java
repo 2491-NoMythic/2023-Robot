@@ -5,6 +5,7 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj.PS4Controller;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.RobotArmSubsystem;
 
@@ -15,6 +16,7 @@ public class RobotArmControl extends CommandBase {
   /** Creates a new RobotArm. */
   double shoulderSpeed;
   double elbowSpeed;
+  double armPower;
   public RobotArmControl(RobotArmSubsystem Arm) {
     addRequirements(Arm);
     arm = Arm;
@@ -25,15 +27,17 @@ public class RobotArmControl extends CommandBase {
   @Override
   public void initialize() {
     arm.setBrakeMode();
+    SmartDashboard.putNumber("Arm Power", 0.1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    armPower = SmartDashboard.getNumber("Arm Power", 0.1);
     elbowSpeed = ps4.getRawAxis(5);
     shoulderSpeed = ps4.getRawAxis(1);
-    arm.setElbowPower(elbowSpeed);
-    arm.setShoulderPower(shoulderSpeed);
+    arm.setElbowPower(elbowSpeed * armPower);
+    arm.setShoulderPower(shoulderSpeed * armPower);
   }
 
   // Called once the command ends or is interrupted.

@@ -28,6 +28,7 @@ import java.util.Map;
 import com.ctre.phoenixpro.hardware.Pigeon2;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
+import edu.wpi.first.hal.MatchInfoData;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -35,6 +36,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -157,8 +161,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		new Rotation2d();
 		odometer.resetPosition(Rotation2d.fromDegrees(angleDeg), getModulePositions(), new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(angleDeg)));
 	}
-	public Rotation2d getGyroscopeRotation() {//todo make continuous vs not continuous versions
+
+	public Rotation2d getGyroscopeRotation() {
 		return pigeon.getRotation2d();
+	}
+	public Rotation2d getGyroscopePitch() {
+		return Rotation2d.fromDegrees(pigeon.getPitch().getValue());
 	}
 	public SwerveModulePosition[] getModulePositions() {
 		SwerveModulePosition[] positions = new SwerveModulePosition[4];
@@ -204,7 +212,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		SwerveModuleState[] desiredStates = kinematics.toSwerveModuleStates(chassisSpeeds);
 		double maxSpeed = Collections.max(Arrays.asList(desiredStates)).speedMetersPerSecond;
 		if (maxSpeed <= DriveConstants.DRIVE_DEADBAND_MPS) {
-			stop();
+			for (int i = 0; i < 4; i++) {
+				stop();
+			}
 		} else {
 			setModuleStates(desiredStates);
 		}
@@ -214,7 +224,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	 */
 	public void stop() {
 		for (int i = 0; i < 4; i++) {
-			setModule(i, new SwerveModuleState(0, lastAngles[i]));
+			modules[i].setDesiredState(new SwerveModuleState(0, lastAngles[i]));
 		}
 	}
 	public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -236,14 +246,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		updateOdometry();
-		if (RobotContainer.LimelightExists) {
+		if (DriverStation.isAutonomousEnabled()) {
+			if (RobotContainer.LimelightExists) {
+				LimelightValues visionData = limelight.getLimelightValues();
+				SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
+			}
+			m_field.setRobotPose(odometer.getEstimatedPosition());
+		} else if (RobotContainer.LimelightExists) {
 			LimelightValues visionData = limelight.getLimelightValues();
 			SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
 			if (visionData.isResultValid) {
+				m_field.setRobotPose(visionData.getbotPose());
 				updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
 			}
 		}
-		m_field.setRobotPose(odometer.getEstimatedPosition());
 		
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());

@@ -57,6 +57,7 @@ public class PurpleLights extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     lights.lightsOut();
+    lights.dataSetter();
   }
 
   // Returns true when the command should end.

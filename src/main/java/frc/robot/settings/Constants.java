@@ -59,7 +59,7 @@ public final class Constants {
       BENH(-0.346436),
       EVELYN(0.382568),
       OMARIAHN(0.271973),
-      PHEOBE(-0.245850),
+      PHOEBE(-0.245850),
       ROYCE(-0.003174),
       ROWAN(0.391602),
       QUINN(0.355713),
@@ -218,6 +218,12 @@ public final class Constants {
     public static final double k_THETA_D = 0.0;
     public static final double k_THETA_TOLORANCE_DEGREES = 2.0;
     public static final double k_THETA_TOLORANCE_DEG_PER_SEC = 10;
+
+    public static final double k_BALANCE_P = 0.025;
+    public static final double k_BALANCE_I = 0.0;
+    public static final double k_BALANCE_D = 0.0;
+    public static final double k_BALANCE_TOLORANCE_DEGREES = 10.0;
+    public static final double k_BALANCE_TOLORANCE_DEG_PER_SEC = 1;
 }
   public final class PS4Driver{
     private PS4Driver() {

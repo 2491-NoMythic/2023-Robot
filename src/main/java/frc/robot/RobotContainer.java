@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+
 import static frc.robot.settings.Constants.PS4Driver.DEADBAND_LARGE;
 import static frc.robot.settings.Constants.PS4Driver.DEADBAND_NORMAL;
 import static frc.robot.settings.Constants.PS4Driver.NO_INPUT;
@@ -12,10 +13,12 @@ import static frc.robot.settings.Constants.PS4Driver.Y_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Z_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Z_ROTATE;
 
+
 import java.util.HashMap;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -26,12 +29,17 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Autos;
+
+import frc.robot.Commands.DriveBalanceCommand;
 import frc.robot.Commands.Drive;
+import frc.robot.Commands.DriveOffsetCenterCommand;
 import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.EndEffectorCommand;
+import frc.robot.Commands.PurpleLights;
 import frc.robot.Commands.RobotArmControl;
 import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.Commands.SkiPlowPneumatic;
@@ -45,7 +53,8 @@ import frc.robot.subsystems.RobotArmSubsystem;
 import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.subsystems.SkiPlow;
 import frc.robot.subsystems.SubsystemLights;
-import frc.robot.Commands.PurpleLights;
+import frc.robot.subsystems.SkiPlow;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -67,7 +76,7 @@ public class RobotContainer {
 
   private Autos autos;
   
-  private RobotArmSubsystem arm = new RobotArmSubsystem();
+  private RobotArmSubsystem arm;
   private RobotArmControl ControlArm;
   
   private EndEffectorCommand endEffectorCommand;
@@ -149,11 +158,11 @@ public class RobotContainer {
       () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
       () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
     drivetrain.setDefaultCommand(defaultDriveCommand);
+    SmartDashboard.putData(drivetrain);
     SmartDashboard.putNumber("Robot origin x", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getX());
     SmartDashboard.putNumber("Robot origin y", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getY());
     SmartDashboard.putNumber("Robot origin rot", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getRotation().getDegrees());
   }
-
   private void ArmInst(){
     arm = new RobotArmSubsystem();
     ControlArm = new RobotArmControl(arm);
@@ -183,6 +192,7 @@ public class RobotContainer {
     if (DrivetrainExists) {
       eventMap.put("marker1", new PrintCommand("Passed marker 1"));
       eventMap.put("marker2", new PrintCommand("Passed marker 2"));
+      eventMap.put("stop", new InstantCommand(drivetrain::stop, drivetrain));
       if (SkiPlowExists) {
         eventMap.put("IntakeDown", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonDown, skiPlow), new WaitCommand(0.75)));
         eventMap.put("IntakeUp", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonUp, skiPlow), new WaitCommand(0.5)));
@@ -228,26 +238,39 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+
     if (DrivetrainExists) {
       new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
-      new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() ->
-          autos.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+      // new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() ->
+      //     autos.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
       new Trigger(driveController::getCrossButton).onTrue(Commands.runOnce(drivetrain::pointWheelsInward, drivetrain));
       new Trigger(driveController::getR1Button).whileTrue(new DriveRotateToAngleCommand(drivetrain,
           () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
           () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
           () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
           () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
+      new Trigger(driveController::getR2Button).whileTrue(new DriveOffsetCenterCommand(
+        drivetrain,
+        () -> driveController.getL1Button(),
+        () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+        () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+        () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL), 
+        new Translation2d(1,0)));
+      new Trigger(driveController::getSquareButton).whileTrue(new DriveBalanceCommand(
+        drivetrain))
+        ;
+      
     }
-      if (LightsExists){
-        new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(29, 51, 200, 30, 30);}, lightsSubsystem));
-        new Trigger(driveController::getSquareButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 51, 0, 0, 100);}, lightsSubsystem));
-        new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 51, 0, 0, 0);}, lightsSubsystem));
-      }
+    if (LightsExists){
+        new Trigger(opController::getTriangleButton).whileTrue(Commands.run(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 51, 100, 64, 0);}, lightsSubsystem));
+        new Trigger(opController::getSquareButton).whileTrue(Commands.run(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 51, 0, 0, 100);}, lightsSubsystem));
+    }
+    if (ArmExists) {    
       new Trigger(opController::getL1Button).onTrue(Commands.runOnce(()-> {arm.setShoulderPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setShoulderPower(0);}, arm));
       new Trigger(opController::getL2Button).onTrue(Commands.runOnce(()-> {arm.setShoulderPower(0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setShoulderPower(0);}, arm));
       new Trigger(opController::getShareButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
       new Trigger(opController::getOptionsButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
+    }
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

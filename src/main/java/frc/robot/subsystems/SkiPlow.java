@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import static frc.robot.settings.Constants.Arm.*;
+import static frc.robot.settings.Constants.Intake.*;
 
 public class SkiPlow extends SubsystemBase {
   /** Creates a new SkiPlow. */
@@ -20,6 +21,7 @@ public class SkiPlow extends SubsystemBase {
     skiPlowLeftPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 5);
     skiPlowRightPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 4);
     skiPlowDoublePCMLock = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
+    roller = new Spark(INTAKE_MOTOR_ID);
   }
   // public void pistonUpLeft() {
   //   skiPlowLeftPCM.set(false);

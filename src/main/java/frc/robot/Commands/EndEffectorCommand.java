@@ -17,12 +17,13 @@ public class EndEffectorCommand extends CommandBase {
   public EndEffector endEffector;
   public PS4Controller opController;
   public DoubleSupplier endEffectorAxis;
+  double speed;
   public EndEffectorCommand(EndEffector effector, 
-    DoubleSupplier endEffectorAxisSupplier
-    ) {
+    DoubleSupplier endEffectorAxisSupplier, double speed) {
     addRequirements(effector);
     this.endEffectorAxis = endEffectorAxisSupplier;
     this.endEffector = effector;
+    this.speed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -35,7 +36,15 @@ public class EndEffectorCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    endEffector.setEndEffectorPower(0.5*endEffectorAxis.getAsDouble());
+    if (opController.getPOV()==-1) {
+      endEffector.setEndEffectorPower(0);
+    } 
+    if (opController.getPOV()==0) {
+      endEffector.setEndEffectorPower(speed);
+    } 
+    if (opController.getPOV()==180) {
+      endEffector.setEndEffectorPower(-speed);
+    } 
   }
 
   // Called once the command ends or is interrupted.

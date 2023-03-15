@@ -37,6 +37,13 @@ public class EndEffectorCommand extends CommandBase {
     } else if (opController.getL1Button() && opController.getTriangleButton()){
       endEffector.setEndEffectorPower1(0.5);
       endEffector.setEndEffectorPower2(0.5);
+    } else if (opController.getL2Button() && opController.getCrossButton()){
+      endEffector.setEndEffectorPower1(-0.5);
+    } else if (opController.getL2Button() && opController.getSquareButton()){
+      endEffector.setEndEffectorPower2(-0.5); 
+    } else if (opController.getL2Button() && opController.getTriangleButton()){
+      endEffector.setEndEffectorPower1(-0.5);
+      endEffector.setEndEffectorPower2(-0.5);
     }
   }
 

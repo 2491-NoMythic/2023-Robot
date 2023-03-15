@@ -266,10 +266,10 @@ public class RobotContainer {
         new Trigger(opController::getSquareButton).whileTrue(Commands.run(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 51, 0, 0, 100);}, lightsSubsystem));
     }
     if (ArmExists) {    
-      new Trigger(opController::getL1Button).onTrue(Commands.runOnce(()-> {arm.setShoulderPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setShoulderPower(0);}, arm));
-      new Trigger(opController::getL2Button).onTrue(Commands.runOnce(()-> {arm.setShoulderPower(0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setShoulderPower(0);}, arm));
-      new Trigger(opController::getShareButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
-      new Trigger(opController::getOptionsButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
+      // new Trigger(opController::getL1Button).onTrue(Commands.runOnce(()-> {arm.setShoulderPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setShoulderPower(0);}, arm));
+      // new Trigger(opController::getL2Button).onTrue(Commands.runOnce(()-> {arm.setShoulderPower(0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setShoulderPower(0);}, arm));
+      // new Trigger(opController::getShareButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
+      // new Trigger(opController::getOptionsButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
     }
   }
   /**

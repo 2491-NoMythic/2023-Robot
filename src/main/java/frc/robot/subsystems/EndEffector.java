@@ -8,13 +8,13 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import static frc.robot.settings.Constants.Arm.*;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Add your docs here. */
 public class EndEffector extends SubsystemBase {
 
-private static final int END_EFFECTOR_MOTOR_ID = 4;
 // TalonSRX endEffectorMotor;
 CANSparkMax sparkEndEffector;
 RelativeEncoder endEffectorEncoder;

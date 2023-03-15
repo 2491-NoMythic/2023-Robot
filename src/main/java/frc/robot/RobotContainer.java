@@ -13,8 +13,10 @@ import static frc.robot.settings.Constants.PS4Driver.Y_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Z_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Z_ROTATE;
 
-
+import java.sql.DriverAction;
 import java.util.HashMap;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -95,8 +97,8 @@ public class RobotContainer {
   public static boolean LimelightMotorExists = Preferences.getBoolean("LimelightMotor", false);
   public static boolean DrivetrainExists = Preferences.getBoolean("Drivetrain", false);
   public static boolean LightsExists = Preferences.getBoolean("Lights", false);
-
-      
+  
+  
   
   public RobotContainer() {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -111,6 +113,9 @@ public class RobotContainer {
     opController = new PS4Controller(1);
     autoChooser = new SendableChooser<>();
     eventMap = new HashMap<>();
+
+    SmartDashboard.putNumber("endeffectorSpeed", 0.5);
+    SmartDashboard.putNumber("skiplowRollerSpeed", 0.5);
 
     if (ArmExists){
       ArmInst();
@@ -162,6 +167,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("Robot origin x", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getX());
     SmartDashboard.putNumber("Robot origin y", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getY());
     SmartDashboard.putNumber("Robot origin rot", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getRotation().getDegrees());
+    SmartDashboard.putNumber("Precision Multiplier", 0.5);
   }
   private void ArmInst(){
     arm = new RobotArmSubsystem();
@@ -173,14 +179,19 @@ public class RobotContainer {
   private void EndEffectorInst(){
     effector = new EndEffector();
     endEffectorCommand = new EndEffectorCommand(effector, 
-    () -> opController.getRightY());
-    effector.setDefaultCommand(endEffectorCommand);
+    () -> opController.getRightY(), 
+    SmartDashboard.getNumber("endeffectorSpeed", 0.5));
+
   }
   private void SkiPlowInst(){
     skiPlow = new SkiPlow();
     skiplowcommand = new SkiPlowPneumatic(skiPlow, 
     () -> opController.getL2ButtonPressed(), 
-    () -> opController.getCrossButtonPressed());
+    () -> opController.getCrossButtonPressed(), 
+    () -> opController.getR1Button(),
+    () -> opController.getR2Button(),
+    SmartDashboard.getNumber("skiplowRollerSpeed", 0.5)
+    );
     skiPlow.setDefaultCommand(skiplowcommand);  
   }
   private void LimelightInst(){
@@ -276,6 +287,10 @@ public class RobotContainer {
       new Trigger(opController::getShareButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
       new Trigger(opController::getOptionsButton).onTrue(Commands.runOnce(()-> {arm.setElbowPower(0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setElbowPower(0);}, arm));
     }
+    if (SkiPlowExists) {
+      BooleanSupplier tmp = opController::getR1Button;
+      BooleanSupplier tmp2 = () -> opController.getR1Button();
+    }
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -285,11 +300,14 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
    }
-   private static double modifyAxis(double value, double deadband) {
+   private double modifyAxis(double value, double deadband) {
     // Deadband
     value = MathUtil.applyDeadband(value, deadband);
     // Square the axis
     value = Math.copySign(value * value, value);
+    if (driveController.getL2Button()) {
+      value *= SmartDashboard.getNumber("Precision Multiplier", 0.5);
+    }
     return value;
   }
   public void robotInit() {

@@ -7,12 +7,15 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import static frc.robot.settings.Constants.Arm.*;
 
 public class SkiPlow extends SubsystemBase {
   /** Creates a new SkiPlow. */
   Solenoid skiPlowLeftPCM;
   Solenoid skiPlowDoublePCMLock;
   Solenoid skiPlowRightPCM;
+  Spark roller;
   public SkiPlow() {
     skiPlowLeftPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 5);
     skiPlowRightPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 4);
@@ -43,6 +46,15 @@ public class SkiPlow extends SubsystemBase {
   public void pistonDown() {
     skiPlowLeftPCM.set(true);
     skiPlowRightPCM.set(true);
+  }
+  public void rollerCube(double speed) {
+    roller.set(speed);
+  }
+  public void rollerCone(double speed) {
+    roller.set(speed);
+  }
+  public void rollerOff() {
+    roller.set(0);
   }
 
   @Override

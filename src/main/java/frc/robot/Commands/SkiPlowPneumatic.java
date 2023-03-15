@@ -14,17 +14,23 @@ public class SkiPlowPneumatic extends CommandBase {
   /** Creates a new SkiPlowPneumatic. */
   public SkiPlow skiplow;
   public PS4Controller opController;
-  public BooleanSupplier intakeDownSupplier;
-  public BooleanSupplier lockSupplier;
+  public double maxSpeed;
+  public BooleanSupplier skiPlowDown;
+  public BooleanSupplier lock;
+  public BooleanSupplier rollCone;
+  public BooleanSupplier rollCube;
 
-  public SkiPlowPneumatic(SkiPlow skiPlow,
-  BooleanSupplier intakeDownSupplier,
-  BooleanSupplier lockSupplier) {
-
+  public SkiPlowPneumatic(SkiPlow skiPlow, BooleanSupplier SkiPlowDown, BooleanSupplier PneumaticLock, BooleanSupplier RollerCone, BooleanSupplier RollerCube, double maxSpeed) {
     this.skiplow =  skiPlow;
-    this.intakeDownSupplier = intakeDownSupplier;
-    this.lockSupplier = lockSupplier;
+    this.opController = opController;
+    this.maxSpeed = maxSpeed;
+
     addRequirements(skiPlow);
+
+    skiPlowDown = SkiPlowDown;
+    lock = PneumaticLock;
+    rollCone = RollerCone;
+    rollCube  = RollerCube;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -51,14 +57,23 @@ public class SkiPlowPneumatic extends CommandBase {
     // if(opController.getR2Button()) {
     //   skiplow.lockOn();}
     // else{skiplow.lockOff();} 
-    if(intakeDownSupplier.getAsBoolean()) {
+    if(skiPlowDown.getAsBoolean()) {
      skiplow.pistonDown();}
     else skiplow.pistonUp();
 
-    if(lockSupplier.getAsBoolean()) {
+    if(lock.getAsBoolean()) {
      skiplow.lockOn();}
     else skiplow.lockOff(); 
+
+    if (rollCone.getAsBoolean()) {
+      skiplow.rollerCone(maxSpeed);
+    } else if(rollCube.getAsBoolean()){
+        skiplow.rollerCube(-maxSpeed);
+    } else {
+      skiplow.rollerOff();
+    }
   }
+  
 
   // Called once the command ends or is interrupted.
   @Override

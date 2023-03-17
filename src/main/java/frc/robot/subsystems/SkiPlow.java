@@ -17,11 +17,13 @@ public class SkiPlow extends SubsystemBase {
   Solenoid skiPlowDoublePCMLock;
   Solenoid skiPlowRightPCM;
   Spark roller;
-  public SkiPlow() {
+  double maxSpeed;
+  public SkiPlow(double maxRollerSpeed) {
     skiPlowLeftPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 5);
     skiPlowRightPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 4);
     skiPlowDoublePCMLock = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
     roller = new Spark(INTAKE_MOTOR_ID);
+    this.maxSpeed = maxRollerSpeed;
   }
   // public void pistonUpLeft() {
   //   skiPlowLeftPCM.set(false);
@@ -49,11 +51,11 @@ public class SkiPlow extends SubsystemBase {
     skiPlowLeftPCM.set(true);
     skiPlowRightPCM.set(true);
   }
-  public void rollerCube(double speed) {
-    roller.set(speed);
+  public void rollerCube() {
+    roller.set(maxSpeed);
   }
-  public void rollerCone(double speed) {
-    roller.set(speed);
+  public void rollerCone() {
+    roller.set(-maxSpeed);
   }
   public void rollerOff() {
     roller.set(0);

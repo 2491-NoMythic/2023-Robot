@@ -66,9 +66,9 @@ public class SkiPlowPneumatic extends CommandBase {
     else skiplow.lockOff(); 
 
     if (rollCone.getAsBoolean()) {
-      skiplow.rollerCone(maxSpeed);
+      skiplow.rollerCone();
     } else if(rollCube.getAsBoolean()){
-        skiplow.rollerCube(-maxSpeed);
+        skiplow.rollerCube();
     } else {
       skiplow.rollerOff();
     }

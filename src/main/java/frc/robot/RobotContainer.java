@@ -165,17 +165,22 @@ public class RobotContainer {
   }
   private void ArmInst(){
     arm = new RobotArmSubsystem();
-    ControlArm = new RobotArmControl(arm);
+    ControlArm = new RobotArmControl(arm, 
+    () -> opController.getRightY(), 
+    () -> opController.getLeftY());
     arm.setDefaultCommand(ControlArm);
   }
   private void EndEffectorInst(){
     effector = new EndEffector();
-    endEffectorCommand = new EndEffectorCommand(effector, opController);
+    endEffectorCommand = new EndEffectorCommand(effector, 
+    () -> opController.getRightY());
     effector.setDefaultCommand(endEffectorCommand);
   }
   private void SkiPlowInst(){
     skiPlow = new SkiPlow();
-    skiplowcommand = new SkiPlowPneumatic(skiPlow, opController);
+    skiplowcommand = new SkiPlowPneumatic(skiPlow, 
+    () -> opController.getL2ButtonPressed(), 
+    () -> opController.getCrossButtonPressed());
     skiPlow.setDefaultCommand(skiplowcommand);  
   }
   private void LimelightInst(){

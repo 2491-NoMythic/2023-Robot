@@ -4,6 +4,8 @@
 
 package frc.robot.Commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SkiPlow;
@@ -12,11 +14,17 @@ public class SkiPlowPneumatic extends CommandBase {
   /** Creates a new SkiPlowPneumatic. */
   public SkiPlow skiplow;
   public PS4Controller opController;
-  public SkiPlowPneumatic(SkiPlow skiPlow, PS4Controller opController) {
-    this.skiplow =  skiPlow;
-    this.opController = opController;
-    addRequirements(skiPlow);
+  public BooleanSupplier intakeDownSupplier;
+  public BooleanSupplier lockSupplier;
 
+  public SkiPlowPneumatic(SkiPlow skiPlow,
+  BooleanSupplier intakeDownSupplier,
+  BooleanSupplier lockSupplier) {
+
+    this.skiplow =  skiPlow;
+    this.intakeDownSupplier = intakeDownSupplier;
+    this.lockSupplier = lockSupplier;
+    addRequirements(skiPlow);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -43,11 +51,11 @@ public class SkiPlowPneumatic extends CommandBase {
     // if(opController.getR2Button()) {
     //   skiplow.lockOn();}
     // else{skiplow.lockOff();} 
-    if(opController.getL2Button()||opController.getR2Button()) {
+    if(intakeDownSupplier.getAsBoolean()) {
      skiplow.pistonDown();}
     else skiplow.pistonUp();
 
-    if(opController.getCrossButton()) {
+    if(lockSupplier.getAsBoolean()) {
      skiplow.lockOn();}
     else skiplow.lockOff(); 
   }

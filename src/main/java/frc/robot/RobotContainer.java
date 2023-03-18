@@ -189,10 +189,10 @@ public class RobotContainer {
   private void SkiPlowInst(){
     skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));
     skiplowcommand = new SkiPlowPneumatic(skiPlow, 
-    () -> opController.getL2ButtonPressed(), 
-    () -> opController.getCrossButtonPressed(), 
-    () -> opController.getR1Button(),
-    () -> opController.getR2Button(),
+    opController::getL2Button, 
+    opController::getCrossButton, 
+    opController::getTriangleButton,
+    opController::getSquareButton,
     SmartDashboard.getNumber("skiplowRollerSpeed", 0.5)
     );
     skiPlow.setDefaultCommand(skiplowcommand);  
@@ -353,7 +353,7 @@ public class RobotContainer {
     // Square the axis
     value = Math.copySign(value * value, value);
     if (driveController.getL2Button()) {
-      value *= SmartDashboard.getNumber("Precision Multiplier", 0.5);
+      value *= SmartDashboard.getNumber("Precision Multiplier", 0.3);
     }
     return value;
   }

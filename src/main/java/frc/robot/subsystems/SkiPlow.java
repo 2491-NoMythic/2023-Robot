@@ -6,24 +6,31 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import static frc.robot.settings.Constants.Arm.*;
 import static frc.robot.settings.Constants.Intake.*;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class SkiPlow extends SubsystemBase {
   /** Creates a new SkiPlow. */
   Solenoid skiPlowLeftPCM;
   Solenoid skiPlowDoublePCMLock;
   Solenoid skiPlowRightPCM;
-  Spark roller;
+  CANSparkMax roller;
   double maxSpeed;
+  DoubleSolenoid skiPlowPneumatic;
   public SkiPlow(double maxRollerSpeed) {
     skiPlowLeftPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 5);
     skiPlowRightPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 4);
     skiPlowDoublePCMLock = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
-    roller = new Spark(INTAKE_MOTOR_ID);
+    roller = new CANSparkMax(INTAKE_MOTOR_ID, MotorType.kBrushless);
     this.maxSpeed = maxRollerSpeed;
+    skiPlowPneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
   }
   // public void pistonUpLeft() {
   //   skiPlowLeftPCM.set(false);
@@ -44,12 +51,17 @@ public class SkiPlow extends SubsystemBase {
     skiPlowDoublePCMLock.set(false);
   }
   public void pistonUp() {
-    skiPlowLeftPCM.set(false);
-    skiPlowRightPCM.set(false);
+    skiPlowPneumatic.set(Value.kReverse);
+    // skiPlowLeftPCM.set(false);
+    // skiPlowRightPCM.set(false);
+    // this /\ code was used before a double solenoid was added
+
   }
   public void pistonDown() {
-    skiPlowLeftPCM.set(true);
-    skiPlowRightPCM.set(true);
+    skiPlowPneumatic.set(Value.kForward);
+    // skiPlowLeftPCM.set(true);
+    // skiPlowRightPCM.set(true);
+    // this /\ code was used before a double solenoid was added
   }
   public void rollerCube() {
     roller.set(maxSpeed);

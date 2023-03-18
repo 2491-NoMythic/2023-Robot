@@ -45,6 +45,7 @@ import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.Commands.SkiPlowPneumatic;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Limelight;
@@ -76,8 +77,8 @@ public class RobotContainer {
 
   private Autos autos;
   
-  private RobotArmSubsystem arm;
-  private RobotArmControl ControlArm;
+  private ArmSubsystem arm;
+  // private RobotArmControl ControlArm;
   
   private EndEffectorCommand endEffectorCommand;
   private SkiPlowPneumatic skiplowcommand; 
@@ -164,9 +165,10 @@ public class RobotContainer {
     SmartDashboard.putNumber("Robot origin rot", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getRotation().getDegrees());
   }
   private void ArmInst(){
-    arm = new RobotArmSubsystem();
-    ControlArm = new RobotArmControl(arm);
-    arm.setDefaultCommand(ControlArm);
+    arm = new ArmSubsystem();
+    // arm = new RobotArmSubsystem();
+    // ControlArm = new RobotArmControl(arm);
+    // arm.setDefaultCommand(ControlArm);
   }
   private void EndEffectorInst(){
     effector = new EndEffector();

@@ -21,9 +21,17 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;public class SubsystemLights e
   public void setOneLightRGB(int index, int R, int G, int B){
     LEDBuffer.setRGB(index, R, G, B);
   }
+  public void setOneLightHSV(int index, int H, int S, int V){
+    LEDBuffer.setHSV(index, H, S, V);
+  }
   public void setLights(int start, int end, int R, int G, int B){
     for(int i = start; i < end; i++){
       setOneLightRGB(i, R, G, B);
+    }
+  } 
+  public void setHSVLights(int start, int end, int H, int S, int V){
+    for(int i = start; i < end; i++){
+      setOneLightHSV(i, H, S, V);
     }
   } 
   public void lightsOut() {
@@ -36,4 +44,6 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;public class SubsystemLights e
     // This method will be called once per scheduler run
     dataSetter();
   }
+public void setLightsHSV(int i, int j, int k, int l, int m) {
+}
 }

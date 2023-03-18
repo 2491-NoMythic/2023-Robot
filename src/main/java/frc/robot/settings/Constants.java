@@ -24,13 +24,12 @@ public final class Constants {
 
   private Constants () {}
   public final class Intake{
-    private Intake() {
-    }
-    public static final int INTAKE_MOTOR_ID = 2491;
+    private Intake() {}
+    public static final int INTAKE_MOTOR_ID = 16;
   }
   public final class Arm{
     private Arm(){}
-    public static final int END_EFFECTOR_MOTOR_ID = 2491;
+    public static final int END_EFFECTOR_MOTOR_ID = 17;
     public static final int ARM_SHOULDER_MOTOR_ID = 2;
     public static final int ARM_ELBOW_MOTOR_ID = 1;
     public static final int ARM_SHOULDER_LOCK_CHANNEL = 4;

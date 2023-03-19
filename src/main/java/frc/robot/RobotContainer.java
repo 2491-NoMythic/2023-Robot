@@ -183,18 +183,18 @@ public class RobotContainer {
   private void EndEffectorInst(){
     effector = new EndEffector(SmartDashboard.getNumber("endeffectorSpeed", 0.5));
     endEffectorCommand = new EndEffectorCommand(effector, 
-    () -> opController.getRightY(), 
-    SmartDashboard.getNumber("endeffectorSpeed", 0.5));
-
+    () -> opController.getRightY(), // roller direction?
+    SmartDashboard.getNumber("endeffectorSpeed", 0.5)); 
+        //TODO change to a lamda "() ->" number supplier if you want to update this value without rebooting the robot.
   }
   private void SkiPlowInst(){
     skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));
     skiplowcommand = new SkiPlowPneumatic(skiPlow, 
-    opController::getL2Button, 
-    opController::getCrossButton, 
-    opController::getTriangleButton,
-    opController::getSquareButton,
-    SmartDashboard.getNumber("skiplowRollerSpeed", 0.5)
+    opController::getL2Button, // ski plow down
+    opController::getTriangleButton, // Roller Cube
+    opController::getSquareButton, // Roller Cone
+    SmartDashboard.getNumber("skiplowRollerSpeed", 0.5) 
+        //TODO change to a lamda "() ->" number supplier if you want to update this value without rebooting the robot.
     );
     skiPlow.setDefaultCommand(skiplowcommand);  
   }
@@ -220,7 +220,6 @@ public class RobotContainer {
         eventMap.put("IntakeUp", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonUp, skiPlow), new WaitCommand(0.5)));
         eventMap.put("IntakeRollerIn", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCube, skiPlow)));
         eventMap.put("IntakeOut", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCone, skiPlow)));
-        // eventMap.put("skiPlowLock", TODO add command);
       }
       if (EndEffectorExists) {
         eventMap.put("EndEffectorIn", new SequentialCommandGroup(new InstantCommand(effector::rollerIn, effector)));

@@ -71,8 +71,10 @@ public class RobotContainer {
 
   private Autos autos;
 
+
   private ArmSubsystem arm;
   // private RobotArmControl ControlArm;
+
 
   private EndEffectorCommand endEffectorCommand;
   private SkiPlowPneumatic skiplowcommand;
@@ -163,6 +165,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("Robot origin rot", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getRotation().getDegrees());
     SmartDashboard.putNumber("Precision Multiplier", 0.5);
   }
+
   private void ArmInst(){
     arm = new ArmSubsystem();
     // arm = new RobotArmSubsystem();
@@ -211,6 +214,10 @@ public class RobotContainer {
         eventMap.put("IntakeUp", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonUp, skiPlow), new WaitCommand(0.5)));
         eventMap.put("IntakeRollerIn", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCube, skiPlow)));
         eventMap.put("IntakeOut", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCone, skiPlow)));
+      }
+      if (EndEffectorExists) {
+        eventMap.put("EndEffectorIn", new SequentialCommandGroup(new InstantCommand(effector::rollerIn, effector)));
+        eventMap.put("EndEffectorOut", new SequentialCommandGroup(new InstantCommand(effector::rollerOut, effector)));
       }
       if (EndEffectorExists) {
         eventMap.put("EndEffectorIn", new SequentialCommandGroup(new InstantCommand(effector::rollerIn, effector)));

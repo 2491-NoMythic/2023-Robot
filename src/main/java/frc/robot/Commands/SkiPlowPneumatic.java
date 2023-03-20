@@ -12,6 +12,7 @@ import frc.robot.subsystems.SkiPlow;
 public class SkiPlowPneumatic extends CommandBase {
   /** Creates a new SkiPlowPneumatic. */
   public SkiPlow skiplow;
+
   // public PS4Controller opController;
   public double maxSpeed;
   public BooleanSupplier skiPlowDown;
@@ -22,12 +23,14 @@ public class SkiPlowPneumatic extends CommandBase {
   public SkiPlowPneumatic(SkiPlow skiPlow, BooleanSupplier SkiPlowDown, BooleanSupplier RollerCone, BooleanSupplier RollerCube, double maxSpeed) {
     this.skiplow =  skiPlow;
     // this.opController = opController;
+
     this.maxSpeed = maxSpeed;
 
     addRequirements(skiPlow);
 
     skiPlowDown = SkiPlowDown;
     // lock = PneumaticLock;
+
     rollCone = RollerCone;
     rollCube  = RollerCube;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -73,7 +76,6 @@ public class SkiPlowPneumatic extends CommandBase {
     }
   }
   
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {

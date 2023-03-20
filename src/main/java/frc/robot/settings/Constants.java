@@ -29,16 +29,19 @@ public final class Constants {
   }
   public final class Arm{
     private Arm(){}
+    public static final String ARM_SHUFFLEBOARD_TAB = "Arm";
     public static final int END_EFFECTOR_MOTOR_ID = 1;
     public static final int ARM_SHOULDER_MOTOR_ID = 18;
     public static final int ARM_ELBOW_MOTOR_ID = 17;
     public static final int ARM_SHOULDER_LOCK_CHANNEL = 4;
     public static final int ARM_ELBOW_LOCK_CHANNEL = 3;
+    public static final double ARM_SHOULDER_ENCODER_OFFSET_DEG = 0.0;
+    public static final double ARM_ELBOW_ENCODER_OFFSET_DEG = 0.0;//TODO find offsets
     public static final double ARM_SHOULDER_LENGTH_METERS = 1;
     public static final double ARM_ELBOW_LENGTH_METERS = 1;
     public static final double ARM_ELBOW_CENTER_OF_MASS_OFFSET_METERS = 0.2;
-    public static final double ARM_SHOULDER_ENCODER_PORT = 1;
-    public static final double ARM_ELBOW_ENCODER_PORT = 3;
+    public static final double ARM_SHOULDER_ALLOWABLE_ERROR_DEG = 0.2;
+    public static final double ARM_ELBOW_ALLOWABLE_ERROR_DEG = 0.2;
     public static final double ARM_SHOULDER_K_P = 0;
     public static final double ARM_SHOULDER_K_I = 0;
     public static final double ARM_SHOULDER_K_D = 0;

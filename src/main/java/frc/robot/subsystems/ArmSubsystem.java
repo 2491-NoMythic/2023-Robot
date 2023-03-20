@@ -14,8 +14,12 @@ import com.revrobotics.SparkMaxPIDController;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.settings.Constants.Arm.*;
@@ -43,15 +47,21 @@ public class ArmSubsystem extends SubsystemBase {
   double ekD = ARM_ELBOW_K_D;
   double ekFF = ARM_ELBOW_FF_K_G;
   double eDeg = 0;
+  GenericEntry xTarget;
+  GenericEntry yTarget;
+  GenericEntry calculateAnglesTrue;
+    
   public ArmSubsystem(){
+
+    ShuffleboardTab tab = Shuffleboard.getTab(ARM_SHUFFLEBOARD_TAB);
     // SHOULDER
     shoulderMotor = new CANSparkMax(ARM_SHOULDER_MOTOR_ID, MotorType.kBrushless);
     shoulderEncoder = shoulderMotor.getAbsoluteEncoder(Type.kDutyCycle);
     shoulderLock = new Solenoid(PneumaticsModuleType.CTREPCM, ARM_SHOULDER_LOCK_CHANNEL);
-
     shoulderEncoder.setPositionConversionFactor(360);
     shoulderEncoder.setVelocityConversionFactor(360);
     shoulderEncoder.setInverted(true);
+    shoulderEncoder.setZeroOffset(ARM_SHOULDER_ENCODER_OFFSET_DEG);
     shoulderMotor.restoreFactoryDefaults();
     shoulderMotor.setIdleMode(IdleMode.kBrake);
     shoulderMotor.setInverted(true);
@@ -59,20 +69,22 @@ public class ArmSubsystem extends SubsystemBase {
 
     shoulderPID = shoulderMotor.getPIDController();
     shoulderPID.setFeedbackDevice(shoulderEncoder);
+    shoulderPID.setPositionPIDWrappingEnabled(true);
+    shoulderPID.setPositionPIDWrappingMinInput(0);
+    shoulderPID.setPositionPIDWrappingMaxInput(360);
     shoulderPID.setP(ARM_SHOULDER_K_P);
     shoulderPID.setI(ARM_SHOULDER_K_I);
     shoulderPID.setD(ARM_SHOULDER_K_D);
-    shoulderPID.setSmartMotionMaxVelocity(ARM_SHOULDER_MAXVEL_RPM, 0);
-    shoulderPID.setSmartMotionMaxAccel(ARM_SHOULDER_MAXACC_RPM, 0);
 
     // ELBOW
     elbowMotor = new CANSparkMax(ARM_ELBOW_MOTOR_ID, MotorType.kBrushless);
     elbowEncoder = elbowMotor.getAbsoluteEncoder(Type.kDutyCycle);
     elbowLock = new Solenoid(PneumaticsModuleType.CTREPCM, ARM_ELBOW_LOCK_CHANNEL);
-
+    
     elbowEncoder.setPositionConversionFactor(360);
     elbowEncoder.setVelocityConversionFactor(360);
     elbowEncoder.setInverted(false);
+    elbowEncoder.setZeroOffset(ARM_ELBOW_ENCODER_OFFSET_DEG);
     elbowMotor.restoreFactoryDefaults();
     elbowMotor.setIdleMode(IdleMode.kBrake);
     elbowMotor.setInverted(false);
@@ -80,41 +92,61 @@ public class ArmSubsystem extends SubsystemBase {
     
     elbowPID = elbowMotor.getPIDController();
     elbowPID.setFeedbackDevice(elbowEncoder);
+    elbowPID.setPositionPIDWrappingEnabled(true);
+    elbowPID.setPositionPIDWrappingMinInput(0);
+    elbowPID.setPositionPIDWrappingMaxInput(360);
     elbowPID.setP(ARM_ELBOW_K_P);
     elbowPID.setI(ARM_ELBOW_K_I);
     elbowPID.setD(ARM_ELBOW_K_D);
-    elbowPID.setSmartMotionMaxVelocity(ARM_ELBOW_MAXVEL_RPM, 0);
-    elbowPID.setSmartMotionMaxAccel(ARM_ELBOW_MAXACC_RPM, 0);
-
+    
     SmartDashboard.putNumber("Shoulder P", ARM_SHOULDER_K_P);
     SmartDashboard.putNumber("Shoulder I", ARM_SHOULDER_K_I);
     SmartDashboard.putNumber("Shoulder D", ARM_SHOULDER_K_D);
     SmartDashboard.putNumber("Shoulder Feed Forward", ARM_SHOULDER_FF_K_G);
     SmartDashboard.putNumber("Shoulder Set Degrees", 0);
     SmartDashboard.putBoolean("Run Shoulder", false);
-
+    
     SmartDashboard.putNumber("Elbow P", ARM_ELBOW_K_P);
     SmartDashboard.putNumber("Elbow I", ARM_ELBOW_K_I);
     SmartDashboard.putNumber("Elbow D", ARM_ELBOW_K_D);
     SmartDashboard.putNumber("Elbow Feed Forward", ARM_ELBOW_FF_K_G);
     SmartDashboard.putNumber("Elbow Set Degrees", 0);
     SmartDashboard.putBoolean("Run Elbow", false);
-
+    
+    tab.addDouble("Shoulder Angle", () -> getShoulderAngle().getDegrees());
+    tab.addDouble("Elbow Angle", () -> getElbowAngle().getDegrees());
+    tab.addDouble("Target Shoulder Angle", () -> lastAngles[0].getDegrees());
+    tab.addDouble("Target Elbow Angle", () -> lastAngles[1].getDegrees());
+    tab.addBoolean("Shoulder at Target", () -> isShoulderAtTarget());
+    tab.addBoolean("Elbow at Target", () -> isElbowAtTarget());
+    xTarget = tab.add("X Target Setpoint", 0).getEntry();
+    yTarget = tab.add("Y Target Setpoint", 0).getEntry();
+    calculateAnglesTrue = tab.add("Calculate From Targets", false).withWidget(BuiltInWidgets.kToggleSwitch).getEntry(); 
+    
   }
   /**
    * @return the angle of the shoulder segment in relation to the ground. 
    * The angle is positive when the end of the segment is tilted towards the front of the robot.
    */
   public Rotation2d getShoulderAngle() {
-    return Rotation2d.fromDegrees(0);
+    return Rotation2d.fromDegrees(shoulderEncoder.getPosition());
   }
   /**
    * @return the angle of the elbow segment in relation to the ground. 
    * The angle is positive when the end of the segment is tilted towards the front of the robot.
    */
   public Rotation2d getElbowAngle() {
-    return Rotation2d.fromDegrees(0);
+    return Rotation2d.fromDegrees(elbowEncoder.getPosition());
   }
+  public boolean isShoulderAtTarget() { 
+    return (Math.abs(shoulderEncoder.getPosition()-lastAngles[0].getDegrees()) <= ARM_SHOULDER_ALLOWABLE_ERROR_DEG 
+    || Math.abs(shoulderEncoder.getPosition()-lastAngles[0].getDegrees()) >= 360-ARM_SHOULDER_ALLOWABLE_ERROR_DEG);
+  }
+  public boolean isElbowAtTarget() { 
+    return (Math.abs(elbowEncoder.getPosition()-lastAngles[1].getDegrees()) <= ARM_ELBOW_ALLOWABLE_ERROR_DEG 
+    || Math.abs(elbowEncoder.getPosition()-lastAngles[1].getDegrees()) >= 360-ARM_ELBOW_ALLOWABLE_ERROR_DEG);
+  }
+  // public boolean isElbowAtTarget
   /**
    * @return the position of the end of the arm relative to the base of the shoulder joint?
    * X+ = robot forwards, Y+ = robot up. The measurements are in meters.
@@ -216,20 +248,10 @@ public class ArmSubsystem extends SubsystemBase {
     if((new_ekD!= ekD)) {elbowPID.setP(new_ekD); ekD=new_ekD;}
     if((new_ekFF!= ekFF)) {ekFF=new_ekFF;}
 
-    if (SmartDashboard.getBoolean("Run Shoulder", false)) {
-        if((new_sDegrees!= sDeg)) {
-          setShoulderAngle(Rotation2d.fromDegrees(new_sDegrees));
-           sDeg = new_sDegrees;
-          } else {setShoulderAngle(Rotation2d.fromDegrees(sDeg));}
+    if (calculateAnglesTrue.getBoolean(false)) {
+      setTarget(new Translation2d(xTarget.getDouble(0),yTarget.getDouble(0)));
+      calculateAnglesTrue.setBoolean(false);
     }
-    if (SmartDashboard.getBoolean("Run Elbow", false)) {
-        if((new_eDegrees!= eDeg)) {
-          setElbowAngle(Rotation2d.fromDegrees(new_eDegrees));
-          eDeg=new_eDegrees;
-        } else {setElbowAngle(Rotation2d.fromDegrees(eDeg));}
-    }
-    SmartDashboard.putNumber("shoulderAngle", getShoulderAngle().getDegrees());
-    SmartDashboard.putNumber("elbowAngle", getElbowAngle().getDegrees());
 
   }
 }

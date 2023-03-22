@@ -6,29 +6,31 @@ package frc.robot.Commands;
 
 import java.util.function.BooleanSupplier;
 
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SkiPlow;
 
 public class SkiPlowPneumatic extends CommandBase {
   /** Creates a new SkiPlowPneumatic. */
   public SkiPlow skiplow;
-  public PS4Controller opController;
+
+  // public PS4Controller opController;
   public double maxSpeed;
   public BooleanSupplier skiPlowDown;
-  public BooleanSupplier lock;
+  // public BooleanSupplier lock;
   public BooleanSupplier rollCone;
   public BooleanSupplier rollCube;
 
-  public SkiPlowPneumatic(SkiPlow skiPlow, BooleanSupplier SkiPlowDown, BooleanSupplier PneumaticLock, BooleanSupplier RollerCone, BooleanSupplier RollerCube, double maxSpeed) {
+  public SkiPlowPneumatic(SkiPlow skiPlow, BooleanSupplier SkiPlowDown, BooleanSupplier RollerCone, BooleanSupplier RollerCube, double maxSpeed) {
     this.skiplow =  skiPlow;
-    this.opController = opController;
+    // this.opController = opController;
+
     this.maxSpeed = maxSpeed;
 
     addRequirements(skiPlow);
 
     skiPlowDown = SkiPlowDown;
-    lock = PneumaticLock;
+    // lock = PneumaticLock;
+
     rollCone = RollerCone;
     rollCube  = RollerCube;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -61,9 +63,9 @@ public class SkiPlowPneumatic extends CommandBase {
      skiplow.pistonDown();}
     else skiplow.pistonUp();
 
-    if(lock.getAsBoolean()) {
-     skiplow.lockOn();}
-    else skiplow.lockOff(); 
+    // if(lock.getAsBoolean()) {
+    //  skiplow.lockOn();}
+    // else skiplow.lockOff(); 
 
     if (rollCone.getAsBoolean()) {
       skiplow.rollerCone();
@@ -74,7 +76,6 @@ public class SkiPlowPneumatic extends CommandBase {
     }
   }
   
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {

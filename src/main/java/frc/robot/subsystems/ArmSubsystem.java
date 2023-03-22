@@ -75,6 +75,7 @@ public class ArmSubsystem extends SubsystemBase {
     shoulderPID.setP(ARM_SHOULDER_K_P);
     shoulderPID.setI(ARM_SHOULDER_K_I);
     shoulderPID.setD(ARM_SHOULDER_K_D);
+    shoulderMotor.burnFlash();
 
     // ELBOW
     elbowMotor = new CANSparkMax(ARM_ELBOW_MOTOR_ID, MotorType.kBrushless);
@@ -84,7 +85,7 @@ public class ArmSubsystem extends SubsystemBase {
     elbowEncoder.setPositionConversionFactor(360);
     elbowEncoder.setVelocityConversionFactor(360);
     elbowEncoder.setInverted(false);
-    elbowEncoder.setZeroOffset(ARM_ELBOW_ENCODER_OFFSET_DEG);
+    elbowEncoder.setZeroOffset(ARM_ELBOW_ENCODER_OFFSET);
     elbowMotor.restoreFactoryDefaults();
     elbowMotor.setIdleMode(IdleMode.kBrake);
     elbowMotor.setInverted(false);
@@ -98,6 +99,7 @@ public class ArmSubsystem extends SubsystemBase {
     elbowPID.setP(ARM_ELBOW_K_P);
     elbowPID.setI(ARM_ELBOW_K_I);
     elbowPID.setD(ARM_ELBOW_K_D);
+    elbowMotor.burnFlash();
     
     SmartDashboard.putNumber("Shoulder P", ARM_SHOULDER_K_P);
     SmartDashboard.putNumber("Shoulder I", ARM_SHOULDER_K_I);
@@ -175,9 +177,9 @@ public class ArmSubsystem extends SubsystemBase {
   public double[] calculateFeedForward(Rotation2d[] angles) {
     double shoulderFF = new Translation2d(ARM_SHOULDER_LENGTH_METERS, angles[0])
         .plus(new Translation2d(ARM_ELBOW_CENTER_OF_MASS_OFFSET_METERS, angles[1]))
-        .getAngle().minus(Rotation2d.fromDegrees(90))
-        .getCos() * skFF;
-    double elbowFF = angles[1].minus(Rotation2d.fromDegrees(90)).getCos() * ekFF;
+        .getAngle()
+        .getSin() * skFF;
+    double elbowFF = angles[1].getSin() * ekFF;
     return new double[] {shoulderFF, elbowFF};
   }
   public void setShoulderLock(Boolean locked){
@@ -247,7 +249,12 @@ public class ArmSubsystem extends SubsystemBase {
     if((new_ekI!= ekI)) {elbowPID.setI(new_ekI); ekI=new_ekI;}
     if((new_ekD!= ekD)) {elbowPID.setP(new_ekD); ekD=new_ekD;}
     if((new_ekFF!= ekFF)) {ekFF=new_ekFF;}
-
+    if (SmartDashboard.getBoolean("Run Shoulder", false)) { 
+      setShoulderAngle(Rotation2d.fromDegrees(new_sDegrees));
+    }
+    if (SmartDashboard.getBoolean("Run Elbow", false)) { 
+      setElbowAngle(Rotation2d.fromDegrees(new_eDegrees));
+    }
     if (calculateAnglesTrue.getBoolean(false)) {
       setTarget(new Translation2d(xTarget.getDouble(0),yTarget.getDouble(0)));
       calculateAnglesTrue.setBoolean(false);

@@ -40,6 +40,7 @@ import frc.robot.Commands.DriveOffsetCenterCommand;
 import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.PurpleLights;
+import frc.robot.Commands.RainbowHellLights;
 import frc.robot.Commands.RobotArmControl;
 import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.Commands.SkiPlowPneumatic;
@@ -54,6 +55,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.subsystems.SkiPlow;
 import frc.robot.subsystems.SubsystemLights;
 import frc.robot.subsystems.SkiPlow;
+import frc.robot.Commands.RainbowHellLights;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -80,6 +82,7 @@ public class RobotContainer {
   private RobotArmControl ControlArm;
   
   private EndEffectorCommand endEffectorCommand;
+  private RainbowHellLights rainbowLights;
   private SkiPlowPneumatic skiplowcommand; 
   private SkiPlow skiPlow;
 
@@ -141,6 +144,7 @@ public class RobotContainer {
   private void LightsInst() {
     lightsSubsystem = new SubsystemLights(52);
     PurpleLights defaultLights = new PurpleLights(lightsSubsystem);
+    RainbowHellLights rainbowLights = new RainbowHellLights(lightsSubsystem);
     lightsSubsystem.setDefaultCommand(defaultLights);
   }
   private void DrivetrainInst(){
@@ -269,6 +273,7 @@ public class RobotContainer {
     if (LightsExists){
         new Trigger(opController::getTriangleButton).whileTrue(Commands.run(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 51, 100, 64, 0);}, lightsSubsystem));
         new Trigger(opController::getSquareButton).whileTrue(Commands.run(()->  {lightsSubsystem.lightsOut(); lightsSubsystem.setLights(0, 51, 0, 0, 100);}, lightsSubsystem));
+        new Trigger(opController::getSquareButton).whileTrue(Commands.run(()->  {lightsSubsystem.lightsOut(); rainbowLights.execute();}, lightsSubsystem));
     }
     if (ArmExists) {    
       new Trigger(opController::getL1Button).onTrue(Commands.runOnce(()-> {arm.setShoulderPower(-0.1);}, arm)).onFalse(Commands.runOnce(()-> {arm.setShoulderPower(0);}, arm));

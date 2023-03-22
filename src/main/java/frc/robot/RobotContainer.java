@@ -115,7 +115,8 @@ public class RobotContainer {
     autoChooser = new SendableChooser<>();
     eventMap = new HashMap<>();
 
-    SmartDashboard.putNumber("endeffectorSpeed", 0.5);
+    SmartDashboard.putNumber("endeffectorBigSpeed", 0.5);
+    SmartDashboard.putNumber("endeffectorSmallSpeed", 0.75);
     SmartDashboard.putNumber("skiplowRollerSpeed", 0.5);
 
     if (ArmExists) {
@@ -180,11 +181,11 @@ public class RobotContainer {
     arm.setDefaultCommand(ControlArm);
   }
   private void EndEffectorInst(){
-    effector = new EndEffector(SmartDashboard.getNumber("endeffectorSpeed", 0.5));
+    effector = new EndEffector(SmartDashboard.getNumber("endeffectorBigSpeed", 0.2), SmartDashboard.getNumber("endeffectorSmallSpeed", 0.5));
     endEffectorCommand = new EndEffectorCommand(effector, 
-    () -> opController.getRightY(), 
+    () -> opController.getPOV(), 
     SmartDashboard.getNumber("endeffectorSpeed", 0.5));
-
+    effector.setDefaultCommand(endEffectorCommand);
   }
   private void SkiPlowInst(){
     skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));
@@ -222,8 +223,10 @@ public class RobotContainer {
         // eventMap.put("skiPlowLock", TODO add command);
       }
       if (EndEffectorExists) {
-        eventMap.put("EndEffectorIn", new SequentialCommandGroup(new InstantCommand(effector::rollerIn, effector)));
-        eventMap.put("EndEffectorOut", new SequentialCommandGroup(new InstantCommand(effector::rollerOut, effector)));
+        eventMap.put("EndEffectorInCube", new SequentialCommandGroup(new InstantCommand(effector::rollerInCube, effector)));
+        eventMap.put("EndEffectorOutCube", new SequentialCommandGroup(new InstantCommand(effector::rollerOutCube, effector)));
+        eventMap.put("EndEffectorInCone", new SequentialCommandGroup(new InstantCommand(effector::rollerInCone, effector)));
+        eventMap.put("EndEffectorOutCone", new SequentialCommandGroup(new InstantCommand(effector::rollerOutCone, effector)));
       }
       if (LightsExists) {
         // eventMap.put("TODO add command", TODO add command);

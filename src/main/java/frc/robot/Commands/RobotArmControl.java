@@ -4,18 +4,26 @@
 
 package frc.robot.Commands;
 
-import edu.wpi.first.wpilibj.PS4Controller;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.RobotArmSubsystem;
 
 
 public class RobotArmControl extends CommandBase {
   private RobotArmSubsystem arm;
-  private PS4Controller ps4 = new PS4Controller(1);
   /** Creates a new RobotArm. */
   double shoulderSpeed;
   double elbowSpeed;
-  public RobotArmControl(RobotArmSubsystem Arm) {
+  DoubleSupplier shoulderAxisSupplier;
+  DoubleSupplier elbowAxisSupplier;
+
+  public RobotArmControl(RobotArmSubsystem Arm,
+    DoubleSupplier shoulderAxisSupplier,
+    DoubleSupplier elbowAxisSupplier
+  ) {
+    this.shoulderAxisSupplier = shoulderAxisSupplier;
+    this.elbowAxisSupplier = elbowAxisSupplier;
     addRequirements(Arm);
     arm = Arm;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -30,8 +38,8 @@ public class RobotArmControl extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elbowSpeed = ps4.getRawAxis(5);
-    shoulderSpeed = ps4.getRawAxis(1);
+    elbowSpeed = elbowAxisSupplier.getAsDouble();
+    shoulderSpeed = shoulderAxisSupplier.getAsDouble();
     arm.setElbowPower(elbowSpeed);
     arm.setShoulderPower(shoulderSpeed);
   }

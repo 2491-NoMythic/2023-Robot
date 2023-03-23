@@ -4,6 +4,9 @@
 
 package frc.robot.Commands;
 
+import java.util.function.DoubleSupplier;
+
+
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.EndEffector;
@@ -13,10 +16,14 @@ public class EndEffectorCommand extends CommandBase {
   /** Creates a new EndEffectorCommand. */
   public EndEffector endEffector;
   public PS4Controller opController;
-  public EndEffectorCommand(EndEffector effector, PS4Controller opController) {
+  public DoubleSupplier endEffectorAxis;
+  public double speed;
+  public EndEffectorCommand(EndEffector effector, 
+    DoubleSupplier endEffectorAxisSupplier, double speed) {
     addRequirements(effector);
-    this.opController = opController;
+    this.endEffectorAxis = endEffectorAxisSupplier;
     this.endEffector = effector;
+    this.speed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -29,7 +36,15 @@ public class EndEffectorCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    endEffector.setEndEffectorPower(0.5*opController.getRawAxis(5));
+    if (endEffectorAxis.getAsDouble()==-1) {
+      endEffector.setEndEffectorPower(0);
+    } 
+    if (endEffectorAxis.getAsDouble()==0) {
+      endEffector.setEndEffectorPower(speed);
+    } 
+    if (endEffectorAxis.getAsDouble()==180) {
+      endEffector.setEndEffectorPower(-speed);
+    } 
   }
 
   // Called once the command ends or is interrupted.

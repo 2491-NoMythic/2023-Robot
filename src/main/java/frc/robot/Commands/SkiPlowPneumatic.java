@@ -4,19 +4,35 @@
 
 package frc.robot.Commands;
 
-import edu.wpi.first.wpilibj.PS4Controller;
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SkiPlow;
 
 public class SkiPlowPneumatic extends CommandBase {
   /** Creates a new SkiPlowPneumatic. */
   public SkiPlow skiplow;
-  public PS4Controller opController;
-  public SkiPlowPneumatic(SkiPlow skiPlow, PS4Controller opController) {
+
+  // public PS4Controller opController;
+  public double maxSpeed;
+  public BooleanSupplier skiPlowDown;
+  // public BooleanSupplier lock;
+  public BooleanSupplier rollCone;
+  public BooleanSupplier rollCube;
+
+  public SkiPlowPneumatic(SkiPlow skiPlow, BooleanSupplier SkiPlowDown, BooleanSupplier RollerCone, BooleanSupplier RollerCube, double maxSpeed) {
     this.skiplow =  skiPlow;
-    this.opController = opController;
+    // this.opController = opController;
+
+    this.maxSpeed = maxSpeed;
+
     addRequirements(skiPlow);
 
+    skiPlowDown = SkiPlowDown;
+    // lock = PneumaticLock;
+
+    rollCone = RollerCone;
+    rollCube  = RollerCube;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -43,19 +59,26 @@ public class SkiPlowPneumatic extends CommandBase {
     // if(opController.getR2Button()) {
     //   skiplow.lockOn();}
     // else{skiplow.lockOff();} 
-    if(opController.getL2Button()||opController.getR2Button()) {
+    if(skiPlowDown.getAsBoolean()) {
      skiplow.pistonDown();}
     else skiplow.pistonUp();
 
-    if(opController.getCrossButton()) {
-     skiplow.lockOn();}
-    else skiplow.lockOff(); 
-  }
+    // if(lock.getAsBoolean()) {
+    //  skiplow.lockOn();}
+    // else skiplow.lockOff(); 
 
+    if (rollCone.getAsBoolean()) {
+      skiplow.rollerCone();
+    } else if(rollCube.getAsBoolean()){
+        skiplow.rollerCube();
+    } else {
+      skiplow.rollerOff();
+    }
+  }
+  
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
   }
 
   // Returns true when the command should end.

@@ -36,7 +36,7 @@ public final class Constants {
     public static final int ARM_SHOULDER_LOCK_CHANNEL = 4;
     public static final int ARM_ELBOW_LOCK_CHANNEL = 3;
     public static final double ARM_SHOULDER_ENCODER_OFFSET_DEG = 0.0;
-    public static final double ARM_ELBOW_ENCODER_OFFSET = 0.95428;//TODO find offsets
+    public static final double ARM_ELBOW_ENCODER_OFFSET = 26.921;//TODO find offsets
     public static final double ARM_SHOULDER_LENGTH_METERS = 0.9906;
     public static final double ARM_ELBOW_LENGTH_METERS = 0.7366;
     public static final double ARM_ELBOW_CENTER_OF_MASS_OFFSET_METERS = 0.2;

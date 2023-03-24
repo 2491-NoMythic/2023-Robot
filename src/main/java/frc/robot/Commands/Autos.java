@@ -89,10 +89,8 @@ public final class Autos {
                     new PathPoint(currentPose.getTranslation(), heading, currentPose.getRotation()),
                     new PathPoint(targetPose.getTranslation(), heading, targetPose.getRotation()));
             drivetrain.displayFieldTrajectory(newTraj);
-            // SmartDashboard.putString("targetPose", targetPose.toString());
             autoBuilder.followPath(newTraj).finallyDo(x -> drivetrain.stop()).schedule();
         });
-        
     }
     public CommandBase moveToNearestNode() {
         return moveToPose(drivetrain.getNearestNode());

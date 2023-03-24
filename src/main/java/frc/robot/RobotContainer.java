@@ -165,9 +165,6 @@ public class RobotContainer {
         () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
     drivetrain.setDefaultCommand(defaultDriveCommand);
     SmartDashboard.putData(drivetrain);
-    SmartDashboard.putNumber("Robot origin x", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getX());
-    SmartDashboard.putNumber("Robot origin y", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getY());
-    SmartDashboard.putNumber("Robot origin rot", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getRotation().getDegrees());
     SmartDashboard.putNumber("Precision Multiplier", 0.5);
   }
 
@@ -242,10 +239,7 @@ public class RobotContainer {
   }
 
   private void configDashboard() {
-  
-    SmartDashboard.putData("Blue1", autos.moveToPose(BLUE1));
-    SmartDashboard.putData("Blue3",autos.moveToPose(BLUE3));
-    SmartDashboard.putData("Blue6",autos.moveToPose(new Pose2d(1.85, 3.3, new Rotation2d(180))));
+
     SmartDashboard.putData("nearestNode",autos.moveToPose(drivetrain.getPose().nearest(ALL_NODES)));
   }
 

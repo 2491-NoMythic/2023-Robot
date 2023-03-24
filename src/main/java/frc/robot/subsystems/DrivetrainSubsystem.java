@@ -171,8 +171,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         odometer.resetPosition(pose.getRotation(), getModulePositions(), pose);
     }
     public void resetOdometry() {
-		Pose2d smartDashboardPose = new Pose2d(SmartDashboard.getNumber("Robot origin x", 5),SmartDashboard.getNumber("Robot origin y", 5),Rotation2d.fromDegrees(SmartDashboard.getNumber("Robot origin rot", 0)));
-        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), smartDashboardPose);
+        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), DRIVE_ODOMETRY_ORIGIN);
     }
     public void resetOdometryFromVision(Pose2d pose) {
         odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);

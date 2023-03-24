@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.settings.Constants.DriveConstants;
@@ -80,84 +81,84 @@ public final class Autos {
     }
 
     public CommandBase moveToPose(Pose2d targetPose) {
-        Pose2d currentPose = drivetrain.getPose();
-        Rotation2d heading = (targetPose.getTranslation().minus(currentPose.getTranslation())).getAngle();
-        PathPlannerTrajectory newTraj = PathPlanner.generatePath(
-                new PathConstraints(1, 1),
-                new PathPoint(currentPose.getTranslation(), heading, currentPose.getRotation()),
-                new PathPoint(targetPose.getTranslation(), heading, targetPose.getRotation()));
-        drivetrain.displayFieldTrajectory(newTraj);
-        SmartDashboard.putString("targetPose", targetPose.toString());
-        SmartDashboard.putString("currentPose", currentPose.toString());
-        return new SequentialCommandGroup(
-                autoBuilder.followPath(newTraj),
-                new InstantCommand(() -> drivetrain.stop(), drivetrain));
+        return Commands.runOnce(()->{
+            Pose2d currentPose = drivetrain.getPose();
+            Rotation2d heading = (targetPose.getTranslation().minus(currentPose.getTranslation())).getAngle();
+            PathPlannerTrajectory newTraj = PathPlanner.generatePath(
+                    new PathConstraints(1, 1),
+                    new PathPoint(currentPose.getTranslation(), heading, currentPose.getRotation()),
+                    new PathPoint(targetPose.getTranslation(), heading, targetPose.getRotation()));
+            drivetrain.displayFieldTrajectory(newTraj);
+            // SmartDashboard.putString("targetPose", targetPose.toString());
+            autoBuilder.followPath(newTraj).finallyDo(x -> drivetrain.stop()).schedule();
+        });
+        
     }
     public CommandBase moveToNearestNode() {
         return moveToPose(drivetrain.getNearestNode());
     }
-    // public CommandBase intakeDown() {
+    // public SequentialCommandGroup intakeDown() {
         // return new SequentialCommandGroup(eventMap.get("IntakeDown"), eventMap.get("IntakeUp"));
     // }
-    public CommandBase N2Score2Bal() {
+    public SequentialCommandGroup N2Score2Bal() {
         return new SequentialCommandGroup(
             new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(N2Score2Bal),
             new DriveBalanceCommand(drivetrain),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
-    public CommandBase N2Score2() {
+    public SequentialCommandGroup N2Score2() {
         return new SequentialCommandGroup(
             new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(N2Score2),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
-    public CommandBase N8Score2Bal() {
+    public SequentialCommandGroup N8Score2Bal() {
         return new SequentialCommandGroup(
             new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(N8Score2Bal),
             new DriveBalanceCommand(drivetrain),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
-    public CommandBase N8Score2() {
+    public SequentialCommandGroup N8Score2() {
         return new SequentialCommandGroup(
             new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(N8Score2),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain)); 
     }
 
-    public CommandBase score1() {
+    public SequentialCommandGroup score1() {
         return new SequentialCommandGroup(
             new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(Score1),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
-    public CommandBase score1Bal() {
+    public SequentialCommandGroup score1Bal() {
         return new SequentialCommandGroup(
             new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(Score1Bal),
             new DriveBalanceCommand(drivetrain),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
-    public CommandBase score1TaxiBal() {
+    public SequentialCommandGroup score1TaxiBal() {
         return new SequentialCommandGroup(
             new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(Score1TaxiBal),
             new DriveBalanceCommand(drivetrain),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
-    public CommandBase score1Taxi() {
+    public SequentialCommandGroup score1Taxi() {
         return new SequentialCommandGroup(
             new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(Score1Taxi),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
-    public CommandBase forward180() {
+    public SequentialCommandGroup forward180() {
         return new SequentialCommandGroup(
             new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(forward180Path));
     }
-    public CommandBase coolCircle() {
+    public SequentialCommandGroup coolCircle() {
         return new SequentialCommandGroup(
             new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(coolCirclePath));

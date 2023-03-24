@@ -243,13 +243,10 @@ public class RobotContainer {
 
   private void configDashboard() {
   
-    // // SmartDashboard.putData("Blue1",autos.moveToPose(BLUE1));
-    // SmartDashboard.putData("Blue1",Commands.runOnce(() -> autos.moveToPose(BLUE1)));
-    // SmartDashboard.putData("Blue1", autos.moveToPose(BLUE1));
-    // // SmartDashboard.putData("Blue1",new RunCommand(() -> autos.moveToPose(BLUE1)));
-    // SmartDashboard.putData("Blue3",autos.moveToPose(BLUE3));
-    // SmartDashboard.putData("Blue6",autos.moveToPose(new Pose2d(1.85, 3.3, new Rotation2d(180))));
-    // SmartDashboard.putData("nearestNode",autos.moveToPose(drivetrain.getPose().nearest(ALL_NODES)));
+    SmartDashboard.putData("Blue1", autos.moveToPose(BLUE1));
+    SmartDashboard.putData("Blue3",autos.moveToPose(BLUE3));
+    SmartDashboard.putData("Blue6",autos.moveToPose(new Pose2d(1.85, 3.3, new Rotation2d(180))));
+    SmartDashboard.putData("nearestNode",autos.moveToPose(drivetrain.getPose().nearest(ALL_NODES)));
   }
 
   /**
@@ -309,7 +306,7 @@ public class RobotContainer {
         new Translation2d(1,0)));
       new Trigger(driveController::getSquareButton).whileTrue(new DriveBalanceCommand(drivetrain));
       // new Trigger(driveController::getTriangleButton).onTrue(autos.moveToPose(drivetrain::getPose,drivetrain::getNearestNode));
-      new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->autos.moveToPose(drivetrain.getNearestNode()), drivetrain));
+      new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->autos.moveToPose(drivetrain.getNearestNode()).schedule()));
     }
     if (LightsExists) {
       new Trigger(opController::getTriangleButton).whileTrue(Commands.run(() -> {

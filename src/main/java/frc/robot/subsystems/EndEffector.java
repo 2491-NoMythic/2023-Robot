@@ -15,31 +15,50 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 /** Add your docs here. */
 public class EndEffector extends SubsystemBase {
 
-    CANSparkMax sparkEndEffector;
+    CANSparkMax sparkEndEffectorSmallRoller;
+    CANSparkMax sparkEndEffectorBigRoller;
     RelativeEncoder endEffectorEncoder;
-    double rollerSpeed;
+    double rollerSpeedSmall;
+    double rollerSpeedBig;
     
-    public EndEffector(double maxSpeed) {
-        sparkEndEffector = new CANSparkMax(END_EFFECTOR_MOTOR_ID, MotorType.kBrushless);
-        sparkEndEffector.setIdleMode(IdleMode.kBrake);
-        endEffectorEncoder = sparkEndEffector.getEncoder();
-        rollerSpeed = maxSpeed;
+    public EndEffector(double maxSpeedBig, double maxSpeedSmall) {
+        sparkEndEffectorBigRoller = new CANSparkMax(END_EFFECTOR_BIG_ROLLER_ID, MotorType.kBrushless);
+        sparkEndEffectorSmallRoller = new CANSparkMax(END_EFFECTOR_SMALL_ROLLER_ID, MotorType.kBrushless);
+        sparkEndEffectorBigRoller.setIdleMode(IdleMode.kBrake);
+        sparkEndEffectorSmallRoller.setIdleMode(IdleMode.kBrake);
+        endEffectorEncoder = sparkEndEffectorSmallRoller.getEncoder();
+        endEffectorEncoder = sparkEndEffectorBigRoller.getEncoder();
+        rollerSpeedSmall = maxSpeedSmall;
+        rollerSpeedBig = maxSpeedBig;
         // endEffectorMotor = new TalonSRX(END_EFFECTOR_MOTOR_ID);
         // endEffectorMotor.setNeutralMode(NeutralMode.Brake);
     }
     public void setEndEffectorBrakeMode() {
-        sparkEndEffector.setIdleMode(IdleMode.kBrake);
+        sparkEndEffectorBigRoller.setIdleMode(IdleMode.kBrake);
+        sparkEndEffectorSmallRoller.setIdleMode(IdleMode.kBrake);
         // endEffectorMotor.setNeutralMode(NeutralMode.Brake);
     }
-    public void setEndEffectorPower(double speed) {
-        sparkEndEffector.set(speed);
+    public void setEndEffectorPower(double bigspeed, double smallspeed) {
+        sparkEndEffectorBigRoller.set(bigspeed);
+        sparkEndEffectorSmallRoller.set(smallspeed);
         // endEffectorMotor.set(ControlMode.PercentOutput, speed);
     }
-    public void rollerIn() {
-        sparkEndEffector.set(rollerSpeed);
+    public void rollerInCube() {
+        sparkEndEffectorBigRoller.set(-rollerSpeedBig);
+        sparkEndEffectorSmallRoller.set(rollerSpeedSmall);
+        
     }
-    public void rollerOut() {
-        sparkEndEffector.set(-rollerSpeed);
+    public void rollerOutCube() {
+        sparkEndEffectorBigRoller.set(rollerSpeedBig);
+        sparkEndEffectorSmallRoller.set(-rollerSpeedSmall);
+    }
+    public void rollerInCone() {
+        sparkEndEffectorBigRoller.set(-rollerSpeedBig);
+        sparkEndEffectorSmallRoller.set(-rollerSpeedSmall);
+    }
+    public void rollerOutCone() {
+        sparkEndEffectorBigRoller.set(rollerSpeedBig);
+        sparkEndEffectorSmallRoller.set(rollerSpeedSmall);
     }
     public double getEndEffectorPosition() {
         return endEffectorEncoder.getPosition();

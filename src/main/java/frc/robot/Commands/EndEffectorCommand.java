@@ -4,6 +4,7 @@
 
 package frc.robot.Commands;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 
@@ -19,12 +20,17 @@ public class EndEffectorCommand extends CommandBase {
   public PS4Controller opController;
   public IntSupplier endEffectorAxis;
   public double speed;
+  public BooleanSupplier isConeMode;
+
   public EndEffectorCommand(EndEffector effector, 
-    IntSupplier endEffectorAxisSupplier, double speed) {
+    IntSupplier endEffectorAxisSupplier, 
+    double speed,
+    BooleanSupplier isConeMode) {
     addRequirements(effector);
     this.endEffectorAxis = endEffectorAxisSupplier;
     this.endEffector = effector;
     this.speed = speed;
+    this.isConeMode = isConeMode;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -40,18 +46,20 @@ public class EndEffectorCommand extends CommandBase {
     if (endEffectorAxis.getAsInt()==-1) {
       endEffector.setEndEffectorPower(0, 0);
     } 
-    if (endEffectorAxis.getAsInt()==0) {
-      endEffector.rollerInCone();
-    } 
-    if (endEffectorAxis.getAsInt()==90) {
-      endEffector.rollerOutCone();
-    } 
-    if (endEffectorAxis.getAsInt()==180) {
-      endEffector.rollerInCube();
-    } 
-    if (endEffectorAxis.getAsInt()==270) {
-      endEffector.rollerOutCube();
-    } 
+    if (isConeMode.getAsBoolean()) {
+      if (endEffectorAxis.getAsInt()==0) {
+        endEffector.rollerInCone();
+      } 
+      if (endEffectorAxis.getAsInt()==180) {
+        endEffector.rollerOutCone();
+    } }
+    if (!isConeMode.getAsBoolean()) {
+      if (endEffectorAxis.getAsInt()==0) {
+        endEffector.rollerInCube();
+      } 
+      if (endEffectorAxis.getAsInt()==180) {
+        endEffector.rollerOutCube();
+    } }
   }
 
   // Called once the command ends or is interrupted.

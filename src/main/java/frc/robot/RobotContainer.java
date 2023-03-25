@@ -217,10 +217,6 @@ public class RobotContainer {
         eventMap.put("IntakeOut", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCone, skiPlow)));
       }
       if (EndEffectorExists) {
-        eventMap.put("EndEffectorIn", new SequentialCommandGroup(new InstantCommand(effector::rollerIn, effector)));
-        eventMap.put("EndEffectorOut", new SequentialCommandGroup(new InstantCommand(effector::rollerOut, effector)));
-      }
-      if (EndEffectorExists) {
         eventMap.put("EndEffectorInCube", new SequentialCommandGroup(new InstantCommand(effector::rollerInCube, effector)));
         eventMap.put("EndEffectorOutCube", new SequentialCommandGroup(new InstantCommand(effector::rollerOutCube, effector)));
         eventMap.put("EndEffectorInCone", new SequentialCommandGroup(new InstantCommand(effector::rollerInCone, effector)));

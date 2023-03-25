@@ -12,15 +12,13 @@ import static frc.robot.settings.Constants.PS4Driver.Y_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Z_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Z_ROTATE;
 
-import java.sql.DriverAction;
 import java.util.HashMap;
 import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PS4Controller;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,32 +28,26 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Autos;
-
-import frc.robot.Commands.DriveBalanceCommand;
 import frc.robot.Commands.Drive;
+import frc.robot.Commands.DriveBalanceCommand;
 import frc.robot.Commands.DriveOffsetCenterCommand;
 import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.PurpleLights;
-import frc.robot.Commands.RobotArmControl;
 import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.Commands.SkiPlowPneumatic;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightmotorSubsystem;
-import frc.robot.subsystems.RobotArmSubsystem;
-import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.subsystems.SkiPlow;
 import frc.robot.subsystems.SubsystemLights;
-import frc.robot.subsystems.SkiPlow;
-
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -79,8 +71,10 @@ public class RobotContainer {
 
   private Autos autos;
 
-  private RobotArmSubsystem arm;
-  private RobotArmControl ControlArm;
+
+  private ArmSubsystem arm;
+  // private RobotArmControl ControlArm;
+
 
   private EndEffectorCommand endEffectorCommand;
   private SkiPlowPneumatic skiplowcommand;
@@ -173,12 +167,13 @@ public class RobotContainer {
     SmartDashboard.putNumber("Precision Multiplier", 0.5);
   }
 
-  private void ArmInst() {
-    arm = new RobotArmSubsystem();
-    ControlArm = new RobotArmControl(arm, 
-    () -> opController.getRightY(), 
-    () -> opController.getLeftY());
-    arm.setDefaultCommand(ControlArm);
+  private void ArmInst(){
+    arm = new ArmSubsystem();
+    // arm = new RobotArmSubsystem();
+    // ControlArm = new RobotArmControl(arm, 
+    // () -> opController.getRightY(), 
+    // () -> opController.getLeftY());
+    // arm.setDefaultCommand(ControlArm);
   }
   private void EndEffectorInst(){
     effector = new EndEffector(SmartDashboard.getNumber("endeffectorBigSpeed", 0.2), SmartDashboard.getNumber("endeffectorSmallSpeed", 0.5));
@@ -190,11 +185,11 @@ public class RobotContainer {
   private void SkiPlowInst(){
     skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));
     skiplowcommand = new SkiPlowPneumatic(skiPlow, 
-    opController::getL2Button, 
-    opController::getCrossButton, 
-    opController::getTriangleButton,
-    opController::getSquareButton,
-    SmartDashboard.getNumber("skiplowRollerSpeed", 0.5)
+    opController::getL2Button, // ski plow down
+    opController::getTriangleButton, // Roller Cube
+    opController::getSquareButton, // Roller Cone
+    SmartDashboard.getNumber("skiplowRollerSpeed", 0.5) 
+        //TODO change to a lamda "() ->" number supplier if you want to update this value without rebooting the robot.
     );
     skiPlow.setDefaultCommand(skiplowcommand);  
   }
@@ -220,7 +215,10 @@ public class RobotContainer {
         eventMap.put("IntakeUp", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonUp, skiPlow), new WaitCommand(0.5)));
         eventMap.put("IntakeRollerIn", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCube, skiPlow)));
         eventMap.put("IntakeOut", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCone, skiPlow)));
-        // eventMap.put("skiPlowLock", TODO add command);
+      }
+      if (EndEffectorExists) {
+        eventMap.put("EndEffectorIn", new SequentialCommandGroup(new InstantCommand(effector::rollerIn, effector)));
+        eventMap.put("EndEffectorOut", new SequentialCommandGroup(new InstantCommand(effector::rollerOut, effector)));
       }
       if (EndEffectorExists) {
         eventMap.put("EndEffectorInCube", new SequentialCommandGroup(new InstantCommand(effector::rollerInCube, effector)));

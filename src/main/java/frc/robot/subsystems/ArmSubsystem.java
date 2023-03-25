@@ -157,8 +157,8 @@ public class ArmSubsystem extends SubsystemBase {
    * X+ = robot forwards, Y+ = robot up. The measurements are in meters.
    */
   public Translation2d getArmPose(Rotation2d[] angles) {
-    Translation2d shoulderPostion = new Translation2d(0,ARM_SHOULDER_LENGTH_METERS).rotateBy(angles[0]);
-    Translation2d elbowPosition = new Translation2d(0,-ARM_ELBOW_LENGTH_METERS).rotateBy(angles[1].unaryMinus());
+    Translation2d shoulderPostion = new Translation2d(0,ARM_SHOULDER_LENGTH_METERS).rotateBy(angles[0].unaryMinus());
+    Translation2d elbowPosition = new Translation2d(0,-ARM_ELBOW_LENGTH_METERS).rotateBy(angles[1]);
     Translation2d armPose = shoulderPostion.plus(elbowPosition);
     return armPose;
   }
@@ -178,11 +178,19 @@ public class ArmSubsystem extends SubsystemBase {
     return new Rotation2d[] {shoulderAngle, elbowAngle};
   }
   public double[] calculateFeedForward(Rotation2d[] angles) {
-    double shoulderFF = new Translation2d(ARM_SHOULDER_LENGTH_METERS, angles[0])
-        .plus(new Translation2d(ARM_ELBOW_CENTER_OF_MASS_OFFSET_METERS, angles[1]))
-        .getAngle()
-        .getSin() * skFF;
+    Translation2d shoulderPos= new Translation2d(0,ARM_SHOULDER_LENGTH_METERS).rotateBy(angles[0].unaryMinus());
+    Translation2d comPos = new Translation2d(0,-ARM_ELBOW_CENTER_OF_MASS_OFFSET_METERS).rotateBy(angles[1]);
+    Translation2d totalPos = shoulderPos.plus(comPos);
+    Rotation2d comAngle = totalPos.getAngle();
+    SmartDashboard.putString("Shoulder location", shoulderPos.toString());
+    SmartDashboard.putString("CenterOfMass location", comPos.toString());
+    SmartDashboard.putString("totalOffset location", totalPos.toString());
+    SmartDashboard.putString("CenterOfMass Angle", comAngle.toString());
+
+    double shoulderFF = totalPos.getX() * skFF;
     double elbowFF = angles[1].getSin() * ekFF;
+    SmartDashboard.putNumber("Shoulder FF out", shoulderFF);
+    SmartDashboard.putNumber("Elbow FF out", elbowFF);
     return new double[] {shoulderFF, elbowFF};
   }
   public void setShoulderLock(Boolean locked){
@@ -260,14 +268,18 @@ public class ArmSubsystem extends SubsystemBase {
     if((new_ekFF!= ekFF)) {ekFF=new_ekFF;}
     double[] feedforward = calculateFeedForward(new Rotation2d[] {Rotation2d.fromDegrees(new_sDegrees), Rotation2d.fromDegrees(new_eDegrees)});
     if (SmartDashboard.getBoolean("Run Shoulder", false)) { 
+      setShoulderLock(false);
       setShoulderAngle(Rotation2d.fromDegrees(new_sDegrees), feedforward[0]);
     } else {
       stopShoulder();
+      setShoulderLock(true);
     }
     if (SmartDashboard.getBoolean("Run Elbow", false)) { 
+      setElbowLock(false);
       setElbowAngle(Rotation2d.fromDegrees(new_eDegrees), feedforward[1]);
     } else {
       stopElbow();
+      setElbowLock(true);
     }
     if (calculateAnglesTrue.getBoolean(false)) {
       setTarget(new Translation2d(xTarget.getDouble(0),yTarget.getDouble(0)));

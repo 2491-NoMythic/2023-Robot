@@ -93,6 +93,8 @@ public class RobotContainer {
   public static boolean DrivetrainExists = Preferences.getBoolean("Drivetrain", false);
   public static boolean LightsExists = Preferences.getBoolean("Lights", false);
 
+  public static boolean isConeMode;
+
   public RobotContainer() {
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -108,6 +110,7 @@ public class RobotContainer {
     opController = new PS4Controller(1);
     autoChooser = new SendableChooser<>();
     eventMap = new HashMap<>();
+    isConeMode = false;
 
     SmartDashboard.putNumber("endeffectorBigSpeed", 0.5);
     SmartDashboard.putNumber("endeffectorSmallSpeed", 0.75);
@@ -179,7 +182,8 @@ public class RobotContainer {
     effector = new EndEffector(SmartDashboard.getNumber("endeffectorBigSpeed", 0.2), SmartDashboard.getNumber("endeffectorSmallSpeed", 0.5));
     endEffectorCommand = new EndEffectorCommand(effector, 
     () -> opController.getPOV(), 
-    SmartDashboard.getNumber("endeffectorSpeed", 0.5));
+    SmartDashboard.getNumber("endeffectorSpeed", 0.5),
+    ()->isConeMode());
     effector.setDefaultCommand(endEffectorCommand);
   }
   private void SkiPlowInst(){
@@ -333,8 +337,14 @@ public class RobotContainer {
       BooleanSupplier tmp = opController::getR1Button;
       BooleanSupplier tmp2 = () -> opController.getR1Button();
     }
+    if (EndEffectorExists) {
+      new Trigger(opController::getTriangleButton).onTrue(new InstantCommand(this::setConeModeTrue));
+      new Trigger(opController::getSquareButton).onTrue(new InstantCommand(this::setConeModeFalse));
+    }
   }
-
+  public boolean isConeMode() {return isConeMode;}
+  public void setConeModeTrue() {isConeMode = true;}
+  public void setConeModeFalse() {isConeMode = false;}
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

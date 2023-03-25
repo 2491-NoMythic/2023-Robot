@@ -76,15 +76,16 @@ public final class Constants {
       }
     }
     public enum Offsets{
-      AUGIE(0.164307),
-      BENH(-0.346436),
-      EVELYN(0.382568),
-      OMARIAHN(0.271973),
+      AUGIE(0.153818),
+      BENH(0.153564),
+      EVELYN(-0.111084),
+      OMARIAHN(0.266846),
       PHOEBE(-0.245850),
       ROYCE(-0.003174),
       ROWAN(0.391602),
       QUINN(0.355713),
-      LIAM(0);
+      LIAM(0),
+      LEVI(0.333008); //May be wrong, who knows
       private double offset;
       Offsets(double value) {
         offset = value;

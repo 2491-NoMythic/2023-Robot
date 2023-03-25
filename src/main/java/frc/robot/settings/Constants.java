@@ -29,10 +29,11 @@ public final class Constants {
   }
   public final class Arm{
     private Arm(){}
-    public static final String ARM_SHUFFLEBOARD_TAB = "Arm";
-    public static final int END_EFFECTOR_MOTOR_ID = 1;
+    public static final int END_EFFECTOR_SMALL_ROLLER_ID = 2;
+    public static final int END_EFFECTOR_BIG_ROLLER_ID = 1;
     public static final int ARM_SHOULDER_MOTOR_ID = 18;
     public static final int ARM_ELBOW_MOTOR_ID = 17;
+    public static final String ARM_SHUFFLEBOARD_TAB = "Arm";
     public static final int ARM_SHOULDER_LOCK_CHANNEL = 4;
     public static final int ARM_ELBOW_LOCK_CHANNEL = 3;
     public static final double ARM_SHOULDER_ENCODER_OFFSET_DEG = 0.0;

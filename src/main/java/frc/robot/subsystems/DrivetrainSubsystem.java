@@ -36,6 +36,7 @@ import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.DriveConstants.Offsets;
 import frc.robot.settings.Constants.DriveConstants.Positions;
 import frc.robot.settings.LimelightValues;
+import frc.robot.settings.Constants.nodePositions;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 	public static final CTREConfigs ctreConfig = new CTREConfigs();
@@ -163,12 +164,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public Pose2d getPose() {
 		return odometer.getEstimatedPosition();
 	}
+	public Pose2d getNearestNode() { 
+		return getPose().nearest(nodePositions.ALL_NODES);
+	}
     public void resetOdometry(Pose2d pose) {
         odometer.resetPosition(pose.getRotation(), getModulePositions(), pose);
     }
     public void resetOdometry() {
-		Pose2d smartDashboardPose = new Pose2d(SmartDashboard.getNumber("Robot origin x", 5),SmartDashboard.getNumber("Robot origin y", 5),Rotation2d.fromDegrees(SmartDashboard.getNumber("Robot origin rot", 0)));
-        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), smartDashboardPose);
+        odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), DRIVE_ODOMETRY_ORIGIN);
     }
     public void resetOdometryFromVision(Pose2d pose) {
         odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
@@ -233,16 +236,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				LimelightValues visionData = limelight.getLimelightValues();
 				SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
 			}
-			m_field.setRobotPose(odometer.getEstimatedPosition());
 		} else if (RobotContainer.LimelightExists) {
 			LimelightValues visionData = limelight.getLimelightValues();
 			SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
 			if (visionData.isResultValid) {
-				m_field.setRobotPose(visionData.getbotPose());
 				updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
 			}
 		}
-		
+		m_field.setRobotPose(odometer.getEstimatedPosition());
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 	}

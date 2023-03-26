@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.Preferences;
@@ -26,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -48,6 +51,8 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightmotorSubsystem;
 import frc.robot.subsystems.SkiPlow;
 import frc.robot.subsystems.SubsystemLights;
+import static frc.robot.settings.Constants.nodePositions.*;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -164,9 +169,6 @@ public class RobotContainer {
         () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
     drivetrain.setDefaultCommand(defaultDriveCommand);
     SmartDashboard.putData(drivetrain);
-    SmartDashboard.putNumber("Robot origin x", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getX());
-    SmartDashboard.putNumber("Robot origin y", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getY());
-    SmartDashboard.putNumber("Robot origin rot", DriveConstants.DRIVE_ODOMETRY_ORIGIN.getRotation().getDegrees());
     SmartDashboard.putNumber("Precision Multiplier", 0.5);
   }
 
@@ -239,8 +241,7 @@ public class RobotContainer {
     }
   }
 
-  private void configDashboard() {
-  }
+  private void configDashboard() {}
 
   /**
    * Takes both axis of a joystick, returns an angle from -180 to 180 degrees, or
@@ -282,8 +283,8 @@ public class RobotContainer {
 
     if (DrivetrainExists) {
       new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
-      // new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() ->
-      // autos.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+      new Trigger(driveController::getSquareButton).whileTrue(new DriveBalanceCommand(drivetrain));
+      new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->autos.moveToPose(drivetrain.getNearestNode()).schedule()));
       new Trigger(driveController::getCrossButton).onTrue(Commands.runOnce(drivetrain::pointWheelsInward, drivetrain));
       new Trigger(driveController::getR1Button).whileTrue(new DriveRotateToAngleCommand(drivetrain,
           () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
@@ -291,15 +292,12 @@ public class RobotContainer {
           () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
           () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
       new Trigger(driveController::getR2Button).whileTrue(new DriveOffsetCenterCommand(
-          drivetrain,
-          () -> driveController.getL1Button(),
-          () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
-          () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-          () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL),
-          new Translation2d(1, 0)));
-      new Trigger(driveController::getSquareButton).whileTrue(new DriveBalanceCommand(
-          drivetrain));
-
+        drivetrain,
+        () -> driveController.getL1Button(),
+        () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+        () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+        () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL), 
+        new Translation2d(1,0)));
     }
     if (LightsExists) {
       new Trigger(opController::getTriangleButton).whileTrue(Commands.run(() -> {
@@ -378,6 +376,7 @@ public class RobotContainer {
   }
 
   public void teleopPeriodic() {
+    SmartDashboard.putString("NearestNode", drivetrain.getPose().nearest(ALL_NODES).toString());
     SmartDashboard.putNumber("Match Timer", Timer.getMatchTime());
   }
 }

@@ -214,6 +214,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
   public void setShoulderAngle(Rotation2d angle, double feedforward) {
     shoulderPID.setReference(angle.getDegrees(), ControlType.kPosition, 0, feedforward);
+    lastAngles[0] = angle;
   }
 
   /**
@@ -225,6 +226,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
   public void setElbowAngle(Rotation2d angle, double feedforward) {
     elbowPID.setReference(angle.getDegrees(), ControlType.kPosition, 0, feedforward);
+    lastAngles[1] = angle;
   }
   public void stopShoulder() {
     shoulderMotor.stopMotor();
@@ -239,7 +241,6 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public void setTarget(Translation2d targetPose) {
     Rotation2d[] angles = calculateJointAngles(targetPose);
-    lastAngles = angles;
     // setShoulderAngle(angles[0]);
     // setElbowAngle(angles[1]);
   }
@@ -281,6 +282,7 @@ public class ArmSubsystem extends SubsystemBase {
       stopElbow();
       setElbowLock(true);
     }
+    SmartDashboard.putString("armPose", getArmPose(lastAngles).toString());
     if (calculateAnglesTrue.getBoolean(false)) {
       setTarget(new Translation2d(xTarget.getDouble(0),yTarget.getDouble(0)));
       calculateAnglesTrue.setBoolean(false);

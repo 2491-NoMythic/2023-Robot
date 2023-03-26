@@ -42,7 +42,7 @@ public final class Constants {
     public static final double ARM_ELBOW_CENTER_OF_MASS_OFFSET_METERS = 0.7;
     public static final double ARM_SHOULDER_ALLOWABLE_ERROR_DEG = 0.2;
     public static final double ARM_ELBOW_ALLOWABLE_ERROR_DEG = 0.2;
-    public static final double ARM_SHOULDER_K_P = 0;
+    public static final double ARM_SHOULDER_K_P = 0.02;
     public static final double ARM_SHOULDER_K_I = 0;
     public static final double ARM_SHOULDER_K_D = 0;
     public static final double ARM_SHOULDER_FF_K_G = -0.2;

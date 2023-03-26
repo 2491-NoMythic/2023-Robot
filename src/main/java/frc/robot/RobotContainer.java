@@ -241,10 +241,7 @@ public class RobotContainer {
     }
   }
 
-  private void configDashboard() {
-
-    SmartDashboard.putData("nearestNode",autos.moveToPose(drivetrain.getPose().nearest(ALL_NODES)));
-  }
+  private void configDashboard() {}
 
   /**
    * Takes both axis of a joystick, returns an angle from -180 to 180 degrees, or
@@ -286,8 +283,8 @@ public class RobotContainer {
 
     if (DrivetrainExists) {
       new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
-      // new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(() ->
-      // autos.moveToPose(DriveConstants.DRIVE_ODOMETRY_ORIGIN)));
+      new Trigger(driveController::getSquareButton).whileTrue(new DriveBalanceCommand(drivetrain));
+      new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->autos.moveToPose(drivetrain.getNearestNode()).schedule()));
       new Trigger(driveController::getCrossButton).onTrue(Commands.runOnce(drivetrain::pointWheelsInward, drivetrain));
       new Trigger(driveController::getR1Button).whileTrue(new DriveRotateToAngleCommand(drivetrain,
           () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
@@ -301,9 +298,6 @@ public class RobotContainer {
         () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
         () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL), 
         new Translation2d(1,0)));
-      new Trigger(driveController::getSquareButton).whileTrue(new DriveBalanceCommand(drivetrain));
-      // new Trigger(driveController::getTriangleButton).onTrue(autos.moveToPose(drivetrain::getPose,drivetrain::getNearestNode));
-      new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->autos.moveToPose(drivetrain.getNearestNode()).schedule()));
     }
     if (LightsExists) {
       new Trigger(opController::getTriangleButton).whileTrue(Commands.run(() -> {

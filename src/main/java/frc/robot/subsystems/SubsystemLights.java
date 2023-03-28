@@ -26,6 +26,16 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;public class SubsystemLights e
       setOneLightRGB(i, R, G, B);
     }
   } 
+  public void setLightsCone() {
+    for(int i = 0; i < 52; i++){
+      setOneLightRGB(i, 100, 64, 0);
+  }
+}
+  public void setLightsCube() {
+    for(int i = 0; i < 52; i++){
+      setOneLightRGB(i, 0, 0, 100);
+  }
+  }
   public void lightsOut() {
     for(int i = 0; i < LEDBuffer.getLength(); i++) {
       setOneLightRGB(i, 0, 0, 0);

@@ -219,14 +219,17 @@ public class RobotContainer {
       if (SkiPlowExists) {
         eventMap.put("IntakeDown", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonDown, skiPlow), new WaitCommand(0.75)));
         eventMap.put("IntakeUp", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonUp, skiPlow), new WaitCommand(0.5)));
-        eventMap.put("IntakeRollerIn", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCube, skiPlow)));
-        eventMap.put("IntakeOut", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCone, skiPlow)));
+        eventMap.put("IntakeRollerIn", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCube, skiPlow), new InstantCommand(lightsSubsystem::setLightsCube, lightsSubsystem)));
+        eventMap.put("IntakeRollerOut", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCone, skiPlow), new InstantCommand(lightsSubsystem::setLightsCone, lightsSubsystem)));
+        eventMap.put("IntakeOff", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerOff, skiPlow)));
       }
       if (EndEffectorExists) {
         eventMap.put("EndEffectorInCube", new SequentialCommandGroup(new InstantCommand(effector::rollerInCube, effector)));
         eventMap.put("EndEffectorOutCube", new SequentialCommandGroup(new InstantCommand(effector::rollerOutCube, effector)));
         eventMap.put("EndEffectorInCone", new SequentialCommandGroup(new InstantCommand(effector::rollerInCone, effector)));
         eventMap.put("EndEffectorOutCone", new SequentialCommandGroup(new InstantCommand(effector::rollerOutCone, effector)));
+        eventMap.put("EndEffectorOff", new SequentialCommandGroup(new InstantCommand(effector::rollerOff, effector)));
+
       }
       if (LightsExists) {
         // eventMap.put("TODO add command", TODO add command);

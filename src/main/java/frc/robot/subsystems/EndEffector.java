@@ -60,6 +60,10 @@ public class EndEffector extends SubsystemBase {
         sparkEndEffectorBigRoller.set(rollerSpeedBig);
         sparkEndEffectorSmallRoller.set(rollerSpeedSmall);
     }
+    public void rollerOff() {
+        sparkEndEffectorBigRoller.set(0);
+        sparkEndEffectorSmallRoller.set(0);
+    }
     public double getEndEffectorPosition() {
         return endEffectorEncoder.getPosition();
         // endEffectorMotor.getSelectedSensorPosition();

@@ -232,6 +232,7 @@ public class RobotContainer {
 
       }
       if (LightsExists) {
+        eventMap.put("Lightsoff", new SequentialCommandGroup(new InstantCommand(lightsSubsystem::lightsOut, lightsSubsystem)));
         // eventMap.put("TODO add command", TODO add command);
         // eventMap.put("TODO add command", TODO add command);
       }

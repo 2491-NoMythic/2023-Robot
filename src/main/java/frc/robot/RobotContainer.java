@@ -45,6 +45,7 @@ import frc.robot.Commands.SkiPlowPneumatic;
 import frc.robot.settings.Constants;
 import frc.robot.settings.IntakeState;
 import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.Constants.Intake;
 import frc.robot.settings.IntakeState.intakeMode;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -343,10 +344,11 @@ public class RobotContainer {
     }
     new Trigger(opController::getSquareButton).onTrue(new InstantCommand(this::setConeModeFalse));
     new Trigger(opController::getTriangleButton).onTrue(new InstantCommand(this::setConeModeTrue));
-    new Trigger(opController::getTriangleButton).onTrue(IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
-    new Trigger(opController::getSquareButton).onTrue(IntakeState.setIntakeMode(intakeMode.CUBE));
-    new Trigger(opController::getCrossButton).onTrue(IntakeState.setIntakeMode(intakeMode.CONE_GROUND));
-    new Trigger(opController::getCircleButton).onTrue(IntakeState.setIntakeMode(intakeMode.CONE_RAMP));
+    new Trigger(opController::getTriangleButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CONE_SHELF))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
+    new Trigger(opController::getSquareButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CUBE))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
+    new Trigger(opController::getCircleButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CONE_RAMP))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
+    new Trigger(opController::getCrossButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CONE_GROUND))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
+
   }
   public boolean isConeMode() {return isConeMode;}
   public void setConeModeTrue() {isConeMode = true;}

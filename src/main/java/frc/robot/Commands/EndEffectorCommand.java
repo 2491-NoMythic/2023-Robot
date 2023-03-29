@@ -27,13 +27,11 @@ public class EndEffectorCommand extends CommandBase {
 
   public EndEffectorCommand(EndEffector effector, 
     IntSupplier endEffectorAxisSupplier, 
-    double speed,
-    BooleanSupplier isConeMode) {
+    double speed) {
     addRequirements(effector);
     this.endEffectorAxis = endEffectorAxisSupplier;
     this.endEffector = effector;
     this.speed = speed;
-    this.isConeMode = isConeMode;
     intakeState = intakeState.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
   }

@@ -42,6 +42,8 @@ import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.PurpleLights;
 import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.Commands.SkiPlowPneumatic;
+import frc.robot.Commands.arm.HighCone;
+import frc.robot.Commands.arm.IntakeCone;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.subsystems.ArmSubsystem;
@@ -142,6 +144,10 @@ public class RobotContainer {
     if (LightsExists) {
       LightsInst();
     }
+    if(SkiPlowExists && ArmExists) {
+      SmartDashboard.putData("GoTo Intake Cone", new IntakeCone(arm, skiPlow));
+      SmartDashboard.putData("GoTo High Cone", new HighCone(arm, skiPlow));
+    }
     autoInit();
     configureBindings();
     configDashboard();
@@ -197,7 +203,7 @@ public class RobotContainer {
     SmartDashboard.getNumber("skiplowRollerSpeed", 0.5) 
         //TODO change to a lamda "() ->" number supplier if you want to update this value without rebooting the robot.
     );
-    skiPlow.setDefaultCommand(skiplowcommand);  
+    skiPlow.setDefaultCommand(skiplowcommand);
   }
 
   private void LimelightInst() {

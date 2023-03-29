@@ -273,16 +273,16 @@ public final class Constants {
 }
 public static final class armPoses {
   public static final Rotation2d[] name = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
-  public static final Rotation2d[] RESET = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
-  public static final Rotation2d[] INTAKE_CONE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
-  public static final Rotation2d[] INTAKE_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
-  public static final Rotation2d[] DROP_LOW = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
-  public static final Rotation2d[] MID_CONE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
-  public static final Rotation2d[] MID_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
-  public static final Rotation2d[] HIGH_CONE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
-  public static final Rotation2d[] HIGH_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
-  public static final Rotation2d[] SHELF_CONE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
-  public static final Rotation2d[] SHELF_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
+  public static final Rotation2d[] RESET = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)}; // intake up
+  public static final Rotation2d[] INTAKE_CONE = new Rotation2d[] {Rotation2d.fromDegrees(-38), Rotation2d.fromDegrees(12)}; // intake down
+  public static final Rotation2d[] INTAKE_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(-36), Rotation2d.fromDegrees(9)}; // intake down
+  public static final Rotation2d[] DROP_LOW = new Rotation2d[] {Rotation2d.fromDegrees(10), Rotation2d.fromDegrees(33)}; // intake up
+  public static final Rotation2d[] MID_CONE = new Rotation2d[] {Rotation2d.fromDegrees(7), Rotation2d.fromDegrees(76)}; // intake up
+  public static final Rotation2d[] MID_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(12), Rotation2d.fromDegrees(65)}; // intake up
+  public static final Rotation2d[] HIGH_CONE = new Rotation2d[] {Rotation2d.fromDegrees(29), Rotation2d.fromDegrees(103)}; // intake up
+  public static final Rotation2d[] HIGH_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(26), Rotation2d.fromDegrees(95)}; // intake up
+  public static final Rotation2d[] SHELF_CONE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(93)}; // intake up
+  public static final Rotation2d[] CHUTE_CONE = new Rotation2d[] {Rotation2d.fromDegrees(-14), Rotation2d.fromDegrees(-56)}; // intake down
 }
   public static final class nodePositions {
     public static final double ARM_OFFSET_FROM_CENTER = 0; //TODO

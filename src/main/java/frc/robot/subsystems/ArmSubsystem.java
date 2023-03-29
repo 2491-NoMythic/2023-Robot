@@ -237,11 +237,11 @@ public class ArmSubsystem extends SubsystemBase {
   public void setDesiredSholderAngle(Rotation2d angle) {
     //TODO: valid input check
     lastAngles[0] = angle;
+    SmartDashboard.putNumber("arm desired sholder", lastAngles[0].getDegrees());
   }
 
   private void setShoulderAngle(Rotation2d angle, double feedforward) {
     shoulderPID.setReference(angle.getDegrees(), ControlType.kPosition, 0, feedforward);
-    lastAngles[0] = angle;
   }
 
   /**
@@ -251,6 +251,7 @@ public class ArmSubsystem extends SubsystemBase {
   public void setDesiredElbowAngle(Rotation2d angle) {
     //TODO: valid input check
     lastAngles[1] = angle;
+    SmartDashboard.putNumber("arm desired elbow", lastAngles[1].getDegrees());
   }
 
   private void setElbowAngle(Rotation2d angle, double feedforward) {

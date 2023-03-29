@@ -173,6 +173,8 @@ public class ArmSubsystem extends SubsystemBase {
     double shoulderVector = Math.acos((Math.pow(ARM_SHOULDER_LENGTH_METERS,2)-Math.pow(ARM_ELBOW_LENGTH_METERS, 2)-Math.pow(magnitude, 2))/(-2*ARM_ELBOW_LENGTH_METERS*magnitude));
     double elbowVector = Math.acos((Math.pow(ARM_ELBOW_LENGTH_METERS, 2) - Math.pow(ARM_SHOULDER_LENGTH_METERS, 2) - Math.pow(magnitude, 2))/ (-2 * ARM_SHOULDER_LENGTH_METERS * magnitude));
     if (pose.getX() <= 0.0) elbowVector = -elbowVector;
+    // SmartDashboard.putNumber("shouldervector", shoulderVector);
+    // SmartDashboard.putNumber("shouldervector", shoulderVector);
     Rotation2d shoulderAngle = Rotation2d.fromDegrees(-(poseVector+shoulderVector) + 270);
     Rotation2d elbowAngle = Rotation2d.fromDegrees(poseVector-elbowVector-90);
     return new Rotation2d[] {shoulderAngle, elbowAngle};
@@ -241,8 +243,9 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public void setTarget(Translation2d targetPose) {
     Rotation2d[] angles = calculateJointAngles(targetPose);
-    // setShoulderAngle(angles[0]);
-    // setElbowAngle(angles[1]);
+    double[] feedforward = calculateFeedForward(angles);
+    // setShoulderAngle(angles[0], feedforward[0]);
+    // setElbowAngle(angles[1], feedforward[1]);
   }
   @Override
 	public void periodic() {

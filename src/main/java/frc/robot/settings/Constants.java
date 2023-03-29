@@ -271,6 +271,19 @@ public final class Constants {
     public static final double DEADBAND_NORMAL = 0.05;
     public static final double DEADBAND_LARGE = 0.1;
 }
+public static final class armPoses {
+  public static final Rotation2d[] name = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
+  public static final Rotation2d[] RESET = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
+  public static final Rotation2d[] INTAKE_CONE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
+  public static final Rotation2d[] INTAKE_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
+  public static final Rotation2d[] DROP_LOW = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
+  public static final Rotation2d[] MID_CONE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
+  public static final Rotation2d[] MID_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
+  public static final Rotation2d[] HIGH_CONE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
+  public static final Rotation2d[] HIGH_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
+  public static final Rotation2d[] SHELF_CONE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
+  public static final Rotation2d[] SHELF_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
+}
   public static final class nodePositions {
     public static final double ARM_OFFSET_FROM_CENTER = 0; //TODO
     public static final Pose2d BLUE1 = new Pose2d(1.86, 0.47+ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(180)); //*this nodoe is up against the wall so might be changed */

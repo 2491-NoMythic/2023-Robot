@@ -192,8 +192,8 @@ public class RobotContainer {
     skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));
     skiplowcommand = new SkiPlowPneumatic(skiPlow, 
     opController::getL2Button, // ski plow down
-    opController::getTriangleButton, // Roller Cube
-    opController::getSquareButton, // Roller Cone
+    opController::getTriangleButton, // Roller Cone
+    opController::getSquareButton, // Roller Cube
     SmartDashboard.getNumber("skiplowRollerSpeed", 0.5) 
         //TODO change to a lamda "() ->" number supplier if you want to update this value without rebooting the robot.
     );

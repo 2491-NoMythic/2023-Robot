@@ -43,7 +43,9 @@ import frc.robot.Commands.PurpleLights;
 import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.Commands.SkiPlowPneumatic;
 import frc.robot.settings.Constants;
+import frc.robot.settings.IntakeState;
 import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.IntakeState.intakeMode;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.EndEffector;
@@ -99,6 +101,7 @@ public class RobotContainer {
   public static boolean LightsExists = Preferences.getBoolean("Lights", false);
 
   public static boolean isConeMode;
+  public IntakeState intakeState;
 
   public RobotContainer() {
     /**
@@ -116,6 +119,7 @@ public class RobotContainer {
     autoChooser = new SendableChooser<>();
     eventMap = new HashMap<>();
     isConeMode = false;
+    intakeState = intakeState.getInstance();
 
     SmartDashboard.putNumber("endeffectorBigSpeed", 0.5);
     SmartDashboard.putNumber("endeffectorSmallSpeed", 0.75);
@@ -192,7 +196,6 @@ public class RobotContainer {
     skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));
     skiplowcommand = new SkiPlowPneumatic(skiPlow, 
     opController::getL2Button, // ski plow down
-    () -> isConeMode(),
     SmartDashboard.getNumber("skiplowRollerSpeed", 0.5) 
         //TODO change to a lamda "() ->" number supplier if you want to update this value without rebooting the robot.
     );
@@ -340,6 +343,10 @@ public class RobotContainer {
     }
     new Trigger(opController::getSquareButton).onTrue(new InstantCommand(this::setConeModeFalse));
     new Trigger(opController::getTriangleButton).onTrue(new InstantCommand(this::setConeModeTrue));
+    new Trigger(opController::getTriangleButton).toggleOnTrue(IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
+    new Trigger(opController::getSquareButton).toggleOnTrue(IntakeState.setIntakeMode(intakeMode.CUBE));
+    new Trigger(opController::getCrossButton).toggleOnTrue(IntakeState.setIntakeMode(intakeMode.CONE_GROUND));
+    new Trigger(opController::getCircleButton).toggleOnTrue(IntakeState.setIntakeMode(intakeMode.CONE_RAMP));
   }
   public boolean isConeMode() {return isConeMode;}
   public void setConeModeTrue() {isConeMode = true;}

@@ -42,6 +42,8 @@ import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.PurpleLights;
 import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.Commands.SkiPlowPneumatic;
+import frc.robot.Commands.arm.HighCone;
+import frc.robot.Commands.arm.IntakeCone;
 import frc.robot.settings.Constants;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.subsystems.ArmSubsystem;
@@ -142,6 +144,10 @@ public class RobotContainer {
     if (LightsExists) {
       LightsInst();
     }
+    if(SkiPlowExists && ArmExists) {
+      SmartDashboard.putData("GoTo Intake Cone", new IntakeCone(arm, skiPlow));
+      SmartDashboard.putData("GoTo High Cone", new HighCone(arm, skiPlow));
+    }
     autoInit();
     configureBindings();
     configDashboard();
@@ -192,12 +198,12 @@ public class RobotContainer {
     skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));
     skiplowcommand = new SkiPlowPneumatic(skiPlow, 
     opController::getL2Button, // ski plow down
-    opController::getTriangleButton, // Roller Cube
-    opController::getSquareButton, // Roller Cone
+    opController::getTriangleButton, // Roller Cone
+    opController::getSquareButton, // Roller Cube
     SmartDashboard.getNumber("skiplowRollerSpeed", 0.5) 
         //TODO change to a lamda "() ->" number supplier if you want to update this value without rebooting the robot.
     );
-    skiPlow.setDefaultCommand(skiplowcommand);  
+    skiPlow.setDefaultCommand(skiplowcommand);
   }
 
   private void LimelightInst() {

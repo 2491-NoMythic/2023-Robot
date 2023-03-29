@@ -71,18 +71,23 @@ public class SkiPlowPneumatic extends CommandBase {
     switch(intakeState.getIntakeMode()){
     case CUBE:{
       skiplow.rollerCube();
+      break;
     }
     case CONE_GROUND:{
       skiplow.rollerCone();
+      break;
     }
     case CONE_RAMP:{
       skiplow.rollerCone();
+      break;
     }
     case CONE_SHELF:{
       skiplow.rollerCone();
+      break;
     }
     default:{
       skiplow.rollerOff();
+      break;
     }
   }
   }

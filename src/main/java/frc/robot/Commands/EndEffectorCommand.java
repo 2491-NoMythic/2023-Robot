@@ -55,6 +55,7 @@ public class EndEffectorCommand extends CommandBase {
       } 
       if (endEffectorAxis.getAsInt()==180) {
         endEffector.rollerOutCube();
+        break;
       }
 
       default:
@@ -64,6 +65,7 @@ public class EndEffectorCommand extends CommandBase {
       if (endEffectorAxis.getAsInt()==180) {
         endEffector.rollerOutCone();
       }  
+      break;
     }
 
   }

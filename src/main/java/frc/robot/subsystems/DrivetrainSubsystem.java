@@ -168,6 +168,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return getPose().nearest(nodePositions.ALL_NODES);
 	}
     public void resetOdometry(Pose2d pose) {
+		zeroGyroscope(pose.getRotation().getDegrees());
         odometer.resetPosition(pose.getRotation(), getModulePositions(), pose);
     }
     public void resetOdometry() {

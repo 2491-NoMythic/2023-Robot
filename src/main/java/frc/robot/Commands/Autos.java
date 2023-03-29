@@ -100,65 +100,65 @@ public final class Autos {
     // }
     public SequentialCommandGroup N2Score2Bal() {
         return new SequentialCommandGroup(
-            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(N2Score2Bal),
             new DriveBalanceCommand(drivetrain),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
     public SequentialCommandGroup N2Score2() {
         return new SequentialCommandGroup(
-            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(N2Score2),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
     public SequentialCommandGroup N8Score2Bal() {
         return new SequentialCommandGroup(
-            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(N8Score2Bal),
             new DriveBalanceCommand(drivetrain),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
     public SequentialCommandGroup N8Score2() {
         return new SequentialCommandGroup(
-            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(N8Score2),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain)); 
     }
 
     public SequentialCommandGroup score1() {
         return new SequentialCommandGroup(
-            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(Score1),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
     public SequentialCommandGroup score1Bal() {
         return new SequentialCommandGroup(
-            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(Score1Bal),
             new DriveBalanceCommand(drivetrain),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
     public SequentialCommandGroup score1TaxiBal() {
         return new SequentialCommandGroup(
-            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(Score1TaxiBal),
             new DriveBalanceCommand(drivetrain),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
     public SequentialCommandGroup score1Taxi() {
         return new SequentialCommandGroup(
-            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(Score1Taxi),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
     public SequentialCommandGroup forward180() {
         return new SequentialCommandGroup(
-            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(forward180Path));
     }
     public SequentialCommandGroup coolCircle() {
         return new SequentialCommandGroup(
-            new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
             autoBuilder.fullAuto(coolCirclePath));
     }
     // load all paths.

@@ -11,6 +11,8 @@ import java.util.function.IntSupplier;
 
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.settings.IntakeState;
+import frc.robot.settings.IntakeState.intakeMode;
 import frc.robot.subsystems.EndEffector;
 
 public class EndEffectorCommand extends CommandBase {
@@ -20,17 +22,16 @@ public class EndEffectorCommand extends CommandBase {
   public PS4Controller opController;
   public IntSupplier endEffectorAxis;
   public double speed;
-  public BooleanSupplier isConeMode;
+  public IntakeState intakeState;
 
   public EndEffectorCommand(EndEffector effector, 
     IntSupplier endEffectorAxisSupplier, 
-    double speed,
-    BooleanSupplier isConeMode) {
+    double speed) {
     addRequirements(effector);
     this.endEffectorAxis = endEffectorAxisSupplier;
     this.endEffector = effector;
     this.speed = speed;
-    this.isConeMode = isConeMode;
+    intakeState = intakeState.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -46,20 +47,27 @@ public class EndEffectorCommand extends CommandBase {
     if (endEffectorAxis.getAsInt()==-1) {
       endEffector.setEndEffectorPower(0, 0);
     } 
-    if (isConeMode.getAsBoolean()) {
-      if (endEffectorAxis.getAsInt()==0) {
-        endEffector.rollerInCone();
-      } 
-      if (endEffectorAxis.getAsInt()==180) {
-        endEffector.rollerOutCone();
-    } }
-    if (!isConeMode.getAsBoolean()) {
+
+    switch(intakeState.getIntakeMode()){
+      case CUBE:
       if (endEffectorAxis.getAsInt()==0) {
         endEffector.rollerInCube();
       } 
       if (endEffectorAxis.getAsInt()==180) {
         endEffector.rollerOutCube();
-    } }
+        break;
+      }
+
+      default:
+      if (endEffectorAxis.getAsInt()==0) {
+        endEffector.rollerInCone();
+      } 
+      if (endEffectorAxis.getAsInt()==180) {
+        endEffector.rollerOutCone();
+      }  
+      break;
+    }
+
   }
 
   // Called once the command ends or is interrupted.

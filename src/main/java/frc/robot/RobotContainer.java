@@ -45,6 +45,12 @@ import frc.robot.Commands.arm.IntakeCone;
 import frc.robot.Commands.arm.IntakeCube;
 import frc.robot.Commands.arm.Reset;
 import frc.robot.settings.Constants;
+
+import frc.robot.settings.IntakeState;
+import frc.robot.settings.Constants.DriveConstants;
+import frc.robot.settings.Constants.Intake;
+import frc.robot.settings.IntakeState.intakeMode;
+
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.EndEffector;
@@ -98,7 +104,7 @@ public class RobotContainer {
   public static boolean DrivetrainExists = Preferences.getBoolean("Drivetrain", false);
   public static boolean LightsExists = Preferences.getBoolean("Lights", false);
 
-  public static boolean isConeMode;
+  public IntakeState intakeState;
 
   public RobotContainer() {
     /**
@@ -115,7 +121,7 @@ public class RobotContainer {
     opController = new PS4Controller(1);
     autoChooser = new SendableChooser<>();
     eventMap = new HashMap<>();
-    isConeMode = false;
+    intakeState = intakeState.getInstance();
 
     SmartDashboard.putNumber("endeffectorBigSpeed", 0.5);
     SmartDashboard.putNumber("endeffectorSmallSpeed", 0.75);
@@ -190,16 +196,13 @@ public class RobotContainer {
     effector = new EndEffector(SmartDashboard.getNumber("endeffectorBigSpeed", 0.2), SmartDashboard.getNumber("endeffectorSmallSpeed", 0.5));
     endEffectorCommand = new EndEffectorCommand(effector, 
     () -> opController.getPOV(), 
-    SmartDashboard.getNumber("endeffectorSpeed", 0.5),
-    ()->isConeMode());
+    SmartDashboard.getNumber("endeffectorSpeed", 0.5));
     effector.setDefaultCommand(endEffectorCommand);
   }
   private void SkiPlowInst(){
     skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));
     skiplowcommand = new SkiPlowPneumatic(skiPlow, 
     opController::getL2Button, // ski plow down
-    opController::getTriangleButton, // Roller Cone
-    opController::getSquareButton, // Roller Cube
     SmartDashboard.getNumber("skiplowRollerSpeed", 0.5) 
         //TODO change to a lamda "() ->" number supplier if you want to update this value without rebooting the robot.
     );
@@ -345,14 +348,12 @@ public class RobotContainer {
       BooleanSupplier tmp = opController::getR1Button;
       BooleanSupplier tmp2 = () -> opController.getR1Button();
     }
-    if (EndEffectorExists) {
-      new Trigger(opController::getTriangleButton).onTrue(new InstantCommand(this::setConeModeTrue));
-      new Trigger(opController::getSquareButton).onTrue(new InstantCommand(this::setConeModeFalse));
-    }
+    new Trigger(opController::getTriangleButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CONE_SHELF))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
+    new Trigger(opController::getSquareButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CUBE))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
+    new Trigger(opController::getCircleButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CONE_RAMP))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
+    new Trigger(opController::getCrossButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CONE_GROUND))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
+
   }
-  public boolean isConeMode() {return isConeMode;}
-  public void setConeModeTrue() {isConeMode = true;}
-  public void setConeModeFalse() {isConeMode = false;}
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

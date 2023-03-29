@@ -7,6 +7,8 @@ package frc.robot.Commands;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.settings.IntakeState;
+import frc.robot.settings.Constants.Intake;
 import frc.robot.subsystems.SkiPlow;
 
 public class SkiPlowPneumatic extends CommandBase {
@@ -17,10 +19,9 @@ public class SkiPlowPneumatic extends CommandBase {
   public double maxSpeed;
   public BooleanSupplier skiPlowDown;
   // public BooleanSupplier lock;
-  public BooleanSupplier rollCone;
-  public BooleanSupplier rollCube;
+  public IntakeState intakeState;
 
-  public SkiPlowPneumatic(SkiPlow skiPlow, BooleanSupplier SkiPlowDown, BooleanSupplier RollerCone, BooleanSupplier RollerCube, double maxSpeed) {
+  public SkiPlowPneumatic(SkiPlow skiPlow, BooleanSupplier SkiPlowDown, double maxSpeed) {
     this.skiplow =  skiPlow;
     // this.opController = opController;
 
@@ -29,10 +30,9 @@ public class SkiPlowPneumatic extends CommandBase {
     addRequirements(skiPlow);
 
     skiPlowDown = SkiPlowDown;
+    this.intakeState = intakeState.getInstance();
     // lock = PneumaticLock;
 
-    rollCone = RollerCone;
-    rollCube  = RollerCube;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -67,13 +67,29 @@ public class SkiPlowPneumatic extends CommandBase {
     //  skiplow.lockOn();}
     // else skiplow.lockOff(); 
 
-    if (rollCone.getAsBoolean()) {
-      skiplow.rollerCone();
-    } else if(rollCube.getAsBoolean()){
-        skiplow.rollerCube();
-    } else {
-      skiplow.rollerOff();
+
+    switch(intakeState.getIntakeMode()){
+    case CUBE:{
+      skiplow.rollerCube();
+      break;
     }
+    case CONE_GROUND:{
+      skiplow.rollerCone();
+      break;
+    }
+    case CONE_RAMP:{
+      skiplow.rollerCone();
+      break;
+    }
+    case CONE_SHELF:{
+      skiplow.rollerCone();
+      break;
+    }
+    default:{
+      skiplow.rollerOff();
+      break;
+    }
+  }
   }
   
   // Called once the command ends or is interrupted.

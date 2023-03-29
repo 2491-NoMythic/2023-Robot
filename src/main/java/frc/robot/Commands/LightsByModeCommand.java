@@ -1,6 +1,8 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.settings.IntakeState;
+import frc.robot.settings.IntakeState.intakeMode;
 import frc.robot.subsystems.SubsystemLights;
 
 /**
@@ -8,18 +10,12 @@ import frc.robot.subsystems.SubsystemLights;
  */
 public class LightsByModeCommand extends CommandBase {
   private SubsystemLights subsystemLights;
-  private GamePieceMode gamePieceMode;
+  public IntakeState intakeState;
   private boolean blink;
   private boolean isBlinking = false;
   private int counter = 0;
   private static int RATE = 15;
 
-  public enum GamePieceMode {
-    CubeMode1,
-    ConeMode1,
-    ConeMode2,
-    ConeMode3;
-  }
 
   /**
    * Create light command based on the GamePieceMode.
@@ -29,11 +25,11 @@ public class LightsByModeCommand extends CommandBase {
    * @param gamePieceMode determines the lights shown
    * @param blink lights if true
    */
-  public LightsByModeCommand(SubsystemLights subsystemLights, GamePieceMode gamePieceMode, boolean blink) {
+  public LightsByModeCommand(SubsystemLights subsystemLights, boolean blink) {
     addRequirements(subsystemLights);
     this.subsystemLights = subsystemLights;
-    this.gamePieceMode = gamePieceMode;
     this.blink = blink;
+    this.intakeState = intakeState.getInstance();
   }
 
   private void drawCubeMode1() {
@@ -64,14 +60,14 @@ public class LightsByModeCommand extends CommandBase {
   }
 
   private void drawConeMode() {
-    switch(this.gamePieceMode) {
-      case ConeMode1: 
+    switch(this.intakeState.getIntakeMode()) {
+      case CONE_GROUND: 
         drawConeMode1();
         break;
-      case ConeMode2: 
+      case CONE_RAMP: 
         drawConeMode2();
         break;
-      case ConeMode3: 
+      case CONE_SHELF: 
         drawConeMode3();
         break;
       default: drawCubeMode1();

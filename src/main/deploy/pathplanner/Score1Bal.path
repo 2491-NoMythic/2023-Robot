@@ -10,15 +10,14 @@
         "x": 2.8000000000000043,
         "y": 3.3
       },
-      "holonomicAngle": 0,
+      "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "IntakeDown",
-          "IntakeUp"
+          "HighCone"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -35,15 +34,13 @@
         "y": 3.3
       },
       "nextControl": null,
-      "holonomicAngle": 0,
+      "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "stop"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0

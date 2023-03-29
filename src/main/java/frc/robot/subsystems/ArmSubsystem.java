@@ -43,6 +43,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.settings.Constants.Poses;
 
 
 
@@ -230,28 +231,36 @@ public class ArmSubsystem extends SubsystemBase {
   public void setElbowPower(double power){
       elbowMotor.set(power);
   }
+
+  /** set target for the sholder to a given pose */
+  public void setDesiredSholderPose(Poses pose) {
+    setDesiredSholderRotation(pose.getSholder());
+  }
+
   /**
-   * sets the target angle for the first segment of the arm in relation to the ground
-   * @param angle
+   * sets the target rotation 2d for the first segment of the arm assuming a 12 o'clock zero and clockwise positive rotation
+   * @param rot rotation2d target
    */
-  public void setDesiredSholderAngle(Rotation2d angle) {
+  public void setDesiredSholderRotation(Rotation2d rot) {
     //TODO: valid input check
-    lastAngles[0] = angle;
-    SmartDashboard.putNumber("arm desired sholder", lastAngles[0].getDegrees());
+    lastAngles[0] = rot;
   }
 
   private void setShoulderAngle(Rotation2d angle, double feedforward) {
     shoulderPID.setReference(angle.getDegrees(), ControlType.kPosition, 0, feedforward);
   }
+  /** set target for the elbow to a given pose */
+  public void setDesiredElbowPose(Poses pose) {
+    setDesiredElbowRotation(pose.getElbow());
+  }
 
   /**
-   * sets the target angle for the second segment of the arm in relation to the ground
-   * @param angle
+   * sets the target rotation 2d for the second segment of the arm assuming a 6 o'clock zero and counter clockwise positive rotation
+   * @param rot rotation2d target
    */
-  public void setDesiredElbowAngle(Rotation2d angle) {
+  public void setDesiredElbowRotation(Rotation2d rot) {
     //TODO: valid input check
-    lastAngles[1] = angle;
-    SmartDashboard.putNumber("arm desired elbow", lastAngles[1].getDegrees());
+    lastAngles[1] = rot;
   }
 
   private void setElbowAngle(Rotation2d angle, double feedforward) {
@@ -266,8 +275,12 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
 	public void periodic() {
+    Shuffleboard.getTab(ARM_SHUFFLEBOARD_TAB).addNumber("desired sholder", lastAngles[0]::getDegrees);
+    Shuffleboard.getTab(ARM_SHUFFLEBOARD_TAB).addNumber("desired elbow", lastAngles[1]::getDegrees);
+    
     double[] feedforward = calculateFeedForward(lastAngles);
     setShoulderAngle(lastAngles[0], feedforward[0]);
     setElbowAngle(lastAngles[1], feedforward[1]);
+
   }
 }

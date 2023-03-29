@@ -101,7 +101,6 @@ public class RobotContainer {
   public static boolean DrivetrainExists = Preferences.getBoolean("Drivetrain", false);
   public static boolean LightsExists = Preferences.getBoolean("Lights", false);
 
-  public static boolean isConeMode;
   public IntakeState intakeState;
 
   public RobotContainer() {
@@ -119,7 +118,6 @@ public class RobotContainer {
     opController = new PS4Controller(1);
     autoChooser = new SendableChooser<>();
     eventMap = new HashMap<>();
-    isConeMode = false;
     intakeState = intakeState.getInstance();
 
     SmartDashboard.putNumber("endeffectorBigSpeed", 0.5);
@@ -341,17 +339,12 @@ public class RobotContainer {
       BooleanSupplier tmp = opController::getR1Button;
       BooleanSupplier tmp2 = () -> opController.getR1Button();
     }
-    new Trigger(opController::getSquareButton).onTrue(new InstantCommand(this::setConeModeFalse));
-    new Trigger(opController::getTriangleButton).onTrue(new InstantCommand(this::setConeModeTrue));
     new Trigger(opController::getTriangleButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CONE_SHELF))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
     new Trigger(opController::getSquareButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CUBE))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
     new Trigger(opController::getCircleButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CONE_RAMP))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
     new Trigger(opController::getCrossButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CONE_GROUND))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
 
   }
-  public boolean isConeMode() {return isConeMode;}
-  public void setConeModeTrue() {isConeMode = true;}
-  public void setConeModeFalse() {isConeMode = false;}
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

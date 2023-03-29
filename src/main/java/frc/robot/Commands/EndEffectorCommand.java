@@ -22,7 +22,6 @@ public class EndEffectorCommand extends CommandBase {
   public PS4Controller opController;
   public IntSupplier endEffectorAxis;
   public double speed;
-  public BooleanSupplier isConeMode;
   public IntakeState intakeState;
 
   public EndEffectorCommand(EndEffector effector, 

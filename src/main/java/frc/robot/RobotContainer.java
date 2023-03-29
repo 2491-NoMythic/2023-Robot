@@ -195,8 +195,7 @@ public class RobotContainer {
     effector = new EndEffector(SmartDashboard.getNumber("endeffectorBigSpeed", 0.2), SmartDashboard.getNumber("endeffectorSmallSpeed", 0.5));
     endEffectorCommand = new EndEffectorCommand(effector, 
     () -> opController.getPOV(), 
-    SmartDashboard.getNumber("endeffectorSpeed", 0.5),
-    ()->isConeMode());
+    SmartDashboard.getNumber("endeffectorSpeed", 0.5));
     effector.setDefaultCommand(endEffectorCommand);
   }
   private void SkiPlowInst(){

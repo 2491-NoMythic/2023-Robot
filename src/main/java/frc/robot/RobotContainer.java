@@ -198,8 +198,7 @@ public class RobotContainer {
     skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));
     skiplowcommand = new SkiPlowPneumatic(skiPlow, 
     opController::getL2Button, // ski plow down
-    opController::getTriangleButton, // Roller Cone
-    opController::getSquareButton, // Roller Cube
+    () -> isConeMode(),
     SmartDashboard.getNumber("skiplowRollerSpeed", 0.5) 
         //TODO change to a lamda "() ->" number supplier if you want to update this value without rebooting the robot.
     );
@@ -345,10 +344,8 @@ public class RobotContainer {
       BooleanSupplier tmp = opController::getR1Button;
       BooleanSupplier tmp2 = () -> opController.getR1Button();
     }
-    if (EndEffectorExists) {
-      new Trigger(opController::getTriangleButton).onTrue(new InstantCommand(this::setConeModeTrue));
-      new Trigger(opController::getSquareButton).onTrue(new InstantCommand(this::setConeModeFalse));
-    }
+    new Trigger(opController::getSquareButton).onTrue(new InstantCommand(this::setConeModeFalse));
+    new Trigger(opController::getTriangleButton).onTrue(new InstantCommand(this::setConeModeTrue));
   }
   public boolean isConeMode() {return isConeMode;}
   public void setConeModeTrue() {isConeMode = true;}

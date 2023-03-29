@@ -17,10 +17,9 @@ public class SkiPlowPneumatic extends CommandBase {
   public double maxSpeed;
   public BooleanSupplier skiPlowDown;
   // public BooleanSupplier lock;
-  public BooleanSupplier rollCone;
-  public BooleanSupplier rollCube;
+  public BooleanSupplier isConeMode;
 
-  public SkiPlowPneumatic(SkiPlow skiPlow, BooleanSupplier SkiPlowDown, BooleanSupplier RollerCone, BooleanSupplier RollerCube, double maxSpeed) {
+  public SkiPlowPneumatic(SkiPlow skiPlow, BooleanSupplier SkiPlowDown, BooleanSupplier isConeMode, double maxSpeed) {
     this.skiplow =  skiPlow;
     // this.opController = opController;
 
@@ -31,8 +30,7 @@ public class SkiPlowPneumatic extends CommandBase {
     skiPlowDown = SkiPlowDown;
     // lock = PneumaticLock;
 
-    rollCone = RollerCone;
-    rollCube  = RollerCube;
+    this.isConeMode = isConeMode;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -67,9 +65,9 @@ public class SkiPlowPneumatic extends CommandBase {
     //  skiplow.lockOn();}
     // else skiplow.lockOff(); 
 
-    if (rollCone.getAsBoolean()) {
+    if (isConeMode.getAsBoolean()) {
       skiplow.rollerCone();
-    } else if(rollCube.getAsBoolean()){
+    } else if(!isConeMode.getAsBoolean()){
         skiplow.rollerCube();
     } else {
       skiplow.rollerOff();

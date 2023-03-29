@@ -19,7 +19,6 @@ public class SkiPlowPneumatic extends CommandBase {
   public double maxSpeed;
   public BooleanSupplier skiPlowDown;
   // public BooleanSupplier lock;
-  public BooleanSupplier isConeMode;
   public IntakeState intakeState;
 
   public SkiPlowPneumatic(SkiPlow skiPlow, BooleanSupplier SkiPlowDown, double maxSpeed) {

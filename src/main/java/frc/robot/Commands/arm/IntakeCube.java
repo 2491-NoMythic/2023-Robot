@@ -4,11 +4,11 @@
 
 package frc.robot.Commands.arm;
 
+import static edu.wpi.first.wpilibj2.command.Commands.either;
+import static edu.wpi.first.wpilibj2.command.Commands.none;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
-import static edu.wpi.first.wpilibj2.command.Commands.none;
-import static edu.wpi.first.wpilibj2.command.Commands.either;
-import static frc.robot.settings.Constants.Poses.INTAKE_CONE;
+import static frc.robot.settings.Constants.Poses.INTAKE_CUBE;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ArmSubsystem;
@@ -17,14 +17,13 @@ import frc.robot.subsystems.SkiPlow;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class IntakeCone extends SequentialCommandGroup {
-  /** Creates a new IntakeCone. */
-  public IntakeCone(ArmSubsystem arm, SkiPlow intake) {
-
+public class IntakeCube extends SequentialCommandGroup {
+  /** Creates a new IntakeCube. */
+  public IntakeCube(ArmSubsystem arm, SkiPlow intake) {
     addCommands(
-        either(runOnce(intake::pistonDown, intake), none(), INTAKE_CONE::isRequiresIntakeDown),
-        runOnce(() -> arm.setDesiredElbowPose(INTAKE_CONE), arm),
+        either(runOnce(intake::pistonDown, intake), none(), INTAKE_CUBE::isRequiresIntakeDown),
+        runOnce(() -> arm.setDesiredElbowPose(INTAKE_CUBE), arm),
         waitUntil(arm::isElbowAtTarget).withTimeout(1),
-        runOnce(() -> arm.setDesiredSholderPose(INTAKE_CONE), arm));
+        runOnce(() -> arm.setDesiredSholderPose(INTAKE_CUBE), arm));
   }
 }

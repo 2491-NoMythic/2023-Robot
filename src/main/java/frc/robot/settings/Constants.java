@@ -62,9 +62,6 @@ public final class Constants {
     public static final double ARM_ELBOW_MAXVEL_RPM = 7.5;
     public static final double ARM_ELBOW_MAXACC_RPM = 1;
   }
-  public static final class Preferences{
-  
-  }
   public static final class DriveConstants {
     public enum Positions{
       FL(0),
@@ -271,19 +268,43 @@ public final class Constants {
     public static final double DEADBAND_NORMAL = 0.05;
     public static final double DEADBAND_LARGE = 0.1;
 }
-public static final class armPoses {
-  public static final Rotation2d[] name = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
-  public static final Rotation2d[] RESET = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)}; // intake up
-  public static final Rotation2d[] INTAKE_CONE = new Rotation2d[] {Rotation2d.fromDegrees(-38), Rotation2d.fromDegrees(12)}; // intake down
-  public static final Rotation2d[] INTAKE_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(-36), Rotation2d.fromDegrees(9)}; // intake down
-  public static final Rotation2d[] DROP_LOW = new Rotation2d[] {Rotation2d.fromDegrees(10), Rotation2d.fromDegrees(33)}; // intake up
-  public static final Rotation2d[] MID_CONE = new Rotation2d[] {Rotation2d.fromDegrees(7), Rotation2d.fromDegrees(76)}; // intake up
-  public static final Rotation2d[] MID_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(12), Rotation2d.fromDegrees(65)}; // intake up
-  public static final Rotation2d[] HIGH_CONE = new Rotation2d[] {Rotation2d.fromDegrees(29), Rotation2d.fromDegrees(103)}; // intake up
-  public static final Rotation2d[] HIGH_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(26), Rotation2d.fromDegrees(95)}; // intake up
-  public static final Rotation2d[] SHELF_CONE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(93)}; // intake up
-  public static final Rotation2d[] CHUTE_CONE = new Rotation2d[] {Rotation2d.fromDegrees(-14), Rotation2d.fromDegrees(-56)}; // intake down
-}
+
+  public enum Poses{
+    RESET(0,0, false),
+    INTAKE_CONE(-38,12, true),
+    INTAKE_CUBE(-36,9, true),
+    DROP_LOW(10,33, false),
+    MID_CONE(7,76, false),
+    MID_CUBE(12,65, false),
+    HIGH_CONE(29,103, false),
+    HIGH_CUBE(26,95, false),
+    SHELF_CONE(0,93, false),
+    CHUTE_CONE(-14,-56, true);
+
+    private double[] angles;
+    private boolean requiresIntakeDown;
+    private static final int SHOLDER = 0;
+    private static final int ELBOW = 1;
+    
+    Poses(double sholder, double elbow, boolean requiresIntakeDown) {
+    angles[0] = sholder;
+    angles[1] = elbow;
+    this.requiresIntakeDown = requiresIntakeDown;
+    }
+    public double getSholderAngle() {return angles[SHOLDER];}
+    public double getElbowAngle() {return angles[ELBOW];}
+
+    /** sholder as a rotation 2d */
+    public Rotation2d getSholder() {return Rotation2d.fromDegrees(angles[SHOLDER]);}
+
+    /** elbow as a rotation 2d */
+    public Rotation2d getElbow() {return Rotation2d.fromDegrees(angles[ELBOW]);}
+
+    public Rotation2d[] getRotations() {
+    return new Rotation2d[] {getSholder(),getElbow()};
+    }
+    public boolean isRequiresIntakeDown() {return requiresIntakeDown;};
+  }
   public static final class nodePositions {
     public static final double ARM_OFFSET_FROM_CENTER = 0; //TODO
     public static final Pose2d BLUE1 = new Pose2d(1.86, 0.47+ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(180)); //*this nodoe is up against the wall so might be changed */

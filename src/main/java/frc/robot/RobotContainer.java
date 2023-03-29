@@ -11,13 +11,12 @@ import static frc.robot.settings.Constants.PS4Driver.X_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Y_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Z_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Z_ROTATE;
+import static frc.robot.settings.Constants.nodePositions.ALL_NODES;
 
 import java.util.HashMap;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.Preferences;
@@ -28,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -44,8 +42,9 @@ import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.Commands.SkiPlowPneumatic;
 import frc.robot.Commands.arm.HighCone;
 import frc.robot.Commands.arm.IntakeCone;
+import frc.robot.Commands.arm.IntakeCube;
+import frc.robot.Commands.arm.Reset;
 import frc.robot.settings.Constants;
-import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.EndEffector;
@@ -53,7 +52,6 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightmotorSubsystem;
 import frc.robot.subsystems.SkiPlow;
 import frc.robot.subsystems.SubsystemLights;
-import static frc.robot.settings.Constants.nodePositions.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -146,6 +144,8 @@ public class RobotContainer {
     }
     if(SkiPlowExists && ArmExists) {
       SmartDashboard.putData("GoTo Intake Cone", new IntakeCone(arm, skiPlow));
+      SmartDashboard.putData("GoTo Intake Cube", new IntakeCube(arm, skiPlow));
+      SmartDashboard.putData("GoTo Reset", new Reset(arm, skiPlow));
       SmartDashboard.putData("GoTo High Cone", new HighCone(arm, skiPlow));
     }
     autoInit();

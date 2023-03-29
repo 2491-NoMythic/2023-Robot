@@ -4,9 +4,11 @@
 
 package frc.robot.Commands.arm;
 
-import static frc.robot.settings.Constants.armPoses.HIGH_CONE;
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+import static edu.wpi.first.wpilibj2.command.Commands.none;
+import static edu.wpi.first.wpilibj2.command.Commands.either;
+import static frc.robot.settings.Constants.Poses.HIGH_CONE;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SkiPlow;
@@ -19,8 +21,10 @@ public class HighCone extends SequentialCommandGroup {
   public HighCone(ArmSubsystem arm, SkiPlow intake) {
     // Add your commands in the addCommands() call, e.g.
     addCommands(
-        new InstantCommand(intake::pistonUp, intake),
-        new InstantCommand(() -> arm.setDesiredElbowAngle(HIGH_CONE[1]), arm),
-        new InstantCommand(() -> arm.setDesiredSholderAngle(HIGH_CONE[0]), arm));
+        either(runOnce(intake::pistonDown, intake), none(), HIGH_CONE::isRequiresIntakeDown),
+        runOnce(intake::pistonUp, intake),
+        runOnce(() -> arm.setDesiredElbowPose(HIGH_CONE), arm),
+        runOnce(() -> arm.setDesiredSholderPose(HIGH_CONE), arm),
+        runOnce(intake::pistonUp, intake));
   }
 }

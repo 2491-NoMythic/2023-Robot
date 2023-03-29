@@ -4,11 +4,11 @@
 
 package frc.robot.Commands.arm;
 
-import edu.wpi.first.math.geometry.Rotation2d;
+import static frc.robot.settings.Constants.armPoses.INTAKE_CONE;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import static frc.robot.settings.Constants.armPoses.INTAKE_CONE;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SkiPlow;
 
@@ -17,7 +17,7 @@ import frc.robot.subsystems.SkiPlow;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeCone extends SequentialCommandGroup {
   /** Creates a new IntakeCone. */
-  public IntakeCone(ArmSubsystem arm, SkiPlow intake, Rotation2d[] pose) {
+  public IntakeCone(ArmSubsystem arm, SkiPlow intake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(

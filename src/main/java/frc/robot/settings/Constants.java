@@ -39,8 +39,10 @@ public final class Constants {
     public static final String ARM_SHUFFLEBOARD_TAB = "Arm";
     public static final int ARM_SHOULDER_LOCK_CHANNEL = 4;
     public static final int ARM_ELBOW_LOCK_CHANNEL = 3;
-    public static final double ARM_SHOULDER_ENCODER_OFFSET_DEG = 354.765;
-    public static final double ARM_ELBOW_ENCODER_OFFSET = 26.318;
+    // public static final double ARM_SHOULDER_ENCODER_OFFSET_DEG = 354.765;
+    public static final double ARM_SHOULDER_ENCODER_OFFSET_DEG = 272.1968096;
+    // public static final double ARM_ELBOW_ENCODER_OFFSET = 26.318;
+    public static final double ARM_ELBOW_ENCODER_OFFSET = 358.2847810;
     public static final double ARM_SHOULDER_LENGTH_METERS = 0.9906;
     public static final double ARM_ELBOW_LENGTH_METERS = 0.7366;
     public static final double ARM_ELBOW_CENTER_OF_MASS_OFFSET_METERS = 0.7;
@@ -53,7 +55,8 @@ public final class Constants {
     public static final double ARM_ELBOW_K_P = 0.01;
     public static final double ARM_ELBOW_K_I = 0;
     public static final double ARM_ELBOW_K_D = 0;
-    public static final double ARM_ELBOW_FF_K_G = 0.85;
+    // public static final double ARM_ELBOW_FF_K_G = 0.85;
+    public static final double ARM_ELBOW_FF_K_G = 1;
     public static final double ARM_SHOULDER_MAXVEL_RPM = 7.5;
     public static final double ARM_SHOULDER_MAXACC_RPM = 1;
     public static final double ARM_ELBOW_MAXVEL_RPM = 7.5;
@@ -267,6 +270,19 @@ public final class Constants {
     public static final double NO_INPUT = 404;
     public static final double DEADBAND_NORMAL = 0.05;
     public static final double DEADBAND_LARGE = 0.1;
+}
+public static final class armPoses {
+  public static final Rotation2d[] name = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)};
+  public static final Rotation2d[] RESET = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)}; // intake up
+  public static final Rotation2d[] INTAKE_CONE = new Rotation2d[] {Rotation2d.fromDegrees(-38), Rotation2d.fromDegrees(12)}; // intake down
+  public static final Rotation2d[] INTAKE_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(-36), Rotation2d.fromDegrees(9)}; // intake down
+  public static final Rotation2d[] DROP_LOW = new Rotation2d[] {Rotation2d.fromDegrees(10), Rotation2d.fromDegrees(33)}; // intake up
+  public static final Rotation2d[] MID_CONE = new Rotation2d[] {Rotation2d.fromDegrees(7), Rotation2d.fromDegrees(76)}; // intake up
+  public static final Rotation2d[] MID_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(12), Rotation2d.fromDegrees(65)}; // intake up
+  public static final Rotation2d[] HIGH_CONE = new Rotation2d[] {Rotation2d.fromDegrees(29), Rotation2d.fromDegrees(103)}; // intake up
+  public static final Rotation2d[] HIGH_CUBE = new Rotation2d[] {Rotation2d.fromDegrees(26), Rotation2d.fromDegrees(95)}; // intake up
+  public static final Rotation2d[] SHELF_CONE = new Rotation2d[] {Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(93)}; // intake up
+  public static final Rotation2d[] CHUTE_CONE = new Rotation2d[] {Rotation2d.fromDegrees(-14), Rotation2d.fromDegrees(-56)}; // intake down
 }
   public static final class nodePositions {
     public static final double ARM_OFFSET_FROM_CENTER = 0; //TODO

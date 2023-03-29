@@ -349,10 +349,10 @@ public class RobotContainer {
     }
     new Trigger(opController::getSquareButton).onTrue(new InstantCommand(this::setConeModeFalse));
     new Trigger(opController::getTriangleButton).onTrue(new InstantCommand(this::setConeModeTrue));
-    new Trigger(opController::getTriangleButton).toggleOnTrue(IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
-    new Trigger(opController::getSquareButton).toggleOnTrue(IntakeState.setIntakeMode(intakeMode.CUBE));
-    new Trigger(opController::getCrossButton).toggleOnTrue(IntakeState.setIntakeMode(intakeMode.CONE_GROUND));
-    new Trigger(opController::getCircleButton).toggleOnTrue(IntakeState.setIntakeMode(intakeMode.CONE_RAMP));
+    new Trigger(opController::getTriangleButton).onTrue(IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
+    new Trigger(opController::getSquareButton).onTrue(IntakeState.setIntakeMode(intakeMode.CUBE));
+    new Trigger(opController::getCrossButton).onTrue(IntakeState.setIntakeMode(intakeMode.CONE_GROUND));
+    new Trigger(opController::getCircleButton).onTrue(IntakeState.setIntakeMode(intakeMode.CONE_RAMP));
   }
   public boolean isConeMode() {return isConeMode;}
   public void setConeModeTrue() {isConeMode = true;}

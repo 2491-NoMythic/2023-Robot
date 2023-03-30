@@ -65,6 +65,14 @@ public class EndEffector extends SubsystemBase {
         sparkEndEffectorBigRoller.set(0);
         sparkEndEffectorSmallRoller.set(0);
     }
+    public void rollerPassiveCube() {
+        sparkEndEffectorBigRoller.set(-END_EFFECTOR_BIG_PASSIVE_POWER);
+        sparkEndEffectorSmallRoller.set(END_EFFECTOR_SMALL_PASSIVE_POWER);
+    }
+    public void rollerPassiveCone() {
+        sparkEndEffectorBigRoller.set(-END_EFFECTOR_BIG_PASSIVE_POWER);
+        sparkEndEffectorSmallRoller.set(-END_EFFECTOR_SMALL_PASSIVE_POWER);
+    }
     public double getEndEffectorPosition() {
         return endEffectorEncoder.getPosition();
         // endEffectorMotor.getSelectedSensorPosition();

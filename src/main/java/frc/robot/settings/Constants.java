@@ -279,7 +279,8 @@ public final class Constants {
     HIGH_CONE(29,103, false),
     HIGH_CUBE(26,95, false),
     SHELF_CONE(0,93, false),
-    CHUTE_CONE(-14,-56, true);
+    CHUTE_CONE(-14,-56, true),
+    AVOID_POST(-20, 45, true); //TODO: how far back to avoid?
 
     private double[] angles;
     private boolean requiresIntakeDown;

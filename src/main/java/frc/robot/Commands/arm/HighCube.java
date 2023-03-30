@@ -4,16 +4,42 @@
 
 package frc.robot.Commands.arm;
 
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+import static edu.wpi.first.wpilibj2.command.Commands.none;
+import static edu.wpi.first.wpilibj2.command.Commands.either;
+import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
+import static frc.robot.settings.Constants.Poses.HIGH_CUBE;
+import static frc.robot.settings.Constants.Poses.RESET;
+import static frc.robot.settings.Constants.Poses.AVOID_POST;
+
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.SkiPlow;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class HighCube extends SequentialCommandGroup {
-  /** Creates a new HighCube. */
-  public HighCube() {
+  private static final double TIMEOUT = 2.0;
+
+  /** Creates a new HighCone. */
+  public HighCube(ArmSubsystem arm, SkiPlow intake) {
     // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-    addCommands();
+    addCommands(
+        either(runOnce(intake::pistonDown, intake), none(), HIGH_CUBE::isRequiresIntakeDown),
+        either(
+            Commands.sequence(
+                runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
+                waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
+                runOnce(() -> arm.setDesiredElbowPose(AVOID_POST), arm)),
+            none(),
+            arm::isExtended), //TODO: could be a reset command ?
+        runOnce(() -> arm.setDesiredSholderPose(AVOID_POST), arm),
+        waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
+        runOnce(() -> arm.setDesiredElbowPose(HIGH_CUBE), arm),
+        waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
+        runOnce(() -> arm.setDesiredSholderPose(HIGH_CUBE), arm),
+        runOnce(intake::pistonUp, intake));
   }
 }

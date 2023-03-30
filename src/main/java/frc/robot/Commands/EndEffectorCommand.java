@@ -12,7 +12,7 @@ import java.util.function.IntSupplier;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.settings.IntakeState;
-import frc.robot.settings.IntakeState.intakeMode;
+import frc.robot.settings.IntakeState.IntakeMode;
 import frc.robot.subsystems.EndEffector;
 
 public class EndEffectorCommand extends CommandBase {

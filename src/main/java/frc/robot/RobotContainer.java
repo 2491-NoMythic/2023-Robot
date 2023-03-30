@@ -49,7 +49,7 @@ import frc.robot.settings.Constants;
 import frc.robot.settings.IntakeState;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.Intake;
-import frc.robot.settings.IntakeState.intakeMode;
+import frc.robot.settings.IntakeState.IntakeMode;
 
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -348,10 +348,10 @@ public class RobotContainer {
       BooleanSupplier tmp = opController::getR1Button;
       BooleanSupplier tmp2 = () -> opController.getR1Button();
     }
-    new Trigger(opController::getTriangleButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CONE_SHELF))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
-    new Trigger(opController::getSquareButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CUBE))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
-    new Trigger(opController::getCircleButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CONE_RAMP))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
-    new Trigger(opController::getCrossButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CONE_GROUND))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
+    new Trigger(opController::getTriangleButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_GROUND))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
+    new Trigger(opController::getSquareButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
+    new Trigger(opController::getCircleButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_SHELF))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
+    new Trigger(opController::getCrossButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_RAMP))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
 
   }
   /**

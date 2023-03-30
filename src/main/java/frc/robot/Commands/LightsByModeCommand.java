@@ -2,7 +2,7 @@ package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.settings.IntakeState;
-import frc.robot.settings.IntakeState.intakeMode;
+import frc.robot.settings.IntakeState.IntakeMode;
 import frc.robot.subsystems.SubsystemLights;
 
 /**

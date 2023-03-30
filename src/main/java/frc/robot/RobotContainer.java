@@ -187,11 +187,6 @@ public class RobotContainer {
 
   private void ArmInst(){
     arm = new ArmSubsystem();
-    // arm = new RobotArmSubsystem();
-    // ControlArm = new RobotArmControl(arm, 
-    // () -> opController.getRightY(), 
-    // () -> opController.getLeftY());
-    // arm.setDefaultCommand(ControlArm);
   }
   private void EndEffectorInst(){
     effector = new EndEffector(SmartDashboard.getNumber("endeffectorBigSpeed", 0.2), SmartDashboard.getNumber("endeffectorSmallSpeed", 0.5));
@@ -200,12 +195,6 @@ public class RobotContainer {
   }
   private void SkiPlowInst(){
     skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));
-    skiplowcommand = new SkiPlowPneumatic(skiPlow, 
-    opController::getL2Button, // ski plow down
-    SmartDashboard.getNumber("skiplowRollerSpeed", 0.5) 
-        //TODO change to a lamda "() ->" number supplier if you want to update this value without rebooting the robot.
-    );
-    skiPlow.setDefaultCommand(skiplowcommand);
   }
 
   private void LimelightInst() {

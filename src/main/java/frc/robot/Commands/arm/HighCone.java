@@ -27,7 +27,7 @@ public class HighCone extends SequentialCommandGroup {
   public HighCone(ArmSubsystem arm, SkiPlow intake) {
     // Add your commands in the addCommands() call, e.g.
     addCommands(
-        either(runOnce(intake::pistonDown, intake), none(), HIGH_CONE::isRequiresIntakeDown),
+        runOnce(intake::pistonDown, intake).unless(() -> !HIGH_CONE.isRequiresIntakeDown()),
         either(
             Commands.sequence(
                 runOnce(() -> arm.setDesiredSholderPose(RESET), arm),

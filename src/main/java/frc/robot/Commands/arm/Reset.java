@@ -25,7 +25,7 @@ public class Reset extends SequentialCommandGroup {
   public Reset(ArmSubsystem arm, SkiPlow intake) {
 
     addCommands(
-        either(runOnce(intake::pistonDown, intake), none(), RESET::isRequiresIntakeDown),
+        runOnce(intake::pistonDown, intake).unless(() -> !RESET.isRequiresIntakeDown()),
         either(
             Commands.sequence(
                 runOnce(() -> arm.setDesiredSholderPose(RESET), arm),

@@ -23,18 +23,18 @@ import frc.robot.subsystems.SkiPlow;
 public class HighCube extends SequentialCommandGroup {
   private static final double TIMEOUT = 2.0;
 
-  /** Creates a new HighCone. */
+  /** Creates a new HighCube. */
   public HighCube(ArmSubsystem arm, SkiPlow intake) {
     // Add your commands in the addCommands() call, e.g.
     addCommands(
-        either(runOnce(intake::pistonDown, intake), none(), HIGH_CUBE::isRequiresIntakeDown),
+        runOnce(intake::pistonDown, intake).unless(() -> !HIGH_CUBE.isRequiresIntakeDown()),
         either(
             Commands.sequence(
                 runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
                 waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
                 runOnce(() -> arm.setDesiredElbowPose(AVOID_POST), arm)),
             none(),
-            arm::isExtended), //TODO: could be a reset command ?
+            arm::isExtended), // TODO: could be a reset command ?
         runOnce(() -> arm.setDesiredSholderPose(AVOID_POST), arm),
         waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
         runOnce(() -> arm.setDesiredElbowPose(HIGH_CUBE), arm),

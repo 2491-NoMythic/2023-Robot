@@ -254,6 +254,10 @@ public class RobotContainer {
         // eventMap.put("armPoint1", TODO add command);
         // eventMap.put("armPoint2", TODO add command);
       }
+      eventMap.put("ModeCube", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE)));
+      eventMap.put("ModeConeGround", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_GROUND)));
+      eventMap.put("ModeConeRamp", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_RAMP)));
+      eventMap.put("ModeConeShelf", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_SHELF)));
       autos.autoInit(autoChooser, eventMap, drivetrain);
       SmartDashboard.putData(autoChooser);
     }

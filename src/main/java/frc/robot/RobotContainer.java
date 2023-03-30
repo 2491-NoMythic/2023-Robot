@@ -40,6 +40,7 @@ import frc.robot.Commands.DriveOffsetCenterCommand;
 import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.EndEffectorPassiveCommand;
+import frc.robot.Commands.LightsByModeCommand;
 import frc.robot.Commands.PurpleLights;
 import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.Commands.SkiPlowPneumatic;
@@ -178,7 +179,8 @@ public class RobotContainer {
   private void LightsInst() {
     lightsSubsystem = new SubsystemLights(52);
     PurpleLights defaultLights = new PurpleLights(lightsSubsystem);
-    lightsSubsystem.setDefaultCommand(defaultLights);
+    LightsByModeCommand lightsByMode = new LightsByModeCommand(lightsSubsystem, ArmExists);
+    lightsSubsystem.setDefaultCommand(lightsByMode);
   }
 
   private void DrivetrainInst() {
@@ -244,7 +246,7 @@ public class RobotContainer {
 
       }
       if (LightsExists) {
-        eventMap.put("LightsOff", new SequentialCommandGroup(new InstantCommand(lightsSubsystem::lightsOut, lightsSubsystem)));
+        // eventMap.put("LightsOff", new SequentialCommandGroup(new InstantCommand(lightsSubsystem::lightsOut, lightsSubsystem)));
         // eventMap.put("TODO add command", TODO add command);
         // eventMap.put("TODO add command", TODO add command);
       }
@@ -319,14 +321,14 @@ public class RobotContainer {
         new Translation2d(1,0)));
     }
     if (LightsExists) {
-      new Trigger(opController::getTriangleButton).whileTrue(Commands.run(() -> {
-        lightsSubsystem.lightsOut();
-        lightsSubsystem.setLights(0, 51, 100, 64, 0);
-      }, lightsSubsystem));
-      new Trigger(opController::getSquareButton).whileTrue(Commands.run(() -> {
-        lightsSubsystem.lightsOut();
-        lightsSubsystem.setLights(0, 51, 0, 0, 100);
-      }, lightsSubsystem));
+      // new Trigger(opController::getTriangleButton).whileTrue(Commands.run(() -> {
+      //   lightsSubsystem.lightsOut();
+      //   lightsSubsystem.setLights(0, 51, 100, 64, 0);
+      // }, lightsSubsystem));
+      // new Trigger(opController::getSquareButton).whileTrue(Commands.run(() -> {
+      //   lightsSubsystem.lightsOut();
+      //   lightsSubsystem.setLights(0, 51, 0, 0, 100);
+      // }, lightsSubsystem));
     }
     if (ArmExists) {
       

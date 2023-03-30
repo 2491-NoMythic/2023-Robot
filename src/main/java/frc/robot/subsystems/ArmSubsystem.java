@@ -247,6 +247,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void setShoulderAngle(Rotation2d angle, double feedforward) {
+    setShoulderLock(false);
     shoulderPID.setReference(angle.getDegrees(), ControlType.kPosition, 0, feedforward);
   }
   /** set target for the elbow to a given pose */
@@ -264,6 +265,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void setElbowAngle(Rotation2d angle, double feedforward) {
+    setElbowLock(false);
     elbowPID.setReference(angle.getDegrees(), ControlType.kPosition, 0, feedforward);
   }
 
@@ -289,6 +291,8 @@ public class ArmSubsystem extends SubsystemBase {
     double[] feedforward = calculateFeedForward(lastAngles);
     setShoulderAngle(lastAngles[0], feedforward[0]);
     setElbowAngle(lastAngles[1], feedforward[1]);
-
+    
+    if (isShoulderAtTarget()) setShoulderLock(true);
+    if (isElbowAtTarget()) setElbowLock(true);
   }
 }

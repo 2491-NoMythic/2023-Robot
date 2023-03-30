@@ -10,6 +10,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static frc.robot.settings.Constants.Poses.RESET;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SkiPlow;
@@ -18,14 +19,23 @@ import frc.robot.subsystems.SkiPlow;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class Reset extends SequentialCommandGroup {
+  private static final double TIMEOUT = 2.0;
+
   /** Creates a new Reset. */
   public Reset(ArmSubsystem arm, SkiPlow intake) {
 
     addCommands(
-        either(runOnce(intake::pistonDown, intake), none(), RESET::isRequiresIntakeDown),
-        runOnce(() -> arm.setDesiredElbowPose(RESET), arm),
-        waitUntil(arm::isElbowAtTarget).withTimeout(1),
-        runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
+        runOnce(intake::pistonDown, intake).unless(() -> !RESET.isRequiresIntakeDown()),
+        either(
+            Commands.sequence(
+                runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
+                waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
+                runOnce(() -> arm.setDesiredElbowPose(RESET), arm)),
+            Commands.sequence(
+                runOnce(() -> arm.setDesiredElbowPose(RESET), arm),
+                waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
+                runOnce(() -> arm.setDesiredSholderPose(RESET), arm)),
+            arm::isExtended),
         runOnce(intake::pistonUp, intake));
   }
 }

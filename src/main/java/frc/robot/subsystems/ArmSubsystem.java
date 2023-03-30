@@ -266,6 +266,13 @@ public class ArmSubsystem extends SubsystemBase {
   private void setElbowAngle(Rotation2d angle, double feedforward) {
     elbowPID.setReference(angle.getDegrees(), ControlType.kPosition, 0, feedforward);
   }
+
+  public boolean isExtended() {
+    double elbowPos = getElbowAngle().getDegrees();
+    double sholderPos = getElbowAngle().getDegrees();
+    return elbowPos > 30 || elbowPos < -30 || sholderPos > 30 || sholderPos < -30; //TODO: double check values
+  }
+
   public void stopShoulder() {
     shoulderMotor.stopMotor();
   }
@@ -277,6 +284,7 @@ public class ArmSubsystem extends SubsystemBase {
 	public void periodic() {
     Shuffleboard.getTab(ARM_SHUFFLEBOARD_TAB).addNumber("desired sholder", lastAngles[0]::getDegrees);
     Shuffleboard.getTab(ARM_SHUFFLEBOARD_TAB).addNumber("desired elbow", lastAngles[1]::getDegrees);
+    Shuffleboard.getTab(ARM_SHUFFLEBOARD_TAB).addBoolean("isExtened", this::isExtended);
     
     double[] feedforward = calculateFeedForward(lastAngles);
     setShoulderAngle(lastAngles[0], feedforward[0]);

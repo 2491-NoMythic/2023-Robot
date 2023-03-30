@@ -14,6 +14,7 @@ import static frc.robot.settings.Constants.PS4Driver.Z_ROTATE;
 import static frc.robot.settings.Constants.nodePositions.ALL_NODES;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.MathUtil;
@@ -21,6 +22,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,19 +39,26 @@ import frc.robot.Commands.DriveBalanceCommand;
 import frc.robot.Commands.DriveOffsetCenterCommand;
 import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.EndEffectorCommand;
+import frc.robot.Commands.EndEffectorPassiveCommand;
 import frc.robot.Commands.PurpleLights;
 import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.Commands.SkiPlowPneumatic;
+import frc.robot.Commands.arm.ChuteCone;
+import frc.robot.Commands.arm.DropLow;
 import frc.robot.Commands.arm.HighCone;
+import frc.robot.Commands.arm.HighCube;
 import frc.robot.Commands.arm.IntakeCone;
 import frc.robot.Commands.arm.IntakeCube;
+import frc.robot.Commands.arm.MidCone;
+import frc.robot.Commands.arm.MidCube;
 import frc.robot.Commands.arm.Reset;
+import frc.robot.Commands.arm.ShelfCone;
 import frc.robot.settings.Constants;
 
 import frc.robot.settings.IntakeState;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.Intake;
-import frc.robot.settings.IntakeState.intakeMode;
+import frc.robot.settings.IntakeState.IntakeMode;
 
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -87,7 +96,7 @@ public class RobotContainer {
   // private RobotArmControl ControlArm;
 
 
-  private EndEffectorCommand endEffectorCommand;
+  private EndEffectorPassiveCommand endEffectorPassiveCommand;
   private SkiPlowPneumatic skiplowcommand;
   private SkiPlow skiPlow;
 
@@ -96,6 +105,7 @@ public class RobotContainer {
   private SubsystemLights lightsSubsystem;
 
   public static HashMap<String, Command> eventMap;
+  public static Map<Object, Command> moveToIntakePose;
   public static boolean ArmExists = Preferences.getBoolean("Arm", false);
   public static boolean EndEffectorExists = Preferences.getBoolean("EndEffector", false);
   public static boolean SkiPlowExists = Preferences.getBoolean("SkiPlow", false);
@@ -149,6 +159,12 @@ public class RobotContainer {
       LightsInst();
     }
     if(SkiPlowExists && ArmExists) {
+      moveToIntakePose = Map.ofEntries(
+        Map.entry(IntakeMode.CONE_GROUND, new IntakeCone(arm, skiPlow)),
+        Map.entry(IntakeMode.CONE_RAMP, new ChuteCone()),
+        Map.entry(IntakeMode.CONE_SHELF, new ShelfCone(arm, skiPlow)),
+        Map.entry(IntakeMode.CUBE, new IntakeCube(arm, skiPlow))
+      );
       SmartDashboard.putData("GoTo Intake Cone", new IntakeCone(arm, skiPlow));
       SmartDashboard.putData("GoTo Intake Cube", new IntakeCube(arm, skiPlow));
       SmartDashboard.putData("GoTo Reset", new Reset(arm, skiPlow));
@@ -186,27 +202,14 @@ public class RobotContainer {
 
   private void ArmInst(){
     arm = new ArmSubsystem();
-    // arm = new RobotArmSubsystem();
-    // ControlArm = new RobotArmControl(arm, 
-    // () -> opController.getRightY(), 
-    // () -> opController.getLeftY());
-    // arm.setDefaultCommand(ControlArm);
   }
   private void EndEffectorInst(){
     effector = new EndEffector(SmartDashboard.getNumber("endeffectorBigSpeed", 0.2), SmartDashboard.getNumber("endeffectorSmallSpeed", 0.5));
-    endEffectorCommand = new EndEffectorCommand(effector, 
-    () -> opController.getPOV(), 
-    SmartDashboard.getNumber("endeffectorSpeed", 0.5));
-    effector.setDefaultCommand(endEffectorCommand);
+    endEffectorPassiveCommand = new EndEffectorPassiveCommand(effector);
+    effector.setDefaultCommand(endEffectorPassiveCommand);
   }
   private void SkiPlowInst(){
     skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));
-    skiplowcommand = new SkiPlowPneumatic(skiPlow, 
-    opController::getL2Button, // ski plow down
-    SmartDashboard.getNumber("skiplowRollerSpeed", 0.5) 
-        //TODO change to a lamda "() ->" number supplier if you want to update this value without rebooting the robot.
-    );
-    skiPlow.setDefaultCommand(skiplowcommand);
   }
 
   private void LimelightInst() {
@@ -254,7 +257,10 @@ public class RobotContainer {
     }
   }
 
-  private void configDashboard() {}
+  private void configDashboard() {
+    SmartDashboard.putBoolean("ConeMode", false);
+    SmartDashboard.putBoolean("CubeMode", false);
+  }
 
   /**
    * Takes both axis of a joystick, returns an angle from -180 to 180 degrees, or
@@ -323,36 +329,53 @@ public class RobotContainer {
       }, lightsSubsystem));
     }
     if (ArmExists) {
-      new Trigger(opController::getL1Button).onTrue(Commands.runOnce(() -> {
-        arm.setShoulderPower(-0.1);
-      }, arm)).onFalse(Commands.runOnce(() -> {
-        arm.setShoulderPower(0);
-      }, arm));
-      new Trigger(opController::getL2Button).onTrue(Commands.runOnce(() -> {
-        arm.setShoulderPower(0.1);
-      }, arm)).onFalse(Commands.runOnce(() -> {
-        arm.setShoulderPower(0);
-      }, arm));
-      new Trigger(opController::getShareButton).onTrue(Commands.runOnce(() -> {
-        arm.setElbowPower(-0.1);
-      }, arm)).onFalse(Commands.runOnce(() -> {
-        arm.setElbowPower(0);
-      }, arm));
-      new Trigger(opController::getOptionsButton).onTrue(Commands.runOnce(() -> {
-        arm.setElbowPower(0.1);
-      }, arm)).onFalse(Commands.runOnce(() -> {
-        arm.setElbowPower(0);
-      }, arm));
+      
+      new Trigger(opController::getR1Button)
+      .onTrue(Commands.select(moveToIntakePose, intakeState::getIntakeMode))
+      .whileTrue((new SkiPlowPneumatic(skiPlow, null, SmartDashboard.getNumber("skiplowRollerSpeed", 0.5))))
+      .whileTrue(new EndEffectorCommand(effector, ()->true))//TODO check if this works
+      .onFalse(new Reset(arm, skiPlow));
+      
+      new Trigger(opController::getL1Button)
+      .whileTrue(new EndEffectorCommand(effector, ()->false));
+      
+      new Trigger(opController::getTouchpadPressed)
+          .onTrue(new Reset(arm, skiPlow));
+      new Trigger(()-> opController.getPOV() == 0)
+          .onTrue(Commands.either(new HighCone(arm, skiPlow), new HighCube(arm, skiPlow), intakeState::isConeMode));//score high
+      new Trigger(()-> opController.getPOV() == 90).or(()-> opController.getPOV() == 270)
+          .onTrue(Commands.either(new MidCone(arm, skiPlow), new MidCube(arm, skiPlow), intakeState::isConeMode));//score mid
+      new Trigger(()-> opController.getPOV() == 180)
+          .onTrue(new DropLow(arm, skiPlow));//score floor
     }
     if (SkiPlowExists) {
       BooleanSupplier tmp = opController::getR1Button;
       BooleanSupplier tmp2 = () -> opController.getR1Button();
     }
-    new Trigger(opController::getTriangleButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CONE_SHELF))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
-    new Trigger(opController::getSquareButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CUBE))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
-    new Trigger(opController::getCircleButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CONE_RAMP))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
-    new Trigger(opController::getCrossButton).onTrue(Commands.runOnce(()->IntakeState.setIntakeMode(intakeMode.CONE_GROUND))); //IntakeState.setIntakeMode(intakeMode.CONE_SHELF));
-
+    new Trigger(opController::getSquareButton)
+        .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CUBE)))
+        .onTrue(Commands.runOnce(() -> {
+          SmartDashboard.putBoolean("ConeMode", false);
+          SmartDashboard.putBoolean("CubeMode", true);
+        }));
+    new Trigger(opController::getTriangleButton)
+        .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CONE_GROUND)))
+        .onTrue(Commands.runOnce(() -> {
+          SmartDashboard.putBoolean("ConeMode", true);
+          SmartDashboard.putBoolean("CubeMode", false);
+        }));
+    new Trigger(opController::getCircleButton)
+        .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CONE_SHELF)))
+        .onTrue(Commands.runOnce(() -> {
+          SmartDashboard.putBoolean("ConeMode", true);
+          SmartDashboard.putBoolean("CubeMode", false);
+        }));
+    new Trigger(opController::getCrossButton)
+        .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CONE_RAMP)))
+        .onTrue(Commands.runOnce(() -> {
+          SmartDashboard.putBoolean("ConeMode", true);
+          SmartDashboard.putBoolean("CubeMode", false);
+        }));
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

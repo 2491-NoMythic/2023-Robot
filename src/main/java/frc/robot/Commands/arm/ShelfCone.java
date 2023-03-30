@@ -8,7 +8,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.none;
 import static edu.wpi.first.wpilibj2.command.Commands.either;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
-import static frc.robot.settings.Constants.Poses.HIGH_CONE;
+import static frc.robot.settings.Constants.Poses.SHELF_CONE;
 import static frc.robot.settings.Constants.Poses.RESET;
 import static frc.robot.settings.Constants.Poses.AVOID_POST;
 
@@ -20,26 +20,26 @@ import frc.robot.subsystems.SkiPlow;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class HighCone extends SequentialCommandGroup {
+public class ShelfCone extends SequentialCommandGroup {
   private static final double TIMEOUT = 2.0;
 
-  /** Creates a new HighCone. */
-  public HighCone(ArmSubsystem arm, SkiPlow intake) {
+  /** Creates a new ShelfCone. */
+  public ShelfCone(ArmSubsystem arm, SkiPlow intake) {
     // Add your commands in the addCommands() call, e.g.
     addCommands(
-        runOnce(intake::pistonDown, intake).unless(() -> !HIGH_CONE.isRequiresIntakeDown()),
+        runOnce(intake::pistonDown, intake).unless(() -> !SHELF_CONE.isRequiresIntakeDown()),
         either(
             Commands.sequence(
                 runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
                 waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
                 runOnce(() -> arm.setDesiredElbowPose(AVOID_POST), arm)),
             none(),
-            arm::isExtended), //TODO: could be a reset command ?
+            arm::isExtended), // TODO: could be a reset command ?
         runOnce(() -> arm.setDesiredSholderPose(AVOID_POST), arm),
         waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
-        runOnce(() -> arm.setDesiredElbowPose(HIGH_CONE), arm),
+        runOnce(() -> arm.setDesiredElbowPose(SHELF_CONE), arm),
         waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
-        runOnce(() -> arm.setDesiredSholderPose(HIGH_CONE), arm),
+        runOnce(() -> arm.setDesiredSholderPose(SHELF_CONE), arm),
         runOnce(intake::pistonUp, intake));
   }
 }

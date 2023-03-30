@@ -6,8 +6,6 @@ package frc.robot.Commands.arm;
 
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
-import static edu.wpi.first.wpilibj2.command.Commands.none;
-import static edu.wpi.first.wpilibj2.command.Commands.either;
 import static frc.robot.settings.Constants.Poses.INTAKE_CONE;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -22,7 +20,7 @@ public class IntakeCone extends SequentialCommandGroup {
   public IntakeCone(ArmSubsystem arm, SkiPlow intake) {
 
     addCommands(
-        either(runOnce(intake::pistonDown, intake), none(), INTAKE_CONE::isRequiresIntakeDown),
+        runOnce(intake::pistonDown, intake).unless(() -> !INTAKE_CONE.isRequiresIntakeDown()),
         runOnce(() -> arm.setDesiredElbowPose(INTAKE_CONE), arm),
         waitUntil(arm::isElbowAtTarget).withTimeout(1),
         runOnce(() -> arm.setDesiredSholderPose(INTAKE_CONE), arm));

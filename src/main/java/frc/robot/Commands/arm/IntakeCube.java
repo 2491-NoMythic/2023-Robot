@@ -4,8 +4,6 @@
 
 package frc.robot.Commands.arm;
 
-import static edu.wpi.first.wpilibj2.command.Commands.either;
-import static edu.wpi.first.wpilibj2.command.Commands.none;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static frc.robot.settings.Constants.Poses.INTAKE_CUBE;
@@ -21,7 +19,7 @@ public class IntakeCube extends SequentialCommandGroup {
   /** Creates a new IntakeCube. */
   public IntakeCube(ArmSubsystem arm, SkiPlow intake) {
     addCommands(
-        either(runOnce(intake::pistonDown, intake), none(), INTAKE_CUBE::isRequiresIntakeDown),
+        runOnce(intake::pistonDown, intake).unless(() -> !INTAKE_CUBE.isRequiresIntakeDown()),
         runOnce(() -> arm.setDesiredElbowPose(INTAKE_CUBE), arm),
         waitUntil(arm::isElbowAtTarget).withTimeout(1),
         runOnce(() -> arm.setDesiredSholderPose(INTAKE_CUBE), arm));

@@ -34,6 +34,9 @@ public final class Constants {
     private Arm(){}
     public static final int END_EFFECTOR_SMALL_ROLLER_ID = 2;
     public static final int END_EFFECTOR_BIG_ROLLER_ID = 1;
+    public static final double END_EFFECTOR_SMALL_PASSIVE_POWER = 0.05;
+    public static final double END_EFFECTOR_BIG_PASSIVE_POWER = 0.02;
+    
     public static final int ARM_SHOULDER_MOTOR_ID = 18;
     public static final int ARM_ELBOW_MOTOR_ID = 17;
     public static final String ARM_SHUFFLEBOARD_TAB = "Arm";

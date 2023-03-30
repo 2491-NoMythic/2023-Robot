@@ -37,6 +37,7 @@ import frc.robot.Commands.DriveBalanceCommand;
 import frc.robot.Commands.DriveOffsetCenterCommand;
 import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.EndEffectorCommand;
+import frc.robot.Commands.EndEffectorPassiveCommand;
 import frc.robot.Commands.PurpleLights;
 import frc.robot.Commands.RunViaLimelightCommand;
 import frc.robot.Commands.SkiPlowPneumatic;
@@ -87,7 +88,7 @@ public class RobotContainer {
   // private RobotArmControl ControlArm;
 
 
-  private EndEffectorCommand endEffectorCommand;
+  private EndEffectorPassiveCommand endEffectorPassiveCommand;
   private SkiPlowPneumatic skiplowcommand;
   private SkiPlow skiPlow;
 
@@ -194,10 +195,8 @@ public class RobotContainer {
   }
   private void EndEffectorInst(){
     effector = new EndEffector(SmartDashboard.getNumber("endeffectorBigSpeed", 0.2), SmartDashboard.getNumber("endeffectorSmallSpeed", 0.5));
-    endEffectorCommand = new EndEffectorCommand(effector, 
-    () -> opController.getPOV(), 
-    SmartDashboard.getNumber("endeffectorSpeed", 0.5));
-    effector.setDefaultCommand(endEffectorCommand);
+    endEffectorPassiveCommand = new EndEffectorPassiveCommand(effector);
+    effector.setDefaultCommand(endEffectorPassiveCommand);
   }
   private void SkiPlowInst(){
     skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));

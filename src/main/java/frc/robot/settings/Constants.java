@@ -49,7 +49,7 @@ public final class Constants {
     // public static final double ARM_SHOULDER_ENCODER_OFFSET_DEG = 354.765;
     public static final double ARM_SHOULDER_ENCODER_OFFSET_DEG = 131.39;
     // public static final double ARM_ELBOW_ENCODER_OFFSET = 26.318;
-    public static final double ARM_ELBOW_ENCODER_OFFSET = 168.246;
+    public static final double ARM_ELBOW_ENCODER_OFFSET = 167.1972;
     public static final double ARM_SHOULDER_LENGTH_METERS = 0.9906;
     public static final double ARM_ELBOW_LENGTH_METERS = 0.7366;
     public static final double ARM_ELBOW_CENTER_OF_MASS_OFFSET_METERS = 0.7;

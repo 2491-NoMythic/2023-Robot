@@ -45,6 +45,7 @@ import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.DriveToBalance;
 import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.EndEffectorPassiveCommand;
+import frc.robot.Commands.EndEffectorRun;
 import frc.robot.Commands.IntakeCommand;
 import frc.robot.Commands.LightsByModeCommand;
 import frc.robot.Commands.PurpleLights;
@@ -254,11 +255,12 @@ public class RobotContainer {
       }
       if (EndEffectorExists) {
         eventMap.put("Outtake", new ParallelDeadlineGroup(new WaitCommand(1.25), new EndEffectorCommand(effector, ()->false)));
-        eventMap.put("Intake", new EndEffectorCommand(effector, ()->true));
+        eventMap.put("Intake", new EndEffectorRun(effector, ()->true));
+        eventMap.put("EndEffectorStop", new InstantCommand(effector::rollerOff, effector));
         // eventMap.put("RollerCone", new InstantCommand(skiPlow::rollerCone));
         // eventMap.put("RollerCube", new InstantCommand(skiPlow::rollerCube));
-        eventMap.put("IntakeRollerOn", Commands.either(new InstantCommand(skiPlow::rollerCone), new InstantCommand(skiPlow::rollerCube), intakeState::isConeMode));
-        eventMap.put("IntakeRollerOff", new InstantCommand(skiPlow::rollerOff));
+        eventMap.put("IntakeRollerOn", Commands.either(new InstantCommand(skiPlow::rollerCone, skiPlow), new InstantCommand(skiPlow::rollerCube, skiPlow), intakeState::isConeMode));
+        eventMap.put("IntakeRollerOff", new InstantCommand(skiPlow::rollerOff, skiPlow));
         // eventMap.put("EndEffectorInCube", new SequentialCommandGroup(new InstantCommand(effector::rollerInCube, effector)));
         // eventMap.put("EndEffectorOutCube", new SequentialCommandGroup(new InstantCommand(effector::rollerOutCube, effector)));
         // eventMap.put("EndEffectorInCone", new SequentialCommandGroup(new InstantCommand(effector::rollerInCone, effector)));
@@ -287,7 +289,7 @@ public class RobotContainer {
         // eventMap.put("armPoint2", TODO add command);
       }
       eventMap.put("ModeCubeGround", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE)));
-      eventMap.put("ModeCubeShelf", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE)));
+      eventMap.put("ModeCubeShelf", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE_SHELF)));
       eventMap.put("ModeConeGround", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_GROUND)));
       eventMap.put("ModeConeRamp", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_RAMP)));
       eventMap.put("ModeConeShelf", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_SHELF)));

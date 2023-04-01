@@ -21,7 +21,7 @@ import frc.robot.subsystems.SkiPlow;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class HighCube extends SequentialCommandGroup {
-  private static final double TIMEOUT = 2.0;
+  private static final double TIMEOUT = 1.0;
 
   /** Creates a new HighCube. */
   public HighCube(ArmSubsystem arm, SkiPlow intake) {
@@ -40,6 +40,8 @@ public class HighCube extends SequentialCommandGroup {
         runOnce(() -> arm.setDesiredElbowPose(HIGH_CUBE), arm),
         waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
         runOnce(() -> arm.setDesiredSholderPose(HIGH_CUBE), arm),
-        runOnce(intake::pistonUp, intake));
+        runOnce(intake::pistonUp, intake),
+        waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT)
+        );
   }
 }

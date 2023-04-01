@@ -285,6 +285,7 @@ public class RobotContainer {
         eventMap.put("ScoreHigh", Commands.either(new HighCone(arm, skiPlow), new HighCube(arm, skiPlow), intakeState::isConeMode));
         
         eventMap.put("ResetArmPose", new Reset(arm, skiPlow));
+        eventMap.put("ResetArmPoseFast", new ResetFast(arm, skiPlow));
         // eventMap.put("armPoint1", TODO add command);
         // eventMap.put("armPoint2", TODO add command);
       }

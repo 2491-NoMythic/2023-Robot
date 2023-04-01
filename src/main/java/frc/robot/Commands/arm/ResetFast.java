@@ -37,9 +37,10 @@ public class ResetFast extends SequentialCommandGroup {
                 runOnce(() -> arm.setDesiredSholderPose(RESET), arm)),
             arm::isExtended),
         runOnce(intake::rollerOff, intake),
-        runOnce(intake::pistonUp, intake),
-        waitUntil(arm::isShoulderAtTarget),
-        waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT));
+        runOnce(intake::pistonUp, intake)
+        // waitUntil(arm::isShoulderAtTarget),
+        // waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT)
+        );
 
 
   }

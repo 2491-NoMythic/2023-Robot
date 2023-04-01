@@ -25,6 +25,8 @@ import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_LOCK_CHANNEL;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_MOTOR_ID;
 import static frc.robot.settings.Constants.Arm.ARM_SHUFFLEBOARD_TAB;
 
+import java.util.function.Supplier;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
@@ -33,6 +35,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
@@ -68,9 +71,9 @@ public class ArmSubsystem extends SubsystemBase {
   double ekD = ARM_ELBOW_K_D;
   double ekFF = ARM_ELBOW_FF_K_G;
   double eDeg = 0;
-  GenericEntry xTarget;
-  GenericEntry yTarget;
-  GenericEntry calculateAnglesTrue;
+  // GenericEntry xTarget;
+  // GenericEntry yTarget;
+  // GenericEntry calculateAnglesTrue;
     
   public ArmSubsystem(){
 
@@ -97,7 +100,7 @@ public class ArmSubsystem extends SubsystemBase {
     shoulderPID.setP(ARM_SHOULDER_K_P);
     shoulderPID.setI(ARM_SHOULDER_K_I);
     shoulderPID.setD(ARM_SHOULDER_K_D);
-    shoulderPID.setOutputRange(-0.5, 0.5);
+    shoulderPID.setOutputRange(-0.3, 0.3);
     shoulderMotor.burnFlash();
 
     // ELBOW
@@ -122,35 +125,37 @@ public class ArmSubsystem extends SubsystemBase {
     elbowPID.setP(ARM_ELBOW_K_P);
     elbowPID.setI(ARM_ELBOW_K_I);
     elbowPID.setD(ARM_ELBOW_K_D);
-    elbowPID.setOutputRange(-0.5, 0.5);
+    elbowPID.setOutputRange(-0.3, 0.3);
     elbowMotor.burnFlash();
     
-    SmartDashboard.putNumber("Shoulder P", ARM_SHOULDER_K_P);
-    SmartDashboard.putNumber("Shoulder I", ARM_SHOULDER_K_I);
-    SmartDashboard.putNumber("Shoulder D", ARM_SHOULDER_K_D);
-    SmartDashboard.putNumber("Shoulder Feed Forward", ARM_SHOULDER_FF_K_G);
-    SmartDashboard.putNumber("Shoulder Set Degrees", 0);
-    SmartDashboard.putBoolean("Run Shoulder", false);
+    // SmartDashboard.putNumber("Shoulder P", ARM_SHOULDER_K_P);
+    // SmartDashboard.putNumber("Shoulder I", ARM_SHOULDER_K_I);
+    // SmartDashboard.putNumber("Shoulder D", ARM_SHOULDER_K_D);
+    // SmartDashboard.putNumber("Shoulder Feed Forward", ARM_SHOULDER_FF_K_G);
+    // SmartDashboard.putNumber("Shoulder Set Degrees", 0);
+    // SmartDashboard.putBoolean("Run Shoulder", false);
     
-    SmartDashboard.putNumber("Elbow P", ARM_ELBOW_K_P);
-    SmartDashboard.putNumber("Elbow I", ARM_ELBOW_K_I);
-    SmartDashboard.putNumber("Elbow D", ARM_ELBOW_K_D);
-    SmartDashboard.putNumber("Elbow Feed Forward", ARM_ELBOW_FF_K_G);
-    SmartDashboard.putNumber("Elbow Set Degrees", 0);
-    SmartDashboard.putBoolean("Run Elbow", false);
-    
-    tab.addDouble("Shoulder Angle", () -> getShoulderAngle().getDegrees());
-    tab.addDouble("Elbow Angle", () -> getElbowAngle().getDegrees());
-    tab.addDouble("Target Shoulder Angle", () -> lastAngles[0].getDegrees());
-    tab.addDouble("Target Elbow Angle", () -> lastAngles[1].getDegrees());
-    tab.addBoolean("Shoulder at Target", () -> isShoulderAtTarget());
-    tab.addBoolean("Elbow at Target", () -> isElbowAtTarget());
-    xTarget = tab.add("X Target Setpoint", 0).getEntry();
-    yTarget = tab.add("Y Target Setpoint", 0).getEntry();
-    calculateAnglesTrue = tab.add("Calculate From Targets", false).withWidget(BuiltInWidgets.kToggleSwitch).getEntry(); 
+    // SmartDashboard.putNumber("Elbow P", ARM_ELBOW_K_P);
+    // SmartDashboard.putNumber("Elbow I", ARM_ELBOW_K_I);
+    // SmartDashboard.putNumber("Elbow D", ARM_ELBOW_K_D);
+    // SmartDashboard.putNumber("Elbow Feed Forward", ARM_ELBOW_FF_K_G);
+    // SmartDashboard.putNumber("Elbow Set Degrees", 0);
+    // SmartDashboard.putBoolean("Run Elbow", false);
+   
     //start arm in current position
     lastAngles[0] = getShoulderAngle();
     lastAngles[1] = getElbowAngle();
+    tab.addBoolean("isExtened", this::isExtended).withSize(9,1).withPosition(1,4);
+    tab.addDouble("Shoulder Angle", () -> getShoulderAngle().getDegrees()).withSize(2,1).withPosition(1,1);
+    tab.addDouble("Elbow Angle", () -> getElbowAngle().getDegrees()).withSize(2,1).withPosition(6,1);
+    tab.addDouble("Target Shoulder Angle", () -> lastAngles[0].getDegrees()).withSize(2,1).withPosition(1,2);
+    tab.addDouble("Target Elbow Angle", () -> lastAngles[1].getDegrees()).withSize(2,1).withPosition(6,2);
+    tab.addBoolean("Shoulder at Target", () -> isShoulderAtTarget()).withSize(1,2).withPosition(3,1);
+    tab.addBoolean("Elbow at Target", () -> isElbowAtTarget()).withSize(1,2).withPosition(8,1);
+    tab.addDoubleArray("Arm Pose", ()-> new double[]{getArmPose().getX(),getArmPose().getY()}).withSize(2,1).withPosition(4,3);
+    // xTarget = tab.add("X Target Setpoint", 0).getEntry();
+    // yTarget = tab.add("Y Target Setpoint", 0).getEntry();
+    // calculateAnglesTrue = tab.add("Calculate From Targets", false).withWidget(BuiltInWidgets.kToggleSwitch).getEntry(); 
   }
   /**
    * @return the angle of the shoulder segment in relation to the ground. 
@@ -166,6 +171,12 @@ public class ArmSubsystem extends SubsystemBase {
   public Rotation2d getElbowAngle() {
     return Rotation2d.fromDegrees(elbowEncoder.getPosition());
   }
+  public Rotation2d getShoulderTarget() {
+    return lastAngles[0];
+  }
+  public Rotation2d getElbowTarget() {
+    return lastAngles[1];
+  }
   public boolean isShoulderAtTarget() { 
     return (Math.abs(shoulderEncoder.getPosition()-lastAngles[0].getDegrees()) <= ARM_SHOULDER_ALLOWABLE_ERROR_DEG 
     || Math.abs(shoulderEncoder.getPosition()-lastAngles[0].getDegrees()) >= 360-ARM_SHOULDER_ALLOWABLE_ERROR_DEG);
@@ -174,7 +185,18 @@ public class ArmSubsystem extends SubsystemBase {
     return (Math.abs(elbowEncoder.getPosition()-lastAngles[1].getDegrees()) <= ARM_ELBOW_ALLOWABLE_ERROR_DEG 
     || Math.abs(elbowEncoder.getPosition()-lastAngles[1].getDegrees()) >= 360-ARM_ELBOW_ALLOWABLE_ERROR_DEG);
   }
-  // public boolean isElbowAtTarget
+  public boolean isExtended() {
+    double elbowPos = getElbowAngle().getDegrees();
+    double sholderPos = getShoulderAngle().getDegrees();
+    return 
+        ((elbowPos > 10) && 
+        (elbowPos < 350)) || 
+        ((sholderPos > 5) && 
+        (sholderPos < 355)); //TODO: double check values
+  }
+  public Rotation2d[] getArmAngles() {
+    return new Rotation2d[] {getShoulderAngle(), getElbowAngle()};
+  }
   /**
    * @return the position of the end of the arm relative to the base of the shoulder joint?
    * X+ = robot forwards, Y+ = robot up. The measurements are in meters.
@@ -184,6 +206,9 @@ public class ArmSubsystem extends SubsystemBase {
     Translation2d elbowPosition = new Translation2d(0,-ARM_ELBOW_LENGTH_METERS).rotateBy(angles[1]);
     Translation2d armPose = shoulderPostion.plus(elbowPosition);
     return armPose;
+  }
+  public Translation2d getArmPose() {
+    return getArmPose(getArmAngles());
   }
 
   /**
@@ -206,16 +231,16 @@ public class ArmSubsystem extends SubsystemBase {
     Translation2d shoulderPos= new Translation2d(0,ARM_SHOULDER_LENGTH_METERS).rotateBy(angles[0].unaryMinus());
     Translation2d comPos = new Translation2d(0,-ARM_ELBOW_CENTER_OF_MASS_OFFSET_METERS).rotateBy(angles[1]);
     Translation2d totalPos = shoulderPos.plus(comPos);
-    Rotation2d comAngle = totalPos.getAngle();
-    SmartDashboard.putString("Shoulder location", shoulderPos.toString());
-    SmartDashboard.putString("CenterOfMass location", comPos.toString());
-    SmartDashboard.putString("totalOffset location", totalPos.toString());
-    SmartDashboard.putString("CenterOfMass Angle", comAngle.toString());
+    // Rotation2d comAngle = totalPos.getAngle();
+    // SmartDashboard.putString("Shoulder location", shoulderPos.toString());
+    // SmartDashboard.putString("CenterOfMass location", comPos.toString());
+    // SmartDashboard.putString("totalOffset location", totalPos.toString());
+    // SmartDashboard.putString("CenterOfMass Angle", comAngle.toString());
 
     double shoulderFF = totalPos.getX() * skFF;
     double elbowFF = angles[1].getSin() * ekFF;
-    SmartDashboard.putNumber("Shoulder FF out", shoulderFF);
-    SmartDashboard.putNumber("Elbow FF out", elbowFF);
+    // SmartDashboard.putNumber("Shoulder FF out", shoulderFF);
+    // SmartDashboard.putNumber("Elbow FF out", elbowFF);
     return new double[] {shoulderFF, elbowFF};
   }
   
@@ -253,6 +278,7 @@ public class ArmSubsystem extends SubsystemBase {
   /** set target for the elbow to a given pose */
   public void setDesiredElbowPose(Poses pose) {
     setDesiredElbowRotation(pose.getElbow());
+    // SmartDashboard.putNumber("elbow debug", pose.getElbow().getDegrees());
   }
 
   /**
@@ -269,11 +295,6 @@ public class ArmSubsystem extends SubsystemBase {
     elbowPID.setReference(angle.getDegrees(), ControlType.kPosition, 0, feedforward);
   }
 
-  public boolean isExtended() {
-    double elbowPos = getElbowAngle().getDegrees();
-    double sholderPos = getElbowAngle().getDegrees();
-    return elbowPos > 30 || elbowPos < -30 || sholderPos > 30 || sholderPos < -30; //TODO: double check values
-  }
 
   public void stopShoulder() {
     shoulderMotor.stopMotor();
@@ -284,15 +305,12 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
 	public void periodic() {
-    Shuffleboard.getTab(ARM_SHUFFLEBOARD_TAB).addNumber("desired sholder", lastAngles[0]::getDegrees);
-    Shuffleboard.getTab(ARM_SHUFFLEBOARD_TAB).addNumber("desired elbow", lastAngles[1]::getDegrees);
-    Shuffleboard.getTab(ARM_SHUFFLEBOARD_TAB).addBoolean("isExtened", this::isExtended);
     
     double[] feedforward = calculateFeedForward(lastAngles);
     setShoulderAngle(lastAngles[0], feedforward[0]);
     setElbowAngle(lastAngles[1], feedforward[1]);
     
-    if (isShoulderAtTarget()) setShoulderLock(true);
-    if (isElbowAtTarget()) setElbowLock(true);
+    // if (isShoulderAtTarget()) setShoulderLock(true);
+    // if (isElbowAtTarget()) setElbowLock(true);
   }
 }

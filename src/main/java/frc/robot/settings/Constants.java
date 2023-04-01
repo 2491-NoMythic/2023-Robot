@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -28,14 +29,17 @@ public final class Constants {
   private Constants () {}
   public final class Intake{
     private Intake() {}
-    public static final int INTAKE_MOTOR_ID = 16;
+    public static final int INTAKE_MOTOR_ID = 6;
   }
   public final class Arm{
     private Arm(){}
     public static final int END_EFFECTOR_SMALL_ROLLER_ID = 2;
     public static final int END_EFFECTOR_BIG_ROLLER_ID = 1;
-    public static final double END_EFFECTOR_SMALL_PASSIVE_POWER = 0.05;
-    public static final double END_EFFECTOR_BIG_PASSIVE_POWER = 0.02;
+    public static final double END_EFFECTOR_SMALL_PASSIVE_POWER = 0.03;
+    public static final double END_EFFECTOR_BIG_PASSIVE_POWER = 0.08;
+    public static final double END_EFFECTOR_SMALL_POWER = 0.2;
+    public static final double END_EFFECTOR_BIG_POWER = 0.3;
+    public static final double END_EFFECTOR_CONE_POWER_BONUS = 0.1;
     
     public static final int ARM_SHOULDER_MOTOR_ID = 18;
     public static final int ARM_ELBOW_MOTOR_ID = 17;
@@ -43,15 +47,15 @@ public final class Constants {
     public static final int ARM_SHOULDER_LOCK_CHANNEL = 4;
     public static final int ARM_ELBOW_LOCK_CHANNEL = 3;
     // public static final double ARM_SHOULDER_ENCODER_OFFSET_DEG = 354.765;
-    public static final double ARM_SHOULDER_ENCODER_OFFSET_DEG = 272.1968096;
+    public static final double ARM_SHOULDER_ENCODER_OFFSET_DEG = 131.39;
     // public static final double ARM_ELBOW_ENCODER_OFFSET = 26.318;
-    public static final double ARM_ELBOW_ENCODER_OFFSET = 358.2847810;
+    public static final double ARM_ELBOW_ENCODER_OFFSET = 168.246;
     public static final double ARM_SHOULDER_LENGTH_METERS = 0.9906;
     public static final double ARM_ELBOW_LENGTH_METERS = 0.7366;
     public static final double ARM_ELBOW_CENTER_OF_MASS_OFFSET_METERS = 0.7;
-    public static final double ARM_SHOULDER_ALLOWABLE_ERROR_DEG = 0.2;
-    public static final double ARM_ELBOW_ALLOWABLE_ERROR_DEG = 0.2;
-    public static final double ARM_SHOULDER_K_P = 0.02;
+    public static final double ARM_SHOULDER_ALLOWABLE_ERROR_DEG = 1;
+    public static final double ARM_ELBOW_ALLOWABLE_ERROR_DEG = 1;
+    public static final double ARM_SHOULDER_K_P = 0.035;
     public static final double ARM_SHOULDER_K_I = 0;
     public static final double ARM_SHOULDER_K_D = 0;
     public static final double ARM_SHOULDER_FF_K_G = -0.2;
@@ -59,7 +63,7 @@ public final class Constants {
     public static final double ARM_ELBOW_K_I = 0;
     public static final double ARM_ELBOW_K_D = 0;
     // public static final double ARM_ELBOW_FF_K_G = 0.85;
-    public static final double ARM_ELBOW_FF_K_G = 1;
+    public static final double ARM_ELBOW_FF_K_G = 0.95;
     public static final double ARM_SHOULDER_MAXVEL_RPM = 7.5;
     public static final double ARM_SHOULDER_MAXACC_RPM = 1;
     public static final double ARM_ELBOW_MAXVEL_RPM = 7.5;
@@ -274,32 +278,34 @@ public final class Constants {
 
   public enum Poses{
     RESET(0,0, false),
-    INTAKE_CONE(-38,12, true),
+    INTAKE_CONE(-37,11, true),
     INTAKE_CUBE(-36,9, true),
     DROP_LOW(10,33, false),
-    MID_CONE(7,76, false),
-    MID_CUBE(12,65, false),
-    HIGH_CONE(29,103, false),
-    HIGH_CUBE(26,95, false),
-    SHELF_CONE(0,93, false),
+    MID_CONE(0,85, false),
+    MID_CUBE(0,85, false),
+    HIGH_CONE(29,110, false),
+    HIGH_CUBE(29,110, false),
+    SHELF_CONE(0,94, false),
+    SHELF_CUBE(0,94, false),
     CHUTE_CONE(-14,-56, true),
-    AVOID_POST(-20, 45, true); //TODO: how far back to avoid?
-
-    private double[] angles;
+    AVOID_POST(-20, 45, true), //TODO: how far back to avoid?
+    AVOID_BUMPER(0,-15,true);
+    private double[] angles = new double[2];
     private boolean requiresIntakeDown;
     private static final int SHOLDER = 0;
     private static final int ELBOW = 1;
     
     Poses(double sholder, double elbow, boolean requiresIntakeDown) {
-    angles[0] = sholder;
-    angles[1] = elbow;
+    angles[SHOLDER] = sholder;
+    angles[ELBOW] = elbow;
     this.requiresIntakeDown = requiresIntakeDown;
     }
     public double getSholderAngle() {return angles[SHOLDER];}
     public double getElbowAngle() {return angles[ELBOW];}
 
     /** sholder as a rotation 2d */
-    public Rotation2d getSholder() {return Rotation2d.fromDegrees(angles[SHOLDER]);}
+    public Rotation2d getSholder() {
+      return Rotation2d.fromDegrees(angles[SHOLDER]);}
 
     /** elbow as a rotation 2d */
     public Rotation2d getElbow() {return Rotation2d.fromDegrees(angles[ELBOW]);}

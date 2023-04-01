@@ -29,47 +29,59 @@ public class LightsByModeCommand extends CommandBase {
     addRequirements(subsystemLights);
     this.subsystemLights = subsystemLights;
     this.blink = blink;
-    this.intakeState = intakeState.getInstance();
+    this.intakeState = IntakeState.getInstance();
   }
 
   private void drawCubeMode1() {
     subsystemLights.lightsOut();
-    subsystemLights.setLights(0, 51, 0, 0, 100);
+    subsystemLights.setLights(0, 51, 50, 0, 100);
+    subsystemLights.dataSetter();
+  }
+  private void drawCubeMode2() {
+    subsystemLights.lightsOut();
+    subsystemLights.setLights(0, 8, 50, 0, 100);
+    subsystemLights.setLights(16, 32, 50, 0, 100);
+    subsystemLights.setLights(40, 48, 50, 0, 100);
     subsystemLights.dataSetter();
   }
 
   private void drawConeMode1() {
     subsystemLights.lightsOut();
-    subsystemLights.setLights(0, 51, 100, 64, 0);
+    subsystemLights.setLights(0, 51, 150, 100, 0);
     subsystemLights.dataSetter();
   }
-
   private void drawConeMode2() {
     subsystemLights.lightsOut();
-    subsystemLights.setLights(0, 8, 100, 64, 100);
-    subsystemLights.setLights(16, 32, 100, 64, 100);
-    subsystemLights.setLights(40, 48, 100, 64, 100);
+    subsystemLights.setLights(0, 8, 150, 100, 0);
+    subsystemLights.setLights(16, 32, 150, 100, 0);
+    subsystemLights.setLights(40, 48, 150, 100, 0);
     subsystemLights.dataSetter();
   }
 
-  private void drawConeMode3() {
-    subsystemLights.lightsOut();
-    subsystemLights.setLights(8, 16, 100, 64, 100);
-    subsystemLights.setLights(32, 40, 100, 64, 100);
-    subsystemLights.dataSetter();
-  }
+  // private void drawConeMode3() {
+  //   subsystemLights.lightsOut();
+  //   subsystemLights.setLights(8, 16, 100, 64, 100);
+  //   subsystemLights.setLights(32, 40, 100, 64, 100);
+  //   subsystemLights.dataSetter();
+  // }
 
   private void drawConeMode() {
-    switch(this.intakeState.getIntakeMode()) {
+    switch(intakeState.getIntakeMode()) {
       case CONE_GROUND: 
         drawConeMode1();
         break;
-      case CONE_RAMP: 
-        drawConeMode2();
-        break;
+      
+      // case CONE_RAMP: 
+      //   drawConeMode2();
+      //   break;
       case CONE_SHELF: 
-        drawConeMode3();
+        drawConeMode2();
+          break;
+      
+      case CUBE_SHELF:
+        drawCubeMode2();
         break;
+
       default: drawCubeMode1();
     }
     subsystemLights.dataSetter();

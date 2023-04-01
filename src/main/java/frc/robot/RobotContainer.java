@@ -19,31 +19,36 @@ import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Commands.ArmMoveElbowAxis;
 import frc.robot.Commands.Autos;
 import frc.robot.Commands.Drive;
 import frc.robot.Commands.DriveBalanceCommand;
 import frc.robot.Commands.DriveOffsetCenterCommand;
 import frc.robot.Commands.DriveRotateToAngleCommand;
+import frc.robot.Commands.DriveToBalance;
 import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.EndEffectorPassiveCommand;
+import frc.robot.Commands.IntakeCommand;
 import frc.robot.Commands.LightsByModeCommand;
 import frc.robot.Commands.PurpleLights;
 import frc.robot.Commands.RunViaLimelightCommand;
-import frc.robot.Commands.SkiPlowPneumatic;
 import frc.robot.Commands.arm.ChuteCone;
 import frc.robot.Commands.arm.DropLow;
 import frc.robot.Commands.arm.HighCone;
@@ -53,12 +58,15 @@ import frc.robot.Commands.arm.IntakeCube;
 import frc.robot.Commands.arm.MidCone;
 import frc.robot.Commands.arm.MidCube;
 import frc.robot.Commands.arm.Reset;
+import frc.robot.Commands.arm.ResetFast;
 import frc.robot.Commands.arm.ShelfCone;
+import frc.robot.Commands.arm.ShelfCube;
 import frc.robot.settings.Constants;
 
 import frc.robot.settings.IntakeState;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.Intake;
+import frc.robot.settings.Constants.Arm;
 import frc.robot.settings.IntakeState.IntakeMode;
 
 import frc.robot.subsystems.ArmSubsystem;
@@ -94,11 +102,11 @@ public class RobotContainer {
 
 
   private ArmSubsystem arm;
+  private ArmMoveElbowAxis armDefault;
   // private RobotArmControl ControlArm;
 
 
   private EndEffectorPassiveCommand endEffectorPassiveCommand;
-  private SkiPlowPneumatic skiplowcommand;
   private SkiPlow skiPlow;
 
   private EndEffector effector;
@@ -132,7 +140,7 @@ public class RobotContainer {
     opController = new PS4Controller(1);
     autoChooser = new SendableChooser<>();
     eventMap = new HashMap<>();
-    intakeState = intakeState.getInstance();
+    intakeState = IntakeState.getInstance();
 
     SmartDashboard.putNumber("endeffectorBigSpeed", 0.5);
     SmartDashboard.putNumber("endeffectorSmallSpeed", 0.75);
@@ -162,14 +170,14 @@ public class RobotContainer {
     if(SkiPlowExists && ArmExists) {
       moveToIntakePose = Map.ofEntries(
         Map.entry(IntakeMode.CONE_GROUND, new IntakeCone(arm, skiPlow)),
-        Map.entry(IntakeMode.CONE_RAMP, new ChuteCone()),
         Map.entry(IntakeMode.CONE_SHELF, new ShelfCone(arm, skiPlow)),
+        Map.entry(IntakeMode.CUBE_SHELF, new ShelfCube(arm, skiPlow)),
         Map.entry(IntakeMode.CUBE, new IntakeCube(arm, skiPlow))
       );
-      SmartDashboard.putData("GoTo Intake Cone", new IntakeCone(arm, skiPlow));
-      SmartDashboard.putData("GoTo Intake Cube", new IntakeCube(arm, skiPlow));
-      SmartDashboard.putData("GoTo Reset", new Reset(arm, skiPlow));
-      SmartDashboard.putData("GoTo High Cone", new HighCone(arm, skiPlow));
+      // SmartDashboard.putData("GoTo Intake Cone", new IntakeCone(arm, skiPlow));
+      // SmartDashboard.putData("GoTo Intake Cube", new IntakeCube(arm, skiPlow));
+      // SmartDashboard.putData("GoTo Reset", new Reset(arm, skiPlow));
+      // SmartDashboard.putData("GoTo High Cone", new HighCone(arm, skiPlow));
     }
     autoInit();
     configureBindings();
@@ -198,20 +206,25 @@ public class RobotContainer {
         () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
         () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
     drivetrain.setDefaultCommand(defaultDriveCommand);
+    SmartDashboard.putData(new DriveToBalance(drivetrain, true));
     SmartDashboard.putData(drivetrain);
     SmartDashboard.putNumber("Precision Multiplier", 0.5);
   }
 
   private void ArmInst(){
     arm = new ArmSubsystem();
+    armDefault = new ArmMoveElbowAxis(arm, ()->opController.getRawAxis(Z_ROTATE));
+    arm.setDefaultCommand(armDefault);
+    // SmartDashboard.putData(new ResetFast(arm, skiPlow));
   }
   private void EndEffectorInst(){
-    effector = new EndEffector(SmartDashboard.getNumber("endeffectorBigSpeed", 0.2), SmartDashboard.getNumber("endeffectorSmallSpeed", 0.5));
+    effector = new EndEffector(Arm.END_EFFECTOR_BIG_POWER, Arm.END_EFFECTOR_SMALL_POWER);
     endEffectorPassiveCommand = new EndEffectorPassiveCommand(effector);
     effector.setDefaultCommand(endEffectorPassiveCommand);
   }
   private void SkiPlowInst(){
-    skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));
+    skiPlow = new SkiPlow(0.5);
+    // skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));
   }
 
   private void LimelightInst() {
@@ -230,19 +243,27 @@ public class RobotContainer {
       eventMap.put("marker1", new PrintCommand("Passed marker 1"));
       eventMap.put("marker2", new PrintCommand("Passed marker 2"));
       eventMap.put("stop", new InstantCommand(drivetrain::stop, drivetrain));
+      eventMap.put("Wait1", new WaitCommand(1));
+      eventMap.put("Waithalf", new WaitCommand(0.5));
       if (SkiPlowExists) {
-        eventMap.put("IntakeDown", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonDown, skiPlow), new WaitCommand(0.75)));
-        eventMap.put("IntakeUp", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonUp, skiPlow), new WaitCommand(0.5)));
-        eventMap.put("IntakeRollerIn", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCube, skiPlow), new InstantCommand(lightsSubsystem::setLightsCube, lightsSubsystem)));
-        eventMap.put("IntakeRollerOut", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCone, skiPlow), new InstantCommand(lightsSubsystem::setLightsCone, lightsSubsystem)));
-        eventMap.put("IntakeOff", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerOff, skiPlow)));
+        // eventMap.put("IntakeDown", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonDown, skiPlow), new WaitCommand(0.75)));
+        // eventMap.put("IntakeUp", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonUp, skiPlow), new WaitCommand(0.5)));
+        // eventMap.put("IntakeRollerIn", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCube, skiPlow)));
+        // eventMap.put("IntakeRollerOut", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCone, skiPlow)));
+        // eventMap.put("IntakeOff", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerOff, skiPlow)));
       }
       if (EndEffectorExists) {
-        eventMap.put("EndEffectorInCube", new SequentialCommandGroup(new InstantCommand(effector::rollerInCube, effector)));
-        eventMap.put("EndEffectorOutCube", new SequentialCommandGroup(new InstantCommand(effector::rollerOutCube, effector)));
-        eventMap.put("EndEffectorInCone", new SequentialCommandGroup(new InstantCommand(effector::rollerInCone, effector)));
-        eventMap.put("EndEffectorOutCone", new SequentialCommandGroup(new InstantCommand(effector::rollerOutCone, effector)));
-        eventMap.put("EndEffectorOff", new SequentialCommandGroup(new InstantCommand(effector::rollerOff, effector)));
+        eventMap.put("Outtake", new ParallelDeadlineGroup(new WaitCommand(1.25), new EndEffectorCommand(effector, ()->false)));
+        eventMap.put("Intake", new EndEffectorCommand(effector, ()->true));
+        // eventMap.put("RollerCone", new InstantCommand(skiPlow::rollerCone));
+        // eventMap.put("RollerCube", new InstantCommand(skiPlow::rollerCube));
+        eventMap.put("IntakeRollerOn", Commands.either(new InstantCommand(skiPlow::rollerCone), new InstantCommand(skiPlow::rollerCube), intakeState::isConeMode));
+        eventMap.put("IntakeRollerOff", new InstantCommand(skiPlow::rollerOff));
+        // eventMap.put("EndEffectorInCube", new SequentialCommandGroup(new InstantCommand(effector::rollerInCube, effector)));
+        // eventMap.put("EndEffectorOutCube", new SequentialCommandGroup(new InstantCommand(effector::rollerOutCube, effector)));
+        // eventMap.put("EndEffectorInCone", new SequentialCommandGroup(new InstantCommand(effector::rollerInCone, effector)));
+        // eventMap.put("EndEffectorOutCone", new SequentialCommandGroup(new InstantCommand(effector::rollerOutCone, effector)));
+        // eventMap.put("EndEffectorOff", new SequentialCommandGroup(new InstantCommand(effector::rollerOff, effector)));
 
       }
       if (LightsExists) {
@@ -251,10 +272,22 @@ public class RobotContainer {
         // eventMap.put("TODO add command", TODO add command);
       }
       if (ArmExists) {
+        // eventMap.put("MoveArmToIntakePose", new SequentialCommandGroup(Commands.select(moveToIntakePose, intakeState::getIntakeMode)));
+        eventMap.put("CubeShelf", new ShelfCube(arm, skiPlow));
+        eventMap.put("ConeShelf", new ShelfCone(arm, skiPlow));
+        eventMap.put("CubeFloor", new IntakeCube(arm, skiPlow));
+        eventMap.put("ConeFloor", new IntakeCone(arm, skiPlow));
+
+        eventMap.put("ScoreLow", new DropLow(arm, skiPlow));
+        eventMap.put("ScoreMid", Commands.either(new MidCone(arm, skiPlow), new MidCube(arm, skiPlow), intakeState::isConeMode));
+        eventMap.put("ScoreHigh", Commands.either(new HighCone(arm, skiPlow), new HighCube(arm, skiPlow), intakeState::isConeMode));
+        
+        eventMap.put("ResetArmPose", new Reset(arm, skiPlow));
         // eventMap.put("armPoint1", TODO add command);
         // eventMap.put("armPoint2", TODO add command);
       }
-      eventMap.put("ModeCube", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE)));
+      eventMap.put("ModeCubeGround", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE)));
+      eventMap.put("ModeCubeShelf", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE)));
       eventMap.put("ModeConeGround", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_GROUND)));
       eventMap.put("ModeConeRamp", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_RAMP)));
       eventMap.put("ModeConeShelf", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_SHELF)));
@@ -264,6 +297,7 @@ public class RobotContainer {
   }
 
   private void configDashboard() {
+    // SmartDashboard.putBoolean("StartCubeMode", SmartDashboard.getBoolean("StartCubeMode", true));
     SmartDashboard.putBoolean("ConeMode", false);
     SmartDashboard.putBoolean("CubeMode", false);
   }
@@ -337,16 +371,15 @@ public class RobotContainer {
     if (ArmExists) {
       
       new Trigger(opController::getR1Button)
-      .onTrue(Commands.select(moveToIntakePose, intakeState::getIntakeMode))
-      .whileTrue((new SkiPlowPneumatic(skiPlow, null, SmartDashboard.getNumber("skiplowRollerSpeed", 0.5))))
-      .whileTrue(new EndEffectorCommand(effector, ()->true))//TODO check if this works
-      .onFalse(new Reset(arm, skiPlow));
-      
+          .onTrue(Commands.select(moveToIntakePose, intakeState::getIntakeMode))
+          .whileTrue(new EndEffectorCommand(effector, ()->true));
+      new Trigger(opController::getR2Button)
+          .whileTrue(new EndEffectorCommand(effector, ()->true));
       new Trigger(opController::getL1Button)
-      .whileTrue(new EndEffectorCommand(effector, ()->false));
-      
+          .whileTrue(new EndEffectorCommand(effector, ()->false));
       new Trigger(opController::getTouchpadPressed)
           .onTrue(new Reset(arm, skiPlow));
+          
       new Trigger(()-> opController.getPOV() == 0)
           .onTrue(Commands.either(new HighCone(arm, skiPlow), new HighCube(arm, skiPlow), intakeState::isConeMode));//score high
       new Trigger(()-> opController.getPOV() == 90).or(()-> opController.getPOV() == 270)
@@ -355,8 +388,8 @@ public class RobotContainer {
           .onTrue(new DropLow(arm, skiPlow));//score floor
     }
     if (SkiPlowExists) {
-      BooleanSupplier tmp = opController::getR1Button;
-      BooleanSupplier tmp2 = () -> opController.getR1Button();
+      // BooleanSupplier tmp = opController::getR1Button;
+      // BooleanSupplier tmp2 = () -> opController.getR1Button();
     }
     new Trigger(opController::getSquareButton)
         .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CUBE)))
@@ -364,6 +397,13 @@ public class RobotContainer {
           SmartDashboard.putBoolean("ConeMode", false);
           SmartDashboard.putBoolean("CubeMode", true);
         }));
+    new Trigger(opController::getCrossButton)
+        .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CUBE_SHELF)))
+        .onTrue(Commands.runOnce(() -> {
+          SmartDashboard.putBoolean("ConeMode", false);
+          SmartDashboard.putBoolean("CubeMode", true);
+        }));
+    
     new Trigger(opController::getTriangleButton)
         .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CONE_GROUND)))
         .onTrue(Commands.runOnce(() -> {
@@ -372,12 +412,6 @@ public class RobotContainer {
         }));
     new Trigger(opController::getCircleButton)
         .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CONE_SHELF)))
-        .onTrue(Commands.runOnce(() -> {
-          SmartDashboard.putBoolean("ConeMode", true);
-          SmartDashboard.putBoolean("CubeMode", false);
-        }));
-    new Trigger(opController::getCrossButton)
-        .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CONE_RAMP)))
         .onTrue(Commands.runOnce(() -> {
           SmartDashboard.putBoolean("ConeMode", true);
           SmartDashboard.putBoolean("CubeMode", false);
@@ -416,7 +450,7 @@ public class RobotContainer {
   }
 
   public void teleopPeriodic() {
-    SmartDashboard.putString("NearestNode", drivetrain.getPose().nearest(ALL_NODES).toString());
+    // SmartDashboard.putString("NearestNode", drivetrain.getPose().nearest(ALL_NODES).toString());
     SmartDashboard.putNumber("Match Timer", Timer.getMatchTime());
   }
 }

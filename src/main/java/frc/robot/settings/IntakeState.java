@@ -1,27 +1,28 @@
 package frc.robot.settings;
 
 public class IntakeState {
-    public IntakeState intakeState = null;
+    private static IntakeState intakeState = null;
     private static IntakeMode intakeMode;
     
     public enum IntakeMode {
         CUBE,
         CONE_GROUND,
         CONE_RAMP,
-        CONE_SHELF
+        CONE_SHELF,
+        CUBE_SHELF,
     }
 
 
     private IntakeState(){
-    
+        intakeMode = IntakeMode.CUBE;
     }
 
 
-    public IntakeState getInstance(){
-        if (this.intakeState == null) {
-            this.intakeState = new IntakeState();
+    public static IntakeState getInstance(){
+        if (intakeState == null) {
+            intakeState = new IntakeState();
             }
-            return this.intakeState;
+            return intakeState;
         }
 
     public static void setIntakeMode(IntakeMode mode){
@@ -37,6 +38,7 @@ public class IntakeState {
                 intakeMode.equals(intakeMode.CONE_SHELF));
     }
     public boolean isCubeMode() {
-        return (intakeMode.equals(intakeMode.CUBE));
+        return (intakeMode.equals(intakeMode.CUBE) ||
+                intakeMode.equals(intakeMode.CUBE_SHELF));
     }
 }

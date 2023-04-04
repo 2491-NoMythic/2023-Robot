@@ -6,9 +6,13 @@ package frc.robot.Commands.arm;
 
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
+import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static frc.robot.settings.Constants.Poses.INTAKE_CONE;
+import static frc.robot.settings.Constants.Poses.AVOID_BUMPER;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Commands.IntakeCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SkiPlow;
 
@@ -21,8 +25,12 @@ public class IntakeCone extends SequentialCommandGroup {
 
     addCommands(
         runOnce(intake::pistonDown, intake).unless(() -> !INTAKE_CONE.isRequiresIntakeDown()),
-        runOnce(() -> arm.setDesiredElbowPose(INTAKE_CONE), arm),
-        waitUntil(arm::isElbowAtTarget).withTimeout(1),
-        runOnce(() -> arm.setDesiredSholderPose(INTAKE_CONE), arm));
+        new IntakeCommand(intake),
+        waitSeconds(1),
+        runOnce(() -> arm.setDesiredElbowPose(AVOID_BUMPER), arm),
+        waitUntil(arm::isElbowAtTarget).withTimeout(2),
+        runOnce(() -> arm.setDesiredSholderPose(INTAKE_CONE), arm),
+        waitUntil(arm::isShoulderAtTarget).withTimeout(1),
+        runOnce(() -> arm.setDesiredElbowPose(INTAKE_CONE), arm));
   }
 }

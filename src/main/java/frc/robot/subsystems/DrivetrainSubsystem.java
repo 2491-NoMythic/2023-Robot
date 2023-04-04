@@ -71,7 +71,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		ShuffleboardTab tab = Shuffleboard.getTab(DRIVETRAIN_SMARTDASHBOARD_TAB);
 		SmartDashboard.putData("Field", m_field);
 		SmartDashboard.putData("resetOdometry", new InstantCommand(() -> this.resetOdometry()));
-
+		SmartDashboard.putBoolean("display vision pose", true);
 		modules = new SwerveModule[4];
 		lastAngles = new Rotation2d[] {new Rotation2d(), new Rotation2d(), new Rotation2d(), new Rotation2d()}; // manually make empty angles to avoid null errors.
 
@@ -81,7 +81,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				.withProperties(Map.of("Number of columns", 2, "Number of rows", 1, "Label position", "HIDDEN"))
 				.withSize(4, 3)
 				.withPosition(0, 0),
-			true,
+			false,
 			FL_DRIVE_MOTOR_ID,
 			FL_STEER_MOTOR_ID,
 			FL_STEER_ENCODER_ID,
@@ -241,10 +241,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			LimelightValues visionData = limelight.getLimelightValues();
 			SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
 			if (visionData.isResultValid) {
-				updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
+				if (SmartDashboard.getBoolean("display vision pose", true)){
+					m_field.setRobotPose(visionData.getbotPose());
+				}
+				
+				// updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
 			}
 		}
-		m_field.setRobotPose(odometer.getEstimatedPosition());
+		if (!(SmartDashboard.getBoolean("display vision pose", true))){
+			m_field.setRobotPose(odometer.getEstimatedPosition());
+		}
+		// m_field.setRobotPose(odometer.getEstimatedPosition());
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 	}

@@ -17,7 +17,7 @@ import frc.robot.subsystems.SkiPlow;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class DropLow extends SequentialCommandGroup {
-  private static final double TIMEOUT = 2.0;
+  private static final double TIMEOUT = 1.0;
 
   /** Creates a new DropLow. */
   public DropLow(ArmSubsystem arm, SkiPlow intake) {
@@ -26,8 +26,9 @@ public class DropLow extends SequentialCommandGroup {
         runOnce(intake::pistonDown, intake).unless(() -> !DROP_LOW.isRequiresIntakeDown()),
         runOnce(() -> arm.setDesiredSholderPose(RESET), arm).unless(() -> !arm.isExtended()),
         runOnce(() -> arm.setDesiredElbowPose(DROP_LOW), arm),
-        waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
         runOnce(() -> arm.setDesiredSholderPose(DROP_LOW), arm),
-        runOnce(intake::pistonUp, intake));
+        runOnce(intake::pistonUp, intake),
+        waitUntil(arm::isElbowAtTarget),
+        waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT));
   }
 }

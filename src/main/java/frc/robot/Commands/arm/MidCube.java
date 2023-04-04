@@ -17,7 +17,7 @@ import frc.robot.subsystems.SkiPlow;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class MidCube extends SequentialCommandGroup {
-  private static final double TIMEOUT = 2.0;
+  private static final double TIMEOUT = 1.0;
 
   /** Creates a new MidCube. */
   public MidCube(ArmSubsystem arm, SkiPlow intake) {

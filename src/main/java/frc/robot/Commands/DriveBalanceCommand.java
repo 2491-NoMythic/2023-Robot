@@ -32,7 +32,7 @@ public class DriveBalanceCommand extends CommandBase {
         if (balanceController.atSetpoint()) timeBalanced++; else timeBalanced = 0;
         
         drivetrain.drive(new ChassisSpeeds(
-                targetSpeedMetersPerSecond,
+                -targetSpeedMetersPerSecond,
                 0, 0
             ));
     }

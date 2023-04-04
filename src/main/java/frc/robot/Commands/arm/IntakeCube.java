@@ -6,9 +6,13 @@ package frc.robot.Commands.arm;
 
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
+import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
+import static frc.robot.settings.Constants.Poses.AVOID_BUMPER;
 import static frc.robot.settings.Constants.Poses.INTAKE_CUBE;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Commands.IntakeCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SkiPlow;
 
@@ -20,8 +24,12 @@ public class IntakeCube extends SequentialCommandGroup {
   public IntakeCube(ArmSubsystem arm, SkiPlow intake) {
     addCommands(
         runOnce(intake::pistonDown, intake).unless(() -> !INTAKE_CUBE.isRequiresIntakeDown()),
-        runOnce(() -> arm.setDesiredElbowPose(INTAKE_CUBE), arm),
-        waitUntil(arm::isElbowAtTarget).withTimeout(1),
-        runOnce(() -> arm.setDesiredSholderPose(INTAKE_CUBE), arm));
+        new IntakeCommand(intake),
+        waitSeconds(1),
+        runOnce(() -> arm.setDesiredElbowPose(AVOID_BUMPER), arm),
+        waitUntil(arm::isElbowAtTarget).withTimeout(2),
+        runOnce(() -> arm.setDesiredSholderPose(INTAKE_CUBE), arm),
+        waitUntil(arm::isShoulderAtTarget).withTimeout(1),
+        runOnce(() -> arm.setDesiredElbowPose(INTAKE_CUBE), arm));
   }
 }

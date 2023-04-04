@@ -18,18 +18,18 @@ import frc.robot.subsystems.SkiPlow;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class Reset extends SequentialCommandGroup {
+public class ResetFast extends SequentialCommandGroup {
   private static final double TIMEOUT = 1.0;
 
   /** Creates a new Reset. */
-  public Reset(ArmSubsystem arm, SkiPlow intake) {
+  public ResetFast(ArmSubsystem arm, SkiPlow intake) {
 
     addCommands(
         runOnce(intake::pistonDown, intake).unless(() -> !RESET.isRequiresIntakeDown()),
         either(
             Commands.sequence(
                 runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
-                waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
+                // waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
                 runOnce(() -> arm.setDesiredElbowPose(RESET), arm)),
             Commands.sequence(
                 runOnce(() -> arm.setDesiredElbowPose(RESET), arm),
@@ -37,6 +37,11 @@ public class Reset extends SequentialCommandGroup {
                 runOnce(() -> arm.setDesiredSholderPose(RESET), arm)),
             arm::isExtended),
         runOnce(intake::rollerOff, intake),
-        runOnce(intake::pistonUp, intake));
+        runOnce(intake::pistonUp, intake)
+        // waitUntil(arm::isShoulderAtTarget),
+        // waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT)
+        );
+
+
   }
 }

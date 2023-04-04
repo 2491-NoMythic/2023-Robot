@@ -96,7 +96,7 @@ public final class Constants {
       ROWAN(0.391602),
       QUINN(0.355713),
       LIAM(0),
-      LEVI(0.333008); //May be wrong, who knows
+      LEVI(-0.38501);
       private double offset;
       Offsets(double value) {
         offset = value;

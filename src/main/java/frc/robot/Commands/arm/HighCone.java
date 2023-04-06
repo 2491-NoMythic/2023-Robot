@@ -31,10 +31,10 @@ public class HighCone extends SequentialCommandGroup {
         either(
             Commands.sequence(
                 runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
-                waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
-                runOnce(() -> arm.setDesiredElbowPose(AVOID_POST), arm)),
-            none(),
-            arm::isExtended), //TODO: could be a reset command ?
+                waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT)),
+                none(),
+                arm::isExtended), //TODO: could be a reset command ?
+        runOnce(() -> arm.setDesiredElbowPose(AVOID_POST), arm),
         runOnce(() -> arm.setDesiredSholderPose(AVOID_POST), arm),
         waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
         runOnce(() -> arm.setDesiredElbowPose(HIGH_CONE), arm),

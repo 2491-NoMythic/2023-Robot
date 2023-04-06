@@ -232,25 +232,25 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		updateOdometry();
-		if (DriverStation.isAutonomousEnabled()) {
-			if (RobotContainer.LimelightExists) {
-				LimelightValues visionData = limelight.getLimelightValues();
-				SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
-			}
-		} else if (RobotContainer.LimelightExists) {
-			LimelightValues visionData = limelight.getLimelightValues();
-			SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
-			if (visionData.isResultValid) {
-				if (SmartDashboard.getBoolean("display vision pose", true)){
-					m_field.setRobotPose(visionData.getbotPose());
-				}
+		// if (DriverStation.isAutonomousEnabled()) {
+		// 	if (RobotContainer.LimelightExists) {
+		// 		LimelightValues visionData = limelight.getLimelightValues();
+		// 		SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
+		// 	}
+		// } else if (RobotContainer.LimelightExists) {
+		// 	LimelightValues visionData = limelight.getLimelightValues();
+		// 	SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
+		// 	if (visionData.isResultValid) {
+		// 		if (SmartDashboard.getBoolean("display vision pose", true)){
+		// 			m_field.setRobotPose(visionData.getbotPose());
+		// 		}
 				
-				// updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
-			}
-		}
-		if (!(SmartDashboard.getBoolean("display vision pose", true))){
+		// 		// updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
+		// 	}
+		// }
+		// if (!(SmartDashboard.getBoolean("display vision pose", true))){
 			m_field.setRobotPose(odometer.getEstimatedPosition());
-		}
+		// }
 		// m_field.setRobotPose(odometer.getEstimatedPosition());
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());

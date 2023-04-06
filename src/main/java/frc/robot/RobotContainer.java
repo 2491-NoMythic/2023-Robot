@@ -253,7 +253,7 @@ public class RobotContainer {
         // eventMap.put("IntakeOff", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerOff, skiPlow)));
       }
       if (EndEffectorExists) {
-        eventMap.put("Outtake", new ParallelDeadlineGroup(new WaitCommand(1.25), new EndEffectorCommand(effector, ()->false)));
+        eventMap.put("Outtake", new ParallelDeadlineGroup(new WaitCommand(1), new EndEffectorCommand(effector, ()->false)));
         eventMap.put("Intake", new EndEffectorRun(effector, ()->true));
         eventMap.put("EndEffectorStop", new InstantCommand(effector::rollerOff, effector));
         // eventMap.put("RollerCone", new InstantCommand(skiPlow::rollerCone));

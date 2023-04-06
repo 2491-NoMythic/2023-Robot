@@ -12,6 +12,7 @@ import static frc.robot.settings.Constants.Poses.AVOID_BUMPER;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Commands.IntakeCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SkiPlow;
@@ -26,7 +27,7 @@ public class IntakeCone extends SequentialCommandGroup {
     addCommands(
         runOnce(intake::pistonDown, intake).unless(() -> !INTAKE_CONE.isRequiresIntakeDown()),
         new IntakeCommand(intake),
-        waitSeconds(0.5),
+        new WaitCommand(0.5),
         runOnce(() -> arm.setDesiredElbowPose(AVOID_BUMPER), arm),
         runOnce(() -> arm.setDesiredSholderPose(AVOID_BUMPER), arm),
         waitUntil(arm::isShoulderAtTarget).withTimeout(1),

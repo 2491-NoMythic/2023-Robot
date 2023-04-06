@@ -399,11 +399,11 @@ public class RobotContainer {
     if (LimelightExists) {
       if (DrivetrainExists) {
         new Trigger(()->SmartDashboard.getBoolean("UseLimelight", true))
-          .onTrue(Commands.runOnce(()-> drivetrain.useLimelight(true), drivetrain))
-          .onFalse(Commands.runOnce(()-> drivetrain.useLimelight(false), drivetrain));
+          .onTrue(Commands.runOnce(()-> drivetrain.useLimelight(true)))
+          .onFalse(Commands.runOnce(()-> drivetrain.useLimelight(false)));
         new Trigger(()->SmartDashboard.getBoolean("ForceTrustLimelight", false))
-          .onTrue(Commands.runOnce(()-> drivetrain.forceTrustLimelight(true), drivetrain))
-          .onFalse(Commands.runOnce(()-> drivetrain.forceTrustLimelight(false), drivetrain));
+          .onTrue(Commands.runOnce(()-> drivetrain.forceTrustLimelight(true)))
+          .onFalse(Commands.runOnce(()-> drivetrain.forceTrustLimelight(false)));
       }
     }
     new Trigger(opController::getSquareButton)

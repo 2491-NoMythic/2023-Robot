@@ -55,6 +55,10 @@ public final class Constants {
     public static final double ARM_ELBOW_CENTER_OF_MASS_OFFSET_METERS = 0.7;
     public static final double ARM_SHOULDER_ALLOWABLE_ERROR_DEG = 1;
     public static final double ARM_ELBOW_ALLOWABLE_ERROR_DEG = 1.5;
+    public static final double ARM_SHOULDER_LIMIT_FORWARD_DEG = 55;
+    public static final double ARM_SHOULDER_LIMIT_REVERSE_DEG = 360-55; 
+    public static final double ARM_ELBOW_LIMIT_FORWARD_DEG = 130;
+    public static final double ARM_ELBOW_LIMIT_REVERSE_DEG = 360-90;
     public static final double ARM_SHOULDER_K_P = 0.035;
     public static final double ARM_SHOULDER_K_I = 0;
     public static final double ARM_SHOULDER_K_D = 0;

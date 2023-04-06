@@ -24,6 +24,10 @@ import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_LENGTH_METERS;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_LOCK_CHANNEL;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_MOTOR_ID;
 import static frc.robot.settings.Constants.Arm.ARM_SHUFFLEBOARD_TAB;
+import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_LIMIT_FORWARD_DEG;
+import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_LIMIT_REVERSE_DEG;
+import static frc.robot.settings.Constants.Arm.ARM_ELBOW_LIMIT_FORWARD_DEG;
+import static frc.robot.settings.Constants.Arm.ARM_ELBOW_LIMIT_REVERSE_DEG;
 
 import java.util.function.Supplier;
 
@@ -31,6 +35,7 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
@@ -276,6 +281,13 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void setShoulderAngle(Rotation2d angle, double feedforward) {
+    // double newAngle = angle.getDegrees();
+    // if (newAngle <= ARM_SHOULDER_LIMIT_REVERSE_DEG && newAngle >= 180) {// too far reverse
+    //     newAngle = ARM_SHOULDER_LIMIT_REVERSE_DEG;
+    //     lastAngles[0] = Rotation2d.fromDegrees(newAngle);
+    // }
+
+    // MathUtil.clamp(ARM_SHOULDER_LIMIT_REVERSE_DEG, feedforward, feedforward)
     shoulderPID.setReference(angle.getDegrees(), ControlType.kPosition, 0, feedforward);
   }
   /** set target for the elbow to a given pose */

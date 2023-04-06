@@ -16,7 +16,7 @@ public class Limelight {
         return limelight;
     }
     public LimelightValues getLimelightValues(){
-        return new LimelightValues(LimelightHelpers.getLatestResults(""), LimelightHelpers.getTV(""));
+        return new LimelightValues(LimelightHelpers.getLatestResults("").targetingResults, LimelightHelpers.getTV(""));
     }
     
 }

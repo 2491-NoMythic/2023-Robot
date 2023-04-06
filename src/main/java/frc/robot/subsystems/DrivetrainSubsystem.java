@@ -57,9 +57,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	
 	private final SwerveDrivePoseEstimator odometer;
 	Limelight limelight = Limelight.getInstance();
-	// LimelightValues limelightValues = limelight.getLimelightValues();
-
 	private final Field2d m_field = new Field2d();
+	private boolean useLimelight = true;
+	private boolean forceTrustLimelight = false;
 
 	public DrivetrainSubsystem() {
 
@@ -71,7 +71,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		ShuffleboardTab tab = Shuffleboard.getTab(DRIVETRAIN_SMARTDASHBOARD_TAB);
 		SmartDashboard.putData("Field", m_field);
 		SmartDashboard.putData("resetOdometry", new InstantCommand(() -> this.resetOdometry()));
-		SmartDashboard.putBoolean("display vision pose", true);
 		modules = new SwerveModule[4];
 		lastAngles = new Rotation2d[] {new Rotation2d(), new Rotation2d(), new Rotation2d(), new Rotation2d()}; // manually make empty angles to avoid null errors.
 
@@ -180,6 +179,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void displayFieldTrajectory(PathPlannerTrajectory traj) {
 		m_field.getObject("traj").setTrajectory(traj);
 	}
+	public void forceTrustLimelight(boolean trust) {
+		this.forceTrustLimelight = trust;
+	}
+	public void useLimelight(boolean enable) {
+		this.useLimelight = enable;
+	}
 	/**
 	 *  Sets the modules speed and rotation to zero.
 	 */
@@ -232,26 +237,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		updateOdometry();
-		// if (DriverStation.isAutonomousEnabled()) {
-		// 	if (RobotContainer.LimelightExists) {
-		// 		LimelightValues visionData = limelight.getLimelightValues();
-		// 		SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
-		// 	}
-		// } else if (RobotContainer.LimelightExists) {
-		// 	LimelightValues visionData = limelight.getLimelightValues();
-		// 	SmartDashboard.putBoolean("visionValid", visionData.isResultValid);
-		// 	if (visionData.isResultValid) {
-		// 		if (SmartDashboard.getBoolean("display vision pose", true)){
-		// 			m_field.setRobotPose(visionData.getbotPose());
-		// 		}
-				
-		// 		// updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
-		// 	}
-		// }
-		// if (!(SmartDashboard.getBoolean("display vision pose", true))){
-			m_field.setRobotPose(odometer.getEstimatedPosition());
-		// }
-		// m_field.setRobotPose(odometer.getEstimatedPosition());
+		if (RobotContainer.LimelightExists && useLimelight) {
+			LimelightValues visionData = limelight.getLimelightValues();
+			Boolean isVisionValid = (visionData.isResultValid && visionData.isPoseTrustworthy(odometer.getEstimatedPosition()));
+			SmartDashboard.putBoolean("visionValid", isVisionValid);
+			if (isVisionValid || forceTrustLimelight) {
+				updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
+			}
+		} 
+		m_field.setRobotPose(odometer.getEstimatedPosition());
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 	}

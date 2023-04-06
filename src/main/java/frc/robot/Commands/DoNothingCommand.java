@@ -10,6 +10,7 @@ public class DoNothingCommand extends CommandBase {
   /**
    * Creates a new DoNothingCommand. This command will do nothing, and end after the specified duration.
    * Should run like any command and not interrupt other running commands.
+   * Uses System.currentTimeMillis()
    *
    * @param seconds the time to wait, in seconds
    */
@@ -24,7 +25,7 @@ public class DoNothingCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return System.currentTimeMillis() >= endTimeInMillis;
+    return System.currentTimeMillis() > endTimeInMillis;
   }
 
   @Override

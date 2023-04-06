@@ -279,9 +279,9 @@ public class RobotContainer {
         eventMap.put("CubeFloor", new IntakeCube(arm, skiPlow));
         eventMap.put("ConeFloor", new IntakeCone(arm, skiPlow));
 
-        eventMap.put("ScoreLow", new DropLow(arm, skiPlow));
-        eventMap.put("ScoreMid", Commands.either(new MidCone(arm, skiPlow), new MidCube(arm, skiPlow), intakeState::isConeMode));
         eventMap.put("ScoreHigh", Commands.either(new HighCone(arm, skiPlow), new HighCube(arm, skiPlow), intakeState::isConeMode));
+        eventMap.put("ScoreMid", Commands.either(new MidCone(arm, skiPlow), new MidCube(arm, skiPlow), intakeState::isConeMode));
+        eventMap.put("ScoreLow", new DropLow(arm, skiPlow));
         
         eventMap.put("ResetArmPose", new Reset(arm, skiPlow));
         eventMap.put("ResetArmPoseFast", new ResetFast(arm, skiPlow));

@@ -74,13 +74,14 @@ public final class Autos {
         // autoChooser.addOption("N8score2", N8Score2());
         // autoChooser.addOption("score1", score1());
         // autoChooser.addOption("score1TaxiBalance", score1TaxiBal());
-        autoChooser.addOption("N4coneScore1TaxiBalance", coneScore1TaxiBal());
-        autoChooser.addOption("CubeLowScore1balance", cubeLowScore1Bal());
-        autoChooser.addOption("CubeHighScore1balance", cubeHighScore1Bal());
-        autoChooser.addOption("ConeHighScore1balance", coneHighScore1Bal());
-        autoChooser.addOption("N1ConeScore2HighTaxi", N1ConeScore2HighTaxi());
-        autoChooser.addOption("N9ConeScore2HighTaxi", N9ConeScore2HighTaxi());
-        autoChooser.addOption("balance", Bal());
+        // autoChooser.addOption("N4coneScore1TaxiBalance", coneScore1TaxiBal());
+        // autoChooser.addOption("CubeLowScore1balance", cubeLowScore1Bal());
+        // autoChooser.addOption("CubeHighScore1balance", cubeHighScore1Bal());
+        // autoChooser.addOption("ConeHighScore1balance", coneHighScore1Bal());
+        // autoChooser.addOption("N1ConeScore2HighTaxi", N1ConeScore2HighTaxi());
+        autoChooser.addOption("N9ConeHighMid", N9ConeHighMid());
+        autoChooser.addOption("N9ConeHighMidN7High", N9ConeHighMidN7High());
+        // autoChooser.addOption("balance", Bal());
         // autoChooser.addOption("score1Taxi", score1Taxi());
         // autoChooser.addOption("forward180", forward180());
         // autoChooser.addOption("coolCircle", coolCircle());
@@ -176,10 +177,16 @@ public final class Autos {
             autoBuilder.fullAuto(N1ConeScore2HighTaxi),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
-    public SequentialCommandGroup N9ConeScore2HighTaxi() {
+    public SequentialCommandGroup N9ConeHighMid() {
         return new SequentialCommandGroup(
             // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-            autoBuilder.fullAuto(N9ConeScore2HighTaxi),
+            autoBuilder.fullAuto(N9ConeHighMid),
+            new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
+    }
+    public SequentialCommandGroup N9ConeHighMidN7High() {
+        return new SequentialCommandGroup(
+            // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            autoBuilder.fullAuto(N9ConeHighMidN7High),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
     public SequentialCommandGroup score1Taxi() {
@@ -213,7 +220,8 @@ public final class Autos {
     static List<PathPlannerTrajectory> ConeHighScore1Bal = PathPlanner.loadPathGroup("ConeHighScore1Bal", new PathConstraints(2.5, 1.5));
     static List<PathPlannerTrajectory> ConeScore1TaxiBal = PathPlanner.loadPathGroup("ConeScore1TaxiBal", new PathConstraints(2.5, 1.5));
     static List<PathPlannerTrajectory> N1ConeScore2HighTaxi = PathPlanner.loadPathGroup("N1ConeScore2HighTaxi", new PathConstraints(2.5, 1.75));
-    static List<PathPlannerTrajectory> N9ConeScore2HighTaxi = PathPlanner.loadPathGroup("N9ConeScore2HighTaxi", new PathConstraints(2.5, 1.75));
+    static List<PathPlannerTrajectory> N9ConeHighMid = PathPlanner.loadPathGroup("N9ConeHighMid", new PathConstraints(2.5, 1.75));
+    static List<PathPlannerTrajectory> N9ConeHighMidN7High = PathPlanner.loadPathGroup("N9ConeHighMidN7High", new PathConstraints(2.5, 1.75));
 
     static List<PathPlannerTrajectory> forward180Path = PathPlanner.loadPathGroup("forward 180", new PathConstraints(3, 1.5));
     static List<PathPlannerTrajectory> coolCirclePath = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));

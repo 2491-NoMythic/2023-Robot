@@ -91,6 +91,7 @@ public class ArmSubsystem extends SubsystemBase {
     shoulderMotor.setIdleMode(IdleMode.kBrake);
     shoulderMotor.setInverted(true);
     shoulderMotor.setSmartCurrentLimit(60); //max currrent rating not exceed 60A or 100A more than 2 sec
+    shoulderMotor.setClosedLoopRampRate(0.25);
 
     shoulderPID = shoulderMotor.getPIDController();
     shoulderPID.setFeedbackDevice(shoulderEncoder);
@@ -100,7 +101,7 @@ public class ArmSubsystem extends SubsystemBase {
     shoulderPID.setP(ARM_SHOULDER_K_P);
     shoulderPID.setI(ARM_SHOULDER_K_I);
     shoulderPID.setD(ARM_SHOULDER_K_D);
-    shoulderPID.setOutputRange(-0.3, 0.3);
+    shoulderPID.setOutputRange(-0.6, 0.6);
     shoulderMotor.burnFlash();
 
     // ELBOW
@@ -116,6 +117,9 @@ public class ArmSubsystem extends SubsystemBase {
     elbowMotor.setIdleMode(IdleMode.kBrake);
     elbowMotor.setInverted(false);
     elbowMotor.setSmartCurrentLimit(60); //max currrent rating not exceed 60A or 100A more than 2 sec
+    elbowMotor.setClosedLoopRampRate(0.25);
+    // elbowMotor.setSoftLimit(SoftLimitDirection.kForward, 130);
+    // elbowMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
 
     elbowPID = elbowMotor.getPIDController();
     elbowPID.setFeedbackDevice(elbowEncoder);
@@ -125,7 +129,7 @@ public class ArmSubsystem extends SubsystemBase {
     elbowPID.setP(ARM_ELBOW_K_P);
     elbowPID.setI(ARM_ELBOW_K_I);
     elbowPID.setD(ARM_ELBOW_K_D);
-    elbowPID.setOutputRange(-0.3, 0.3);
+    elbowPID.setOutputRange(-0.6, 0.6);
     elbowMotor.burnFlash();
     
     // SmartDashboard.putNumber("Shoulder P", ARM_SHOULDER_K_P);
@@ -272,7 +276,6 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void setShoulderAngle(Rotation2d angle, double feedforward) {
-    setShoulderLock(false);
     shoulderPID.setReference(angle.getDegrees(), ControlType.kPosition, 0, feedforward);
   }
   /** set target for the elbow to a given pose */
@@ -291,7 +294,6 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void setElbowAngle(Rotation2d angle, double feedforward) {
-    setElbowLock(false);
     elbowPID.setReference(angle.getDegrees(), ControlType.kPosition, 0, feedforward);
   }
 
@@ -309,8 +311,5 @@ public class ArmSubsystem extends SubsystemBase {
     double[] feedforward = calculateFeedForward(lastAngles);
     setShoulderAngle(lastAngles[0], feedforward[0]);
     setElbowAngle(lastAngles[1], feedforward[1]);
-    
-    // if (isShoulderAtTarget()) setShoulderLock(true);
-    // if (isElbowAtTarget()) setElbowLock(true);
   }
 }

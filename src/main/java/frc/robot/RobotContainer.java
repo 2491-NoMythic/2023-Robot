@@ -216,7 +216,6 @@ public class RobotContainer {
     arm = new ArmSubsystem();
     armDefault = new ArmMoveElbowAxis(arm, ()->opController.getRawAxis(Z_ROTATE));
     arm.setDefaultCommand(armDefault);
-    // SmartDashboard.putData(new ResetFast(arm, skiPlow));
   }
   private void EndEffectorInst(){
     effector = new EndEffector(Arm.END_EFFECTOR_BIG_POWER, Arm.END_EFFECTOR_SMALL_POWER);

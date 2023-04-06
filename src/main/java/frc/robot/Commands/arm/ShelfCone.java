@@ -35,8 +35,9 @@ public class ShelfCone extends SequentialCommandGroup {
                 runOnce(() -> arm.setDesiredElbowPose(AVOID_POST), arm)),
             none(),
             arm::isExtended), // TODO: could be a reset command ?
+
         runOnce(() -> arm.setDesiredSholderPose(AVOID_POST), arm),
-        waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
+        // waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
         runOnce(() -> arm.setDesiredElbowPose(SHELF_CONE), arm),
         waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
         runOnce(() -> arm.setDesiredSholderPose(SHELF_CONE), arm),

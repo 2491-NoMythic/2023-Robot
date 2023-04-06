@@ -26,11 +26,11 @@ public class IntakeCone extends SequentialCommandGroup {
     addCommands(
         runOnce(intake::pistonDown, intake).unless(() -> !INTAKE_CONE.isRequiresIntakeDown()),
         new IntakeCommand(intake),
-        waitSeconds(1),
+        waitSeconds(0.5),
         runOnce(() -> arm.setDesiredElbowPose(AVOID_BUMPER), arm),
-        waitUntil(arm::isElbowAtTarget).withTimeout(2),
-        runOnce(() -> arm.setDesiredSholderPose(INTAKE_CONE), arm),
+        runOnce(() -> arm.setDesiredSholderPose(AVOID_BUMPER), arm),
         waitUntil(arm::isShoulderAtTarget).withTimeout(1),
+        runOnce(() -> arm.setDesiredSholderPose(INTAKE_CONE), arm),
         runOnce(() -> arm.setDesiredElbowPose(INTAKE_CONE), arm));
   }
 }

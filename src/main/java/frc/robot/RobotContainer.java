@@ -229,8 +229,8 @@ public class RobotContainer {
 
   private void LimelightInst() {
     limelight = Limelight.getInstance();
-    SmartDashboard.putBoolean("UseLimelight", true);
-    SmartDashboard.putBoolean("ForceTrustLimelight", false);
+    SmartDashboard.putBoolean("UseLimelight", SmartDashboard.getBoolean("UseLimelight", true));
+    SmartDashboard.putBoolean("ForceTrustLimelight", SmartDashboard.getBoolean("ForceTrustLimelight", false));
   }
 
   private void LimelightMotorInst() {

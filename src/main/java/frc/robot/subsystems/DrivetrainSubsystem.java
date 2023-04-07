@@ -237,11 +237,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		updateOdometry();
-		if (RobotContainer.LimelightExists && useLimelight) {
+		if (RobotContainer.LimelightExists && SmartDashboard.getBoolean("UseLimelight", true)) {
 			LimelightValues visionData = limelight.getLimelightValues();
 			Boolean isVisionValid = (visionData.isResultValid && visionData.isPoseTrustworthy(odometer.getEstimatedPosition()));
 			SmartDashboard.putBoolean("visionValid", isVisionValid);
-			if (isVisionValid || forceTrustLimelight) {
+			if (isVisionValid || SmartDashboard.getBoolean("ForceTrustLimelight", false)) {
 				updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
 			}
 		} 

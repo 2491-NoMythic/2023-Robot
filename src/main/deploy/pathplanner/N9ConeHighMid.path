@@ -58,11 +58,11 @@
     {
       "anchorPoint": {
         "x": 1.83,
-        "y": 5.05
+        "y": 5.1
       },
       "prevControl": {
         "x": 2.233665172027063,
-        "y": 4.882262181231769
+        "y": 4.932262181231769
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -83,13 +83,13 @@
   ],
   "markers": [
     {
-      "position": 0.2545454545454546,
+      "position": 0.0727272727272727,
       "names": [
         "Intake"
       ]
     },
     {
-      "position": 0.38181818181818183,
+      "position": 0.12727272727272726,
       "names": [
         "ConeFloor"
       ]

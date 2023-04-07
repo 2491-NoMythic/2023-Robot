@@ -35,8 +35,8 @@ public final class Constants {
     private Arm(){}
     public static final int END_EFFECTOR_SMALL_ROLLER_ID = 2;
     public static final int END_EFFECTOR_BIG_ROLLER_ID = 1;
-    public static final double END_EFFECTOR_SMALL_PASSIVE_POWER = 0.03;
-    public static final double END_EFFECTOR_BIG_PASSIVE_POWER = 0.08;
+    public static final double END_EFFECTOR_SMALL_PASSIVE_POWER = 0.09;
+    public static final double END_EFFECTOR_BIG_PASSIVE_POWER = 0.125;
     public static final double END_EFFECTOR_SMALL_POWER = 0.2;
     public static final double END_EFFECTOR_BIG_POWER = 0.3;
     public static final double END_EFFECTOR_CONE_POWER_BONUS = 0.1;
@@ -282,9 +282,9 @@ public final class Constants {
 
   public enum Poses{
     RESET(0,0, false),
-    INTAKE_CONE(-37,11, true),
+    INTAKE_CONE(-33,5.5, true),
     INTAKE_CUBE(-36,9, true),
-    DROP_LOW(10,33, false),
+    DROP_LOW(8,33, false),
     MID_CONE(0,85, false),
     MID_CUBE(0,85, false),
     HIGH_CONE(29,110, false),

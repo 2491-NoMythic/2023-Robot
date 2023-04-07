@@ -22,12 +22,13 @@ import frc.robot.subsystems.SkiPlow;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeCone extends SequentialCommandGroup {
   /** Creates a new IntakeCone. */
-  public IntakeCone(ArmSubsystem arm, SkiPlow intake) {
+  // public IntakeCone(ArmSubsystem arm, SkiPlow intake) {
+  public IntakeCone(ArmSubsystem arm) {
 
     addCommands(
-        runOnce(intake::pistonDown, intake).unless(() -> !INTAKE_CONE.isRequiresIntakeDown()),
-        new IntakeCommand(intake),
-        new WaitCommand(0.5),
+        // runOnce(intake::pistonDown, intake).unless(() -> !INTAKE_CONE.isRequiresIntakeDown()),
+        // new IntakeCommand(intake),
+        // new WaitCommand(0.5),
         runOnce(() -> arm.setDesiredElbowPose(AVOID_BUMPER), arm),
         runOnce(() -> arm.setDesiredSholderPose(AVOID_BUMPER), arm),
         waitUntil(arm::isShoulderAtTarget).withTimeout(1),

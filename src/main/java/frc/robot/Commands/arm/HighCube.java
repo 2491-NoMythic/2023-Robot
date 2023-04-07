@@ -24,10 +24,11 @@ public class HighCube extends SequentialCommandGroup {
   private static final double TIMEOUT = 1.0;
 
   /** Creates a new HighCube. */
-  public HighCube(ArmSubsystem arm, SkiPlow intake) {
+  // public HighCube(ArmSubsystem arm, SkiPlow intake) {
+  public HighCube(ArmSubsystem arm) {
     // Add your commands in the addCommands() call, e.g.
     addCommands(
-        runOnce(intake::pistonDown, intake).unless(() -> !HIGH_CUBE.isRequiresIntakeDown()),
+        // runOnce(intake::pistonDown, intake).unless(() -> !HIGH_CUBE.isRequiresIntakeDown()),
         either(
             Commands.sequence(
                 runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
@@ -40,7 +41,7 @@ public class HighCube extends SequentialCommandGroup {
         runOnce(() -> arm.setDesiredElbowPose(HIGH_CUBE), arm),
         waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
         runOnce(() -> arm.setDesiredSholderPose(HIGH_CUBE), arm),
-        runOnce(intake::pistonUp, intake),
+        // runOnce(intake::pistonUp, intake),
         waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT)
         );
   }

@@ -20,14 +20,15 @@ public class DropLow extends SequentialCommandGroup {
   private static final double TIMEOUT = 1.0;
 
   /** Creates a new DropLow. */
-  public DropLow(ArmSubsystem arm, SkiPlow intake) {
+  // public DropLow(ArmSubsystem arm, SkiPlow intake) {
+  public DropLow(ArmSubsystem arm) {
     // Add your commands in the addCommands() call, e.g.
     addCommands(
-        runOnce(intake::pistonDown, intake).unless(() -> !DROP_LOW.isRequiresIntakeDown()),
+        // runOnce(intake::pistonDown, intake).unless(() -> !DROP_LOW.isRequiresIntakeDown()),
         runOnce(() -> arm.setDesiredSholderPose(RESET), arm).unless(() -> !arm.isExtended()),
         runOnce(() -> arm.setDesiredElbowPose(DROP_LOW), arm),
         runOnce(() -> arm.setDesiredSholderPose(DROP_LOW), arm),
-        runOnce(intake::pistonUp, intake),
+        // runOnce(intake::pistonUp, intake),
         waitUntil(arm::isElbowAtTarget),
         waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT));
   }

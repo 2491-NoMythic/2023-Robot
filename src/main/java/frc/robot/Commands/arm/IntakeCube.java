@@ -21,11 +21,12 @@ import frc.robot.subsystems.SkiPlow;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeCube extends SequentialCommandGroup {
   /** Creates a new IntakeCube. */
-  public IntakeCube(ArmSubsystem arm, SkiPlow intake) {
+  // public IntakeCube(ArmSubsystem arm, SkiPlow intake) {
+  public IntakeCube(ArmSubsystem arm) {
     addCommands(
-      runOnce(intake::pistonDown, intake).unless(() -> !INTAKE_CUBE.isRequiresIntakeDown()),
-      new IntakeCommand(intake),
-      waitSeconds(0.5),
+      // runOnce(intake::pistonDown, intake).unless(() -> !INTAKE_CUBE.isRequiresIntakeDown()),
+      // new IntakeCommand(intake),
+      // waitSeconds(0.5),
       runOnce(() -> arm.setDesiredElbowPose(AVOID_BUMPER), arm),
       runOnce(() -> arm.setDesiredSholderPose(AVOID_BUMPER), arm),
       waitUntil(arm::isShoulderAtTarget).withTimeout(1),

@@ -20,14 +20,15 @@ public class MidCone extends SequentialCommandGroup {
   private static final double TIMEOUT = 1.0;
 
   /** Creates a new MidCone. */
-  public MidCone(ArmSubsystem arm, SkiPlow intake) {
+  // public MidCone(ArmSubsystem arm, SkiPlow intake) {
+  public MidCone(ArmSubsystem arm) {
     // Add your commands in the addCommands() call, e.g.
     addCommands(
-        runOnce(intake::pistonDown, intake).unless(() -> !MID_CONE.isRequiresIntakeDown()),
+        // runOnce(intake::pistonDown, intake).unless(() -> !MID_CONE.isRequiresIntakeDown()),
         runOnce(() -> arm.setDesiredSholderPose(RESET), arm).unless(() -> !arm.isExtended()),
         runOnce(() -> arm.setDesiredElbowPose(MID_CONE), arm),
         waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
-        runOnce(() -> arm.setDesiredSholderPose(MID_CONE), arm),
-        runOnce(intake::pistonUp, intake));
+        runOnce(() -> arm.setDesiredSholderPose(MID_CONE), arm));
+        // runOnce(intake::pistonUp, intake));
   }
 }

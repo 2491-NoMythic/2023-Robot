@@ -24,10 +24,11 @@ public class HighCone extends SequentialCommandGroup {
   private static final double TIMEOUT = 1.0;
 
   /** Creates a new HighCone. */
-  public HighCone(ArmSubsystem arm, SkiPlow intake) {
+  // public HighCone(ArmSubsystem arm, SkiPlow intake) {
+  public HighCone(ArmSubsystem arm) {
     // Add your commands in the addCommands() call, e.g.
     addCommands(
-        runOnce(intake::pistonDown, intake).unless(() -> !HIGH_CONE.isRequiresIntakeDown()),
+        // runOnce(intake::pistonDown, intake).unless(() -> !HIGH_CONE.isRequiresIntakeDown()),
         either(
             Commands.sequence(
                 runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
@@ -40,7 +41,7 @@ public class HighCone extends SequentialCommandGroup {
         runOnce(() -> arm.setDesiredElbowPose(HIGH_CONE), arm),
         waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
         runOnce(() -> arm.setDesiredSholderPose(HIGH_CONE), arm),
-        runOnce(intake::pistonUp, intake),
+        // runOnce(intake::pistonUp, intake),
         waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT));
   }
 }

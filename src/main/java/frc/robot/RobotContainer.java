@@ -143,9 +143,9 @@ public class RobotContainer {
     eventMap = new HashMap<>();
     intakeState = IntakeState.getInstance();
 
-    SmartDashboard.putNumber("endeffectorBigSpeed", 0.5);
-    SmartDashboard.putNumber("endeffectorSmallSpeed", 0.75);
-    SmartDashboard.putNumber("skiplowRollerSpeed", 0.5);
+    // SmartDashboard.putNumber("endeffectorBigSpeed", 0.5);
+    // SmartDashboard.putNumber("endeffectorSmallSpeed", 0.75);
+    // SmartDashboard.putNumber("skiplowRollerSpeed", 0.5);
 
     if (ArmExists) {
       ArmInst();
@@ -168,12 +168,12 @@ public class RobotContainer {
     if (LightsExists) {
       LightsInst();
     }
-    if(SkiPlowExists && ArmExists) {
+    if(ArmExists) {
       moveToIntakePose = Map.ofEntries(
-        Map.entry(IntakeMode.CONE_GROUND, new IntakeCone(arm, skiPlow)),
-        Map.entry(IntakeMode.CONE_SHELF, new ShelfCone(arm, skiPlow)),
-        Map.entry(IntakeMode.CUBE_SHELF, new ShelfCube(arm, skiPlow)),
-        Map.entry(IntakeMode.CUBE, new IntakeCube(arm, skiPlow))
+        Map.entry(IntakeMode.CONE_GROUND, new IntakeCone(arm)),
+        Map.entry(IntakeMode.CONE_SHELF, new ShelfCone(arm)),
+        Map.entry(IntakeMode.CUBE_SHELF, new ShelfCube(arm)),
+        Map.entry(IntakeMode.CUBE, new IntakeCube(arm))
       );
       // SmartDashboard.putData("GoTo Intake Cone", new IntakeCone(arm, skiPlow));
       // SmartDashboard.putData("GoTo Intake Cube", new IntakeCube(arm, skiPlow));
@@ -223,7 +223,7 @@ public class RobotContainer {
     effector.setDefaultCommand(endEffectorPassiveCommand);
   }
   private void SkiPlowInst(){
-    skiPlow = new SkiPlow(0.5);
+    // skiPlow = new SkiPlow(0.5);
     // skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));
   }
 
@@ -260,8 +260,8 @@ public class RobotContainer {
         eventMap.put("EndEffectorStop", new InstantCommand(effector::rollerOff, effector));
         // eventMap.put("RollerCone", new InstantCommand(skiPlow::rollerCone));
         // eventMap.put("RollerCube", new InstantCommand(skiPlow::rollerCube));
-        eventMap.put("IntakeRollerOn", Commands.either(new InstantCommand(skiPlow::rollerCone, skiPlow), new InstantCommand(skiPlow::rollerCube, skiPlow), intakeState::isConeMode));
-        eventMap.put("IntakeRollerOff", new InstantCommand(skiPlow::rollerOff, skiPlow));
+        // eventMap.put("IntakeRollerOn", Commands.either(new InstantCommand(skiPlow::rollerCone, skiPlow), new InstantCommand(skiPlow::rollerCube, skiPlow), intakeState::isConeMode));
+        // eventMap.put("IntakeRollerOff", new InstantCommand(skiPlow::rollerOff, skiPlow));
         // eventMap.put("EndEffectorInCube", new SequentialCommandGroup(new InstantCommand(effector::rollerInCube, effector)));
         // eventMap.put("EndEffectorOutCube", new SequentialCommandGroup(new InstantCommand(effector::rollerOutCube, effector)));
         // eventMap.put("EndEffectorInCone", new SequentialCommandGroup(new InstantCommand(effector::rollerInCone, effector)));
@@ -276,17 +276,17 @@ public class RobotContainer {
       }
       if (ArmExists) {
         // eventMap.put("MoveArmToIntakePose", new SequentialCommandGroup(Commands.select(moveToIntakePose, intakeState::getIntakeMode)));
-        eventMap.put("CubeShelf", new ShelfCube(arm, skiPlow));
-        eventMap.put("ConeShelf", new ShelfCone(arm, skiPlow));
-        eventMap.put("CubeFloor", new IntakeCube(arm, skiPlow));
-        eventMap.put("ConeFloor", new IntakeCone(arm, skiPlow));
+        eventMap.put("CubeShelf", new ShelfCube(arm));
+        eventMap.put("ConeShelf", new ShelfCone(arm));
+        eventMap.put("CubeFloor", new IntakeCube(arm));
+        eventMap.put("ConeFloor", new IntakeCone(arm));
 
-        eventMap.put("ScoreHigh", Commands.either(new HighCone(arm, skiPlow), new HighCube(arm, skiPlow), intakeState::isConeMode));
-        eventMap.put("ScoreMid", Commands.either(new MidCone(arm, skiPlow), new MidCube(arm, skiPlow), intakeState::isConeMode));
-        eventMap.put("ScoreLow", new DropLow(arm, skiPlow));
+        eventMap.put("ScoreHigh", Commands.either(new HighCone(arm), new HighCube(arm), intakeState::isConeMode));
+        eventMap.put("ScoreMid", Commands.either(new MidCone(arm), new MidCube(arm), intakeState::isConeMode));
+        eventMap.put("ScoreLow", new DropLow(arm));
         
-        eventMap.put("ResetArmPose", new Reset(arm, skiPlow));
-        eventMap.put("ResetArmPoseFast", new ResetFast(arm, skiPlow));
+        eventMap.put("ResetArmPose", new Reset(arm));
+        eventMap.put("ResetArmPoseFast", new ResetFast(arm));
         // eventMap.put("armPoint1", TODO add command);
         // eventMap.put("armPoint2", TODO add command);
       }
@@ -382,14 +382,14 @@ public class RobotContainer {
       new Trigger(opController::getL1Button)
           .whileTrue(new EndEffectorCommand(effector, ()->false));
       new Trigger(opController::getTouchpadPressed)
-          .onTrue(new Reset(arm, skiPlow));
+          .onTrue(new Reset(arm));
           
       new Trigger(()-> opController.getPOV() == 0)
-          .onTrue(Commands.either(new HighCone(arm, skiPlow), new HighCube(arm, skiPlow), intakeState::isConeMode));//score high
+          .onTrue(Commands.either(new HighCone(arm), new HighCube(arm), intakeState::isConeMode));//score high
       new Trigger(()-> opController.getPOV() == 90).or(()-> opController.getPOV() == 270)
-          .onTrue(Commands.either(new MidCone(arm, skiPlow), new MidCube(arm, skiPlow), intakeState::isConeMode));//score mid
+          .onTrue(Commands.either(new MidCone(arm), new MidCube(arm), intakeState::isConeMode));//score mid
       new Trigger(()-> opController.getPOV() == 180)
-          .onTrue(new DropLow(arm, skiPlow));//score floor
+          .onTrue(new DropLow(arm));//score floor
     }
     if (SkiPlowExists) {
       // BooleanSupplier tmp = opController::getR1Button;

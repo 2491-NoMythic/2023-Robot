@@ -480,21 +480,8 @@ public class RobotContainer {
   }
 
   public void disabledPeriodic() {
-  int purple1 = 0;
-    
-   if(LightsExists){
-     lightsSubsystem.setLights(0, 52, 150, 140, 150);
-     for(int i = purple1; i < purple1+8; i++) {
-       lightsSubsystem.setOneLightRGB((i)%52, 50, 0, 80);
-       lightsSubsystem.setOneLightRGB((i+18)%52, 50, 0, 80);
-       lightsSubsystem.setOneLightRGB((i+36)%52, 50, 0, 80);
-      }
-      lightsSubsystem.dataSetter();
-      purple1++;
-      
-      if(purple1>51) {
-        purple1 = 0;
-      }
+    if(LightsExists){
+      defaultLights.schedule();
     } 
   }
 }

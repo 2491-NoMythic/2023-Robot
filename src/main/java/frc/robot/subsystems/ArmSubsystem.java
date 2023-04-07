@@ -25,8 +25,6 @@ import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_LOCK_CHANNEL;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_MOTOR_ID;
 import static frc.robot.settings.Constants.Arm.ARM_SHUFFLEBOARD_TAB;
 
-import java.util.function.Supplier;
-
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
@@ -35,21 +33,14 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.settings.Constants.Poses;
-
-
-
 
 public class ArmSubsystem extends SubsystemBase {
   CANSparkMax shoulderMotor;
@@ -222,7 +213,6 @@ public class ArmSubsystem extends SubsystemBase {
     double elbowVector = Math.acos((Math.pow(ARM_ELBOW_LENGTH_METERS, 2) - Math.pow(ARM_SHOULDER_LENGTH_METERS, 2) - Math.pow(magnitude, 2))/ (-2 * ARM_SHOULDER_LENGTH_METERS * magnitude));
     if (pose.getX() <= 0.0) elbowVector = -elbowVector;
     // SmartDashboard.putNumber("shouldervector", shoulderVector);
-    // SmartDashboard.putNumber("shouldervector", shoulderVector);
     Rotation2d shoulderAngle = Rotation2d.fromDegrees(-(poseVector+shoulderVector) + 270);
     Rotation2d elbowAngle = Rotation2d.fromDegrees(poseVector-elbowVector-90);
     return new Rotation2d[] {shoulderAngle, elbowAngle};
@@ -310,7 +300,5 @@ public class ArmSubsystem extends SubsystemBase {
     setShoulderAngle(lastAngles[0], feedforward[0]);
     setElbowAngle(lastAngles[1], feedforward[1]);
     
-    // if (isShoulderAtTarget()) setShoulderLock(true);
-    // if (isElbowAtTarget()) setElbowLock(true);
   }
 }

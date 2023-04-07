@@ -100,19 +100,22 @@ public class RobotContainer {
   private final PS4Controller opController;
 
   private Autos autos;
-
-
+  
+  
   private ArmSubsystem arm;
   private ArmMoveElbowAxis armDefault;
   // private RobotArmControl ControlArm;
-
-
+  
+  
   private EndEffectorPassiveCommand endEffectorPassiveCommand;
   private SkiPlow skiPlow;
-
+  
   private EndEffector effector;
-
+  
   private SubsystemLights lightsSubsystem;
+  
+  private PurpleLights defaultLights; 
+  private LightsByModeCommand lightsByMode; 
 
   public static HashMap<String, Command> eventMap;
   public static Map<Object, Command> moveToIntakePose;
@@ -123,7 +126,7 @@ public class RobotContainer {
   public static boolean LimelightMotorExists = Preferences.getBoolean("LimelightMotor", false);
   public static boolean DrivetrainExists = Preferences.getBoolean("Drivetrain", false);
   public static boolean LightsExists = Preferences.getBoolean("Lights", false);
-
+  
   public IntakeState intakeState;
 
   public RobotContainer() {
@@ -187,8 +190,8 @@ public class RobotContainer {
 
   private void LightsInst() {
     lightsSubsystem = new SubsystemLights(52);
-    PurpleLights defaultLights = new PurpleLights(lightsSubsystem);
-    LightsByModeCommand lightsByMode = new LightsByModeCommand(lightsSubsystem, ArmExists);
+    defaultLights = new PurpleLights(lightsSubsystem);
+    lightsByMode = new LightsByModeCommand(lightsSubsystem, ArmExists);
     lightsSubsystem.setDefaultCommand(lightsByMode);
   }
 
@@ -456,6 +459,9 @@ public class RobotContainer {
     if (DrivetrainExists) {
       drivetrain.zeroGyroscope();
     }
+    if (LightsExists) {
+
+    }
   }
 
   public void teleopInit() {
@@ -467,5 +473,28 @@ public class RobotContainer {
   public void teleopPeriodic() {
     // SmartDashboard.putString("NearestNode", drivetrain.getPose().nearest(ALL_NODES).toString());
     SmartDashboard.putNumber("Match Timer", Timer.getMatchTime());
+  }
+
+  public void disabledInit() {
+    //This is empty, but it runs upon disable (or power on maybe?)
+  }
+
+  public void disabledPeriodic() {
+  int purple1 = 0;
+    
+   if(LightsExists){
+     lightsSubsystem.setLights(0, 52, 150, 140, 150);
+     for(int i = purple1; i < purple1+8; i++) {
+       lightsSubsystem.setOneLightRGB((i)%52, 50, 0, 80);
+       lightsSubsystem.setOneLightRGB((i+18)%52, 50, 0, 80);
+       lightsSubsystem.setOneLightRGB((i+36)%52, 50, 0, 80);
+      }
+      lightsSubsystem.dataSetter();
+      purple1++;
+      
+      if(purple1>51) {
+        purple1 = 0;
+      }
+    } 
   }
 }

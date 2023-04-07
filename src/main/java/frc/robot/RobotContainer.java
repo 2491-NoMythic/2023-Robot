@@ -290,8 +290,8 @@ public class RobotContainer {
         // eventMap.put("armPoint1", TODO add command);
         // eventMap.put("armPoint2", TODO add command);
       }
-      eventMap.put("ModeCubeGround", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE)));
-      eventMap.put("ModeCubeShelf", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE_SHELF)));
+      eventMap.put("ModeCubeGround", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE)).alongWith(Commands.run(effector::rollerInCube).withTimeout(0.25)));
+      eventMap.put("ModeCubeShelf", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE_SHELF)).alongWith(Commands.run(effector::rollerInCube).withTimeout(0.25)));
       eventMap.put("ModeConeGround", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_GROUND)).alongWith(Commands.run(effector::rollerInCone).withTimeout(0.25)));
       eventMap.put("ModeConeRamp", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_RAMP)));
       eventMap.put("ModeConeShelf", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_SHELF)).alongWith(Commands.run(effector::rollerInCone).withTimeout(0.25)));

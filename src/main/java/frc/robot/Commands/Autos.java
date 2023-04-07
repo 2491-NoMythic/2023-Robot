@@ -81,6 +81,7 @@ public final class Autos {
         // autoChooser.addOption("N1ConeScore2HighTaxi", N1ConeScore2HighTaxi());
         autoChooser.addOption("N9ConeHighMid", N9ConeHighMid());
         autoChooser.addOption("N9ConeHighMidN7High", N9ConeHighMidN7High());
+        autoChooser.addOption("N9ConeHighN8CubeHigh", N9ConeHighN8CubeHigh());
         // autoChooser.addOption("balance", Bal());
         // autoChooser.addOption("score1Taxi", score1Taxi());
         // autoChooser.addOption("forward180", forward180());
@@ -189,6 +190,12 @@ public final class Autos {
             autoBuilder.fullAuto(N9ConeHighMidN7High),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
+    public SequentialCommandGroup N9ConeHighN8CubeHigh() {
+        return new SequentialCommandGroup(
+            // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
+            autoBuilder.fullAuto(N9ConeHighN8CubeHigh),
+            new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
+    }
     public SequentialCommandGroup score1Taxi() {
         return new SequentialCommandGroup(
             // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
@@ -222,6 +229,7 @@ public final class Autos {
     static List<PathPlannerTrajectory> N1ConeScore2HighTaxi = PathPlanner.loadPathGroup("N1ConeScore2HighTaxi", new PathConstraints(2.5, 1.75));
     static List<PathPlannerTrajectory> N9ConeHighMid = PathPlanner.loadPathGroup("N9ConeHighMid", new PathConstraints(2.5, 1.75));
     static List<PathPlannerTrajectory> N9ConeHighMidN7High = PathPlanner.loadPathGroup("N9ConeHighMidN7High", new PathConstraints(2.5, 1.75));
+    static List<PathPlannerTrajectory> N9ConeHighN8CubeHigh = PathPlanner.loadPathGroup("N9ConeHighN8CubeHigh", new PathConstraints(2.5, 1.75));
 
     static List<PathPlannerTrajectory> forward180Path = PathPlanner.loadPathGroup("forward 180", new PathConstraints(3, 1.5));
     static List<PathPlannerTrajectory> coolCirclePath = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));

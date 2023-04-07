@@ -1,0 +1,143 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 1.8286222286730291,
+        "y": 5.053104249065641
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.6731920606698356,
+        "y": 4.781124133676839
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "ModeConeGround",
+          "ScoreHigh",
+          "Outtake"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 7.180547346419156,
+        "y": 4.48160982752488
+      },
+      "prevControl": {
+        "x": 5.579919856943627,
+        "y": 4.778080939264096
+      },
+      "nextControl": {
+        "x": 5.579919856943627,
+        "y": 4.778080939264096
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.938794789870282,
+        "y": 4.437963718032698
+      },
+      "prevControl": {
+        "x": 2.424853726900437,
+        "y": 4.7245208525504765
+      },
+      "nextControl": {
+        "x": 2.424853726900437,
+        "y": 4.7245208525504765
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "ScoreHigh",
+          "Outtake"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.282493126389762,
+        "y": 4.7136389360498026
+      },
+      "prevControl": {
+        "x": 6.148697375094612,
+        "y": 4.695147078080242
+      },
+      "nextControl": null,
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "markers": [
+    {
+      "position": 0.5181818181818182,
+      "names": [
+        "Intake"
+      ]
+    },
+    {
+      "position": 0.6545454545454545,
+      "names": [
+        "CubeFloor"
+      ]
+    },
+    {
+      "position": 0.13636363636363635,
+      "names": [
+        "ModeCubeGround"
+      ]
+    },
+    {
+      "position": 2.2090909090909054,
+      "names": [
+        "ResetArmPose"
+      ]
+    },
+    {
+      "position": 0.05454545454545454,
+      "names": [
+        "ResetArmPose"
+      ]
+    },
+    {
+      "position": 1.1727272727272728,
+      "names": [
+        "ResetArmPoseFast"
+      ]
+    }
+  ]
+}

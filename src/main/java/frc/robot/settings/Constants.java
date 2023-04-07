@@ -283,7 +283,7 @@ public final class Constants {
   public enum Poses{
     RESET(0,0, false),
     INTAKE_CONE(-33,5.5, true),
-    INTAKE_CUBE(-36,9, true),
+    INTAKE_CUBE(-40,9, true),
     DROP_LOW(8,33, false),
     MID_CONE(0,85, false),
     MID_CUBE(0,85, false),

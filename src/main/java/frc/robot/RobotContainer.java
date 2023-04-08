@@ -114,7 +114,6 @@ public class RobotContainer {
   
   private SubsystemLights lightsSubsystem;
   
-  private PurpleLights defaultLights; 
   private LightsByModeCommand lightsByMode; 
 
   public static HashMap<String, Command> eventMap;
@@ -190,7 +189,6 @@ public class RobotContainer {
 
   private void LightsInst() {
     lightsSubsystem = new SubsystemLights(52);
-    defaultLights = new PurpleLights(lightsSubsystem);
     lightsByMode = new LightsByModeCommand(lightsSubsystem, ArmExists);
     lightsSubsystem.setDefaultCommand(lightsByMode);
   }
@@ -479,9 +477,6 @@ public class RobotContainer {
     //This is empty, but it runs upon disable (or power on maybe?)
   }
 
-  public void disabledPeriodic() {
-    if(LightsExists){
-      defaultLights.schedule();
-    } 
-  }
+  // public void disabledPeriodic() {
+  // }
 }

@@ -2,7 +2,6 @@ package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.settings.IntakeState;
-import frc.robot.settings.IntakeState.IntakeMode;
 import frc.robot.subsystems.SubsystemLights;
 
 /**
@@ -112,6 +111,8 @@ public class LightsByModeCommand extends CommandBase {
         counter = 0;
         isBlinking = !isBlinking;
       }
+    } else {
+      drawConeMode();
     }
   }
 

@@ -5,14 +5,16 @@
 package frc.robot.settings;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.Results;
 
 /** Add your docs here. */
 public class LimelightValues {
-        LimelightHelpers.LimelightResults llresults;
+        LimelightHelpers.Results llresults;
         public boolean isResultValid;
         int numTags;
         double[] tx = new double[5];
@@ -20,27 +22,21 @@ public class LimelightValues {
         double[] ta = new double[5];
         Pose2d botPoseRed;
         Pose2d botPoseBlue;
-        double timestamp_LIMELIGHT_publish;
-        double timestamp_RIOFPGA_capture;
-        double timestamp_Latency_capture;
-        double timestamp_Latency_pipeline;
-        public LimelightValues(LimelightHelpers.LimelightResults llresults, boolean valid){
+
+        private final Translation2d fieldCorner = new Translation2d(16.54, 8.02);
+
+        public LimelightValues(Results llresults, boolean valid){
             this.llresults = llresults;
             this.isResultValid = valid;
             if (isResultValid) {
-                this.numTags = llresults.targetingResults.targets_Fiducials.length;
+                this.numTags = llresults.targets_Fiducials.length;
                 for (int i = 0; i < numTags; i++) {
-                    this.tx[i] = llresults.targetingResults.targets_Fiducials[i].tx;
-                    this.ty[i] = llresults.targetingResults.targets_Fiducials[i].ty;
-                    this.ta[i] = llresults.targetingResults.targets_Fiducials[i].ta;
+                    this.tx[i] = llresults.targets_Fiducials[i].tx;
+                    this.ty[i] = llresults.targets_Fiducials[i].ty;
+                    this.ta[i] = llresults.targets_Fiducials[i].ta;
                 }
-                
-                this.botPoseRed = llresults.targetingResults.getBotPose2d_wpiRed();
-                this.botPoseBlue = llresults.targetingResults.getBotPose2d_wpiBlue();
-                this.timestamp_LIMELIGHT_publish = llresults.targetingResults.timestamp_LIMELIGHT_publish;
-                this.timestamp_RIOFPGA_capture = llresults.targetingResults.timestamp_RIOFPGA_capture;
-                this.timestamp_Latency_capture = llresults.targetingResults.latency_capture;
-                this.timestamp_Latency_pipeline = llresults.targetingResults.latency_pipeline;
+                this.botPoseRed = llresults.getBotPose2d_wpiRed();
+                this.botPoseBlue = llresults.getBotPose2d_wpiBlue();
             }
         }
         public double gettx(int index){return tx[index];}
@@ -53,8 +49,16 @@ public class LimelightValues {
                 return botPoseBlue;
             }
         }
+        public boolean isPoseTrustworthy(Pose2d robotPose){
+            Pose2d poseEstimate = this.getbotPose();
+            if ((poseEstimate.getX()<fieldCorner.getX() && poseEstimate.getY()<fieldCorner.getY()) //Don't trust estimations that are outside the field perimeter.
+                && robotPose.getTranslation().getDistance(poseEstimate.getTranslation()) < 0.5) //Dont trust pose estimations that are more than half a meter from current pose.
+                return true;
+            else return false;
+        }
         public double gettimestamp(){
-            // return new double[] {Timer.getFPGATimestamp(), timestamp_LIMELIGHT_publish/1000, timestamp_RIOFPGA_capture, timestamp_Latency_capture/1000, timestamp_Latency_pipeline/1000};}
-            return Timer.getFPGATimestamp()-((llresults.targetingResults.latency_jsonParse+llresults.targetingResults.latency_pipeline+llresults.targetingResults.latency_capture)/1000);
+            return (Timer.getFPGATimestamp()
+            - (llresults.latency_capture / 1000.0)
+            - (llresults.latency_pipeline / 1000.0));
         }
 }

@@ -206,6 +206,8 @@ public class RobotContainer {
 
   private void LimelightInst() {
     limelight = Limelight.getInstance();
+    SmartDashboard.putBoolean("UseLimelight", true);
+    SmartDashboard.putBoolean("ForceTrustLimelight", false);
   }
 
   private void autoInit() {
@@ -336,6 +338,22 @@ public class RobotContainer {
       new Trigger(()-> opController.getPOV() == 180)
           .onTrue(new DropLow(arm, skiPlow));//score floor
     }
+
+    if (SkiPlowExists) {
+      // BooleanSupplier tmp = opController::getR1Button;
+      // BooleanSupplier tmp2 = () -> opController.getR1Button();
+    }
+    if (LimelightExists) {
+      if (DrivetrainExists) {
+        new Trigger(()->SmartDashboard.getBoolean("UseLimelight", true))
+          .onTrue(Commands.runOnce(()-> drivetrain.useLimelight(true)))
+          .onFalse(Commands.runOnce(()-> drivetrain.useLimelight(false)));
+        new Trigger(()->SmartDashboard.getBoolean("ForceTrustLimelight", false))
+          .onTrue(Commands.runOnce(()-> drivetrain.forceTrustLimelight(true)))
+          .onFalse(Commands.runOnce(()-> drivetrain.forceTrustLimelight(false)));
+      }
+    }
+
     new Trigger(opController::getSquareButton)
         .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CUBE)))
         .onTrue(Commands.runOnce(() -> {

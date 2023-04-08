@@ -291,7 +291,8 @@ public final class Constants {
     HIGH_CUBE(29,110, false),
     SHELF_CONE(0,94, false),
     SHELF_CUBE(0,94, false),
-    CHUTE_CONE(-14,-56, true),
+    RAMP_CONE(7.75,-46, true),
+    RAMP_CUBE(13,-50, true),
     AVOID_POST(-20, 45, true), //TODO: how far back to avoid?
     AVOID_BUMPER(-17.5,-3,true);
     private double[] angles = new double[2];

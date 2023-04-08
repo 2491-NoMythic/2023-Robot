@@ -50,7 +50,8 @@ import frc.robot.Commands.IntakeCommand;
 import frc.robot.Commands.LightsByModeCommand;
 import frc.robot.Commands.PurpleLights;
 import frc.robot.Commands.RunViaLimelightCommand;
-import frc.robot.Commands.arm.ChuteCone;
+import frc.robot.Commands.arm.RampCone;
+import frc.robot.Commands.arm.RampCube;
 import frc.robot.Commands.arm.DropLow;
 import frc.robot.Commands.arm.HighCone;
 import frc.robot.Commands.arm.HighCube;
@@ -172,8 +173,10 @@ public class RobotContainer {
       moveToIntakePose = Map.ofEntries(
         Map.entry(IntakeMode.CONE_GROUND, new IntakeCone(arm)),
         Map.entry(IntakeMode.CONE_SHELF, new ShelfCone(arm)),
+        Map.entry(IntakeMode.CONE_RAMP, new RampCone(arm)),
+        Map.entry(IntakeMode.CUBE_GROUND, new IntakeCube(arm)),
         Map.entry(IntakeMode.CUBE_SHELF, new ShelfCube(arm)),
-        Map.entry(IntakeMode.CUBE, new IntakeCube(arm))
+        Map.entry(IntakeMode.CUBE_RAMP, new RampCube(arm))
       );
       // SmartDashboard.putData("GoTo Intake Cone", new IntakeCone(arm, skiPlow));
       // SmartDashboard.putData("GoTo Intake Cube", new IntakeCube(arm, skiPlow));
@@ -290,7 +293,7 @@ public class RobotContainer {
         // eventMap.put("armPoint1", TODO add command);
         // eventMap.put("armPoint2", TODO add command);
       }
-      eventMap.put("ModeCubeGround", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE)).alongWith(Commands.run(effector::rollerInCube).withTimeout(0.25)));
+      eventMap.put("ModeCubeGround", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE_GROUND)).alongWith(Commands.run(effector::rollerInCube).withTimeout(0.25)));
       eventMap.put("ModeCubeShelf", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE_SHELF)).alongWith(Commands.run(effector::rollerInCube).withTimeout(0.25)));
       eventMap.put("ModeConeGround", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_GROUND)).alongWith(Commands.run(effector::rollerInCone).withTimeout(0.25)));
       eventMap.put("ModeConeRamp", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_RAMP)));
@@ -375,8 +378,7 @@ public class RobotContainer {
     if (ArmExists) {
       
       new Trigger(opController::getR1Button)
-          .onTrue(Commands.select(moveToIntakePose, intakeState::getIntakeMode))
-          .whileTrue(new EndEffectorCommand(effector, ()->true));
+          .onTrue(Commands.select(moveToIntakePose, intakeState::getIntakeMode));
       new Trigger(opController::getR2Button)
           .whileTrue(new EndEffectorCommand(effector, ()->true));
       new Trigger(opController::getL1Button)
@@ -405,8 +407,14 @@ public class RobotContainer {
           .onFalse(Commands.runOnce(()-> drivetrain.forceTrustLimelight(false)));
       }
     }
+    new Trigger(opController::getOptionsButton)
+        .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CUBE_GROUND)))
+        .onTrue(Commands.runOnce(() -> {
+          SmartDashboard.putBoolean("ConeMode", false);
+          SmartDashboard.putBoolean("CubeMode", true);
+        }));
     new Trigger(opController::getSquareButton)
-        .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CUBE)))
+        .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CUBE_RAMP)))
         .onTrue(Commands.runOnce(() -> {
           SmartDashboard.putBoolean("ConeMode", false);
           SmartDashboard.putBoolean("CubeMode", true);
@@ -419,7 +427,7 @@ public class RobotContainer {
         }));
     
     new Trigger(opController::getTriangleButton)
-        .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CONE_GROUND)))
+        .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CONE_RAMP)))
         .onTrue(Commands.runOnce(() -> {
           SmartDashboard.putBoolean("ConeMode", true);
           SmartDashboard.putBoolean("CubeMode", false);

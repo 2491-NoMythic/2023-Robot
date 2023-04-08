@@ -19,7 +19,8 @@
         "names": [
           "ModeConeGround",
           "ScoreHigh",
-          "Outtake"
+          "Outtake",
+          "ResetArmPose"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -55,16 +56,16 @@
     },
     {
       "anchorPoint": {
-        "x": 1.938794789870282,
-        "y": 4.437963718032698
+        "x": 2.1024973113383227,
+        "y": 4.376358746273613
       },
       "prevControl": {
-        "x": 3.954779969587335,
-        "y": 4.821645051458383
+        "x": 4.118482491055373,
+        "y": 4.760040079699298
       },
       "nextControl": {
-        "x": 3.954779969587335,
-        "y": 4.821645051458383
+        "x": 4.118482491055373,
+        "y": 4.760040079699298
       },
       "holonomicAngle": 180.0,
       "isReversal": true,
@@ -73,7 +74,6 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "ScoreHigh",
           "Outtake"
         ],
         "executionBehavior": "sequential",
@@ -87,14 +87,14 @@
         "y": 3.273598652460463
       },
       "prevControl": {
-        "x": 5.950653894863912,
-        "y": 5.2268434425869055
+        "x": 6.492876845403892,
+        "y": 5.513459798851231
       },
       "nextControl": {
-        "x": 5.950653894863912,
-        "y": 5.2268434425869055
+        "x": 6.492876845403892,
+        "y": 5.513459798851231
       },
-      "holonomicAngle": 127.72373299687422,
+      "holonomicAngle": 114.86369657150897,
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
@@ -110,16 +110,16 @@
     },
     {
       "anchorPoint": {
-        "x": 1.9188003778646572,
-        "y": 4.422232393725794
+        "x": 2.2439622258470995,
+        "y": 4.398122579274964
       },
       "prevControl": {
-        "x": 3.0646853131111866,
-        "y": 4.651409380775101
+        "x": 3.38984716109363,
+        "y": 4.627299566324271
       },
       "nextControl": {
-        "x": 3.0646853131111866,
-        "y": 4.651409380775101
+        "x": 3.38984716109363,
+        "y": 4.627299566324271
       },
       "holonomicAngle": 180.0,
       "isReversal": true,
@@ -128,7 +128,6 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "ScoreMid",
           "Outtake"
         ],
         "executionBehavior": "sequential",
@@ -159,6 +158,9 @@
       }
     }
   ],
+  "maxVelocity": 4.0,
+  "maxAcceleration": 3.0,
+  "isReversed": null,
   "markers": [
     {
       "position": 0.5181818181818183,
@@ -185,12 +187,6 @@
       ]
     },
     {
-      "position": 0.05454545454545454,
-      "names": [
-        "ResetArmPoseFast"
-      ]
-    },
-    {
       "position": 2.4999999999999996,
       "names": [
         "Intake"
@@ -206,6 +202,18 @@
       "position": 4.136363636363637,
       "names": [
         "ResetArmPoseFast"
+      ]
+    },
+    {
+      "position": 1.3636363636363635,
+      "names": [
+        "ScoreHigh"
+      ]
+    },
+    {
+      "position": 3.3636363636363638,
+      "names": [
+        "ScoreMid"
       ]
     }
   ]

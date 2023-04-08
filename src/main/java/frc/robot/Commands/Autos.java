@@ -229,7 +229,7 @@ public final class Autos {
     static List<PathPlannerTrajectory> N1ConeScore2HighTaxi = PathPlanner.loadPathGroup("N1ConeScore2HighTaxi", new PathConstraints(2.5, 1.75));
     static List<PathPlannerTrajectory> N9ConeHighMid = PathPlanner.loadPathGroup("N9ConeHighMid", new PathConstraints(2.5, 1.75));
     static List<PathPlannerTrajectory> N9ConeHighMidN7High = PathPlanner.loadPathGroup("N9ConeHighMidN7High", new PathConstraints(2.5, 1.75));
-    static List<PathPlannerTrajectory> N9ConeHighN8CubeHigh = PathPlanner.loadPathGroup("N9ConeHighN8CubeHigh", new PathConstraints(2.5, 1.75));
+    static List<PathPlannerTrajectory> N9ConeHighN8CubeHigh = PathPlanner.loadPathGroup("N9ConeHighN8CubeHigh", new PathConstraints(3, 2.5));
 
     static List<PathPlannerTrajectory> forward180Path = PathPlanner.loadPathGroup("forward 180", new PathConstraints(3, 1.5));
     static List<PathPlannerTrajectory> coolCirclePath = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));

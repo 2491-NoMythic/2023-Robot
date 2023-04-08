@@ -89,16 +89,18 @@ public final class Autos {
     }
 
     public CommandBase moveToPose(Pose2d targetPose) {
-        return Commands.runOnce(()->{
-            Pose2d currentPose = drivetrain.getPose();
-            Rotation2d heading = (targetPose.getTranslation().minus(currentPose.getTranslation())).getAngle();
-            PathPlannerTrajectory newTraj = PathPlanner.generatePath(
-                    new PathConstraints(1, 1),
-                    new PathPoint(currentPose.getTranslation(), heading, currentPose.getRotation()),
-                    new PathPoint(targetPose.getTranslation(), heading, targetPose.getRotation()));
-            drivetrain.displayFieldTrajectory(newTraj);
-            autoBuilder.followPath(newTraj).finallyDo(x -> drivetrain.stop()).schedule();
-        });
+        Pose2d currentPose = drivetrain.getPose();
+        if (currentPose.getTranslation().getDistance(targetPose.getTranslation())<3){
+            return Commands.runOnce(()->{
+                Rotation2d heading = (targetPose.getTranslation().minus(currentPose.getTranslation())).getAngle();
+                PathPlannerTrajectory newTraj = PathPlanner.generatePath(
+                        new PathConstraints(1, 1),
+                        new PathPoint(currentPose.getTranslation(), heading, currentPose.getRotation()),
+                        new PathPoint(targetPose.getTranslation(), heading, targetPose.getRotation()));
+                drivetrain.displayFieldTrajectory(newTraj);
+                autoBuilder.followPath(newTraj).finallyDo(x -> drivetrain.stop()).schedule();
+            });
+        } else {return new InstantCommand();}
     }
     public CommandBase moveToNearestNode() {
         return moveToPose(drivetrain.getNearestNode());

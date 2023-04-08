@@ -57,6 +57,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	
 	private final SwerveDrivePoseEstimator odometer;
 	Limelight limelight = Limelight.getInstance();
+
 	private final Field2d m_field = new Field2d();
 	private boolean useLimelight = true;
 	private boolean forceTrustLimelight = false;
@@ -122,7 +123,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			BR_STEER_ENCODER_ID,
 			Offsets.valueOf(Preferences.getString("BR", "AUGIE")).getValue(Positions.BR),
 			CANIVORE_DRIVETRAIN);
-		// calibrateWheels();
 		odometer = new SwerveDrivePoseEstimator(
 			kinematics, 
 			getGyroscopeRotation(),
@@ -244,9 +244,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			if (isVisionValid || forceTrustLimelight) {
 				updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
 			}
-		} 
-		m_field.setRobotPose(odometer.getEstimatedPosition());
-        SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
-        SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+		}
+    
+		if (!(SmartDashboard.getBoolean("display vision pose", true))){
+			m_field.setRobotPose(odometer.getEstimatedPosition());
+		}
+    SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
+    SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 	}
 }

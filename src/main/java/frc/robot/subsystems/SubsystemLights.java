@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;public class SubsystemLights e
   /** Creates a new SubsystemLights. */
   private AddressableLED lights;
   private AddressableLEDBuffer LEDBuffer;
+  
   public SubsystemLights(int LedCount) {
     lights = new AddressableLED(6);
     LEDBuffer = new AddressableLEDBuffer(LedCount);

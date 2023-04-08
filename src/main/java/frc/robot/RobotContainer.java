@@ -11,20 +11,14 @@ import static frc.robot.settings.Constants.PS4Driver.X_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Y_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Z_AXIS;
 import static frc.robot.settings.Constants.PS4Driver.Z_ROTATE;
-import static frc.robot.settings.Constants.nodePositions.ALL_NODES;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.MatchType;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,7 +26,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -46,11 +39,8 @@ import frc.robot.Commands.DriveToBalance;
 import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.EndEffectorPassiveCommand;
 import frc.robot.Commands.EndEffectorRun;
-import frc.robot.Commands.IntakeCommand;
 import frc.robot.Commands.LightsByModeCommand;
 import frc.robot.Commands.PurpleLights;
-import frc.robot.Commands.RunViaLimelightCommand;
-import frc.robot.Commands.arm.ChuteCone;
 import frc.robot.Commands.arm.DropLow;
 import frc.robot.Commands.arm.HighCone;
 import frc.robot.Commands.arm.HighCube;
@@ -65,8 +55,6 @@ import frc.robot.Commands.arm.ShelfCube;
 import frc.robot.settings.Constants;
 
 import frc.robot.settings.IntakeState;
-import frc.robot.settings.Constants.DriveConstants;
-import frc.robot.settings.Constants.Intake;
 import frc.robot.settings.Constants.Arm;
 import frc.robot.settings.IntakeState.IntakeMode;
 
@@ -74,7 +62,6 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.LimelightmotorSubsystem;
 import frc.robot.subsystems.SkiPlow;
 import frc.robot.subsystems.SubsystemLights;
 
@@ -91,7 +78,6 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   private Limelight limelight;
-  private LimelightmotorSubsystem llmotor;
 
   private DrivetrainSubsystem drivetrain;
   private Drive defaultDriveCommand;
@@ -100,20 +86,12 @@ public class RobotContainer {
   private final PS4Controller opController;
 
   private Autos autos;
-  
-  
   private ArmSubsystem arm;
   private ArmMoveElbowAxis armDefault;
-  // private RobotArmControl ControlArm;
-  
-  
   private EndEffectorPassiveCommand endEffectorPassiveCommand;
   private SkiPlow skiPlow;
-  
   private EndEffector effector;
-  
   private SubsystemLights lightsSubsystem;
-  
   private LightsByModeCommand lightsByMode; 
 
   public static HashMap<String, Command> eventMap;
@@ -122,7 +100,6 @@ public class RobotContainer {
   public static boolean EndEffectorExists = Preferences.getBoolean("EndEffector", false);
   public static boolean SkiPlowExists = Preferences.getBoolean("SkiPlow", false);
   public static boolean LimelightExists = Preferences.getBoolean("Limelight", false);
-  public static boolean LimelightMotorExists = Preferences.getBoolean("LimelightMotor", false);
   public static boolean DrivetrainExists = Preferences.getBoolean("Drivetrain", false);
   public static boolean LightsExists = Preferences.getBoolean("Lights", false);
   
@@ -137,7 +114,6 @@ public class RobotContainer {
     Preferences.initBoolean("EndEffector", false);
     Preferences.initBoolean("SkiPlow", false);
     Preferences.initBoolean("Limelight", false);
-    Preferences.initBoolean("LimelightMotor", false);
     Preferences.initBoolean("Lights", false);
     driveController = new PS4Controller(0);
     opController = new PS4Controller(1);
@@ -160,9 +136,6 @@ public class RobotContainer {
     }
     if (LimelightExists) {
       LimelightInst();
-    }
-    if (LimelightMotorExists) {
-      LimelightMotorInst();
     }
     if (DrivetrainExists) {
       DrivetrainInst();
@@ -217,7 +190,6 @@ public class RobotContainer {
     arm = new ArmSubsystem();
     armDefault = new ArmMoveElbowAxis(arm, ()->opController.getRawAxis(Z_ROTATE));
     arm.setDefaultCommand(armDefault);
-    // SmartDashboard.putData(new ResetFast(arm, skiPlow));
   }
   private void EndEffectorInst(){
     effector = new EndEffector(Arm.END_EFFECTOR_BIG_POWER, Arm.END_EFFECTOR_SMALL_POWER);
@@ -226,19 +198,12 @@ public class RobotContainer {
   }
   private void SkiPlowInst(){
     skiPlow = new SkiPlow(0.5);
-    // skiPlow = new SkiPlow(SmartDashboard.getNumber("skiplowRollerSpeed", 0.5));
   }
 
   private void LimelightInst() {
     limelight = Limelight.getInstance();
     SmartDashboard.putBoolean("UseLimelight", true);
     SmartDashboard.putBoolean("ForceTrustLimelight", false);
-  }
-
-  private void LimelightMotorInst() {
-    llmotor = new LimelightmotorSubsystem();
-    Command defaultllmotorCommand = new RunViaLimelightCommand(llmotor);
-    llmotor.setDefaultCommand(defaultllmotorCommand);
   }
 
   private void autoInit() {
@@ -249,35 +214,24 @@ public class RobotContainer {
       eventMap.put("stop", new InstantCommand(drivetrain::stop, drivetrain));
       eventMap.put("Wait1", new WaitCommand(1));
       eventMap.put("Waithalf", new WaitCommand(0.5));
-      if (SkiPlowExists) {
+      // if (SkiPlowExists) {
         // eventMap.put("IntakeDown", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonDown, skiPlow), new WaitCommand(0.75)));
         // eventMap.put("IntakeUp", new SequentialCommandGroup(new InstantCommand(skiPlow::pistonUp, skiPlow), new WaitCommand(0.5)));
         // eventMap.put("IntakeRollerIn", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCube, skiPlow)));
         // eventMap.put("IntakeRollerOut", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerCone, skiPlow)));
         // eventMap.put("IntakeOff", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerOff, skiPlow)));
-      }
+      // }
       if (EndEffectorExists) {
         eventMap.put("Outtake", new ParallelDeadlineGroup(new WaitCommand(1.25), new EndEffectorCommand(effector, ()->false)));
         eventMap.put("Intake", new EndEffectorRun(effector, ()->true));
         eventMap.put("EndEffectorStop", new InstantCommand(effector::rollerOff, effector));
-        // eventMap.put("RollerCone", new InstantCommand(skiPlow::rollerCone));
-        // eventMap.put("RollerCube", new InstantCommand(skiPlow::rollerCube));
         eventMap.put("IntakeRollerOn", Commands.either(new InstantCommand(skiPlow::rollerCone, skiPlow), new InstantCommand(skiPlow::rollerCube, skiPlow), intakeState::isConeMode));
         eventMap.put("IntakeRollerOff", new InstantCommand(skiPlow::rollerOff, skiPlow));
-        // eventMap.put("EndEffectorInCube", new SequentialCommandGroup(new InstantCommand(effector::rollerInCube, effector)));
-        // eventMap.put("EndEffectorOutCube", new SequentialCommandGroup(new InstantCommand(effector::rollerOutCube, effector)));
-        // eventMap.put("EndEffectorInCone", new SequentialCommandGroup(new InstantCommand(effector::rollerInCone, effector)));
-        // eventMap.put("EndEffectorOutCone", new SequentialCommandGroup(new InstantCommand(effector::rollerOutCone, effector)));
-        // eventMap.put("EndEffectorOff", new SequentialCommandGroup(new InstantCommand(effector::rollerOff, effector)));
-
       }
       if (LightsExists) {
         // eventMap.put("LightsOff", new SequentialCommandGroup(new InstantCommand(lightsSubsystem::lightsOut, lightsSubsystem)));
-        // eventMap.put("TODO add command", TODO add command);
-        // eventMap.put("TODO add command", TODO add command);
       }
       if (ArmExists) {
-        // eventMap.put("MoveArmToIntakePose", new SequentialCommandGroup(Commands.select(moveToIntakePose, intakeState::getIntakeMode)));
         eventMap.put("CubeShelf", new ShelfCube(arm, skiPlow));
         eventMap.put("ConeShelf", new ShelfCone(arm, skiPlow));
         eventMap.put("CubeFloor", new IntakeCube(arm, skiPlow));
@@ -289,8 +243,6 @@ public class RobotContainer {
         
         eventMap.put("ResetArmPose", new Reset(arm, skiPlow));
         eventMap.put("ResetArmPoseFast", new ResetFast(arm, skiPlow));
-        // eventMap.put("armPoint1", TODO add command);
-        // eventMap.put("armPoint2", TODO add command);
       }
       eventMap.put("ModeCubeGround", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE)));
       eventMap.put("ModeCubeShelf", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CUBE_SHELF)));
@@ -303,7 +255,6 @@ public class RobotContainer {
   }
 
   private void configDashboard() {
-    // SmartDashboard.putBoolean("StartCubeMode", SmartDashboard.getBoolean("StartCubeMode", true));
     SmartDashboard.putBoolean("ConeMode", false);
     SmartDashboard.putBoolean("CubeMode", false);
   }
@@ -364,16 +315,6 @@ public class RobotContainer {
         () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL), 
         new Translation2d(1,0)));
     }
-    if (LightsExists) {
-      // new Trigger(opController::getTriangleButton).whileTrue(Commands.run(() -> {
-      //   lightsSubsystem.lightsOut();
-      //   lightsSubsystem.setLights(0, 51, 100, 64, 0);
-      // }, lightsSubsystem));
-      // new Trigger(opController::getSquareButton).whileTrue(Commands.run(() -> {
-      //   lightsSubsystem.lightsOut();
-      //   lightsSubsystem.setLights(0, 51, 0, 0, 100);
-      // }, lightsSubsystem));
-    }
     if (ArmExists) {
       
       new Trigger(opController::getR1Button)
@@ -393,6 +334,7 @@ public class RobotContainer {
       new Trigger(()-> opController.getPOV() == 180)
           .onTrue(new DropLow(arm, skiPlow));//score floor
     }
+
     if (SkiPlowExists) {
       // BooleanSupplier tmp = opController::getR1Button;
       // BooleanSupplier tmp2 = () -> opController.getR1Button();
@@ -407,6 +349,7 @@ public class RobotContainer {
           .onFalse(Commands.runOnce(()-> drivetrain.forceTrustLimelight(false)));
       }
     }
+
     new Trigger(opController::getSquareButton)
         .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CUBE)))
         .onTrue(Commands.runOnce(() -> {

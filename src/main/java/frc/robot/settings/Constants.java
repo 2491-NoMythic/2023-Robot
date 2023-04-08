@@ -38,7 +38,7 @@ public final class Constants {
     public static final double END_EFFECTOR_SMALL_PASSIVE_POWER = 0.09;
     public static final double END_EFFECTOR_BIG_PASSIVE_POWER = 0.125;
     public static final double END_EFFECTOR_SMALL_POWER = 0.2;
-    public static final double END_EFFECTOR_BIG_POWER = 0.3;
+    public static final double END_EFFECTOR_BIG_POWER = 0.175;
     public static final double END_EFFECTOR_CONE_POWER_BONUS = 0.1;
     
     public static final int ARM_SHOULDER_MOTOR_ID = 18;

@@ -352,18 +352,20 @@ public class RobotContainer {
       new Trigger(driveController::getSquareButton).whileTrue(new DriveBalanceCommand(drivetrain));
       new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->autos.moveToPose(drivetrain.getNearestNode()).schedule()));
       new Trigger(driveController::getCrossButton).onTrue(Commands.runOnce(drivetrain::pointWheelsInward, drivetrain));
-      new Trigger(driveController::getR1Button).whileTrue(new DriveRotateToAngleCommand(drivetrain,
-          () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
-          () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-          () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
-          () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
-      new Trigger(driveController::getR2Button).whileTrue(new DriveOffsetCenterCommand(
-        drivetrain,
-        () -> driveController.getL1Button(),
-        () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
-        () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-        () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL), 
-        new Translation2d(1,0)));
+      new Trigger(driveController::getCircleButton).onTrue(new InstantCommand(()->drivetrain.getCurrentCommand().cancel())); //interupt drive commands
+      
+      // new Trigger(driveController::getR1Button).whileTrue(new DriveRotateToAngleCommand(drivetrain,
+      //     () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      //     () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      //     () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
+      //     () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
+      // new Trigger(driveController::getR2Button).whileTrue(new DriveOffsetCenterCommand(
+      //   drivetrain,
+      //   () -> driveController.getL1Button(),
+      //   () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      //   () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      //   () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL), 
+      //   new Translation2d(1,0)));
     }
     if (LightsExists) {
       // new Trigger(opController::getTriangleButton).whileTrue(Commands.run(() -> {
@@ -381,7 +383,7 @@ public class RobotContainer {
           .onTrue(Commands.select(moveToIntakePose, intakeState::getIntakeMode));
       new Trigger(opController::getR2Button)
           .whileTrue(new EndEffectorCommand(effector, ()->true));
-      new Trigger(opController::getL1Button)
+      new Trigger(opController::getL2Button)
           .whileTrue(new EndEffectorCommand(effector, ()->false));
       new Trigger(opController::getTouchpadPressed)
           .onTrue(new Reset(arm));
@@ -400,11 +402,11 @@ public class RobotContainer {
     if (LimelightExists) {
       if (DrivetrainExists) {
         new Trigger(()->SmartDashboard.getBoolean("UseLimelight", true))
-          .onTrue(Commands.runOnce(()-> drivetrain.useLimelight(true)))
-          .onFalse(Commands.runOnce(()-> drivetrain.useLimelight(false)));
-        new Trigger(()->SmartDashboard.getBoolean("ForceTrustLimelight", false))
-          .onTrue(Commands.runOnce(()-> drivetrain.forceTrustLimelight(true)))
-          .onFalse(Commands.runOnce(()-> drivetrain.forceTrustLimelight(false)));
+          .onTrue(Commands.runOnce(()-> DrivetrainSubsystem.useLimelight(true)))
+          .onFalse(Commands.runOnce(()-> DrivetrainSubsystem.useLimelight(false)));
+        new Trigger(driveController::getTouchpad)
+          .onTrue(Commands.runOnce(()-> DrivetrainSubsystem.forceTrustLimelight(true)))
+          .onFalse(Commands.runOnce(()-> DrivetrainSubsystem.forceTrustLimelight(false)));
       }
     }
     new Trigger(opController::getOptionsButton)
@@ -453,7 +455,7 @@ public class RobotContainer {
     value = MathUtil.applyDeadband(value, deadband);
     // Square the axis
     value = Math.copySign(value * value, value);
-    if (driveController.getL2Button()) {
+    if (driveController.getL2Button()|| driveController.getL1Button() || opController.getL1Button()) {
       value *= SmartDashboard.getNumber("Precision Multiplier", 0.3);
     }
     return value;

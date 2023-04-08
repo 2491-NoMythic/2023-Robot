@@ -23,6 +23,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -58,8 +59,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	private final SwerveDrivePoseEstimator odometer;
 	Limelight limelight = Limelight.getInstance();
 	private final Field2d m_field = new Field2d();
-	private boolean useLimelight = true;
-	private boolean forceTrustLimelight = false;
+	private static boolean useLimelight = true;
+	private static boolean forceTrustLimelight = false;
 
 	public DrivetrainSubsystem() {
 
@@ -164,7 +165,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return odometer.getEstimatedPosition();
 	}
 	public Pose2d getNearestNode() { 
-		return getPose().nearest(nodePositions.ALL_NODES);
+		if(DriverStation.getAlliance() ==  Alliance.Red){
+			return getPose().nearest(nodePositions.ALL_NODES_RED);
+		}else{
+			return getPose().nearest(nodePositions.ALL_NODES_BLUE);
+		}
 	}
     public void resetOdometry(Pose2d pose) {
 		zeroGyroscope(pose.getRotation().getDegrees());
@@ -179,11 +184,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void displayFieldTrajectory(PathPlannerTrajectory traj) {
 		m_field.getObject("traj").setTrajectory(traj);
 	}
-	public void forceTrustLimelight(boolean trust) {
-		this.forceTrustLimelight = trust;
+	public static void forceTrustLimelight(boolean trust) {
+		forceTrustLimelight = trust;
 	}
-	public void useLimelight(boolean enable) {
-		this.useLimelight = enable;
+	public static void useLimelight(boolean enable) {
+		useLimelight = enable;
 	}
 	/**
 	 *  Sets the modules speed and rotation to zero.
@@ -237,11 +242,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		updateOdometry();
-		if (RobotContainer.LimelightExists && SmartDashboard.getBoolean("UseLimelight", true)) {
+		if (RobotContainer.LimelightExists && useLimelight) {
 			LimelightValues visionData = limelight.getLimelightValues();
 			Boolean isVisionValid = (visionData.isResultValid && visionData.isPoseTrustworthy(odometer.getEstimatedPosition()));
 			SmartDashboard.putBoolean("visionValid", isVisionValid);
-			if (isVisionValid || SmartDashboard.getBoolean("ForceTrustLimelight", false)) {
+			if (isVisionValid || forceTrustLimelight) {
 				updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
 			}
 		} 

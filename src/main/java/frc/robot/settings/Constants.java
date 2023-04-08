@@ -322,7 +322,7 @@ public final class Constants {
   }
   public static final class nodePositions {
     public static final double ARM_OFFSET_FROM_CENTER = 0; //TODO
-    public static final Pose2d BLUE1 = new Pose2d(1.86, 0.47+ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(180)); //*this nodoe is up against the wall so might be changed */
+    public static final Pose2d BLUE1 = new Pose2d(1.85, 0.51+ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(180)); //*this nodoe is up against the wall so might be changed */
     public static final Pose2d BLUE2 = new Pose2d(1.85, 1.04+ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(180));
     public static final Pose2d BLUE3 = new Pose2d(1.85, 1.63+ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(180));
     public static final Pose2d BLUE4 = new Pose2d(1.85, 2.2+ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(180));
@@ -330,19 +330,32 @@ public final class Constants {
     public static final Pose2d BLUE6 = new Pose2d(1.85, 3.3+ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(180));
     public static final Pose2d BLUE7 = new Pose2d(1.85, 3.87+ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(180));
     public static final Pose2d BLUE8 = new Pose2d(1.85, 4.45+ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(180));
-    public static final Pose2d BLUE9 = new Pose2d(1.85, 5.05+ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(180));//*this node is up against the wall, we probably have to deliver out the back for this  */
+    public static final Pose2d BLUE9 = new Pose2d(1.85, 4.98+ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(180));//*this node is up against the wall, we probably have to deliver out the back for this  */
     
-    public static final Pose2d RED1 = new Pose2d(14.68, 0.47-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0)); //*this nodoe is up against the wall so might be changed */
-    public static final Pose2d RED2 = new Pose2d(14.68, 1.04-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));
-    public static final Pose2d RED3 = new Pose2d(14.68, 1.63-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));
-    public static final Pose2d RED4 = new Pose2d(14.68, 2.2-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));
-    public static final Pose2d RED5 = new Pose2d(14.68, 2.75-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));
-    public static final Pose2d RED6 = new Pose2d(14.68, 3.3-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));
-    public static final Pose2d RED7 = new Pose2d(14.68, 3.87-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));
-    public static final Pose2d RED8 = new Pose2d(14.68, 4.45-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));
-    public static final Pose2d RED9 = new Pose2d(14.68, 5.05-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));//*this node is up against the wall, we probably have to deliver out the back for this  */
+    public static final Pose2d BLUE_RAMP = new Pose2d(14.25, 7.5,Rotation2d.fromDegrees(-90));
+    public static final Pose2d BLUE_SHELF_LEFT = new Pose2d(15.75, 7.3,Rotation2d.fromDegrees(0));
+    public static final Pose2d BLUE_SHELF_RIGHT = new Pose2d(15.75, 6.2,Rotation2d.fromDegrees(0));
 
-    private static final Pose2d[] nodeArray = new Pose2d[] {BLUE1,BLUE2,BLUE3,BLUE4,BLUE5,BLUE6,BLUE7,BLUE8,BLUE9,RED1,RED2,RED3,RED4,RED5,RED6,RED7,RED8,RED9};
+    public static final Pose2d RED1 = new Pose2d(1.85, 7.51-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0)); //*this nodoe is up against the wall so might be changed */
+    public static final Pose2d RED2 = new Pose2d(1.85, 6.98-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));
+    public static final Pose2d RED3 = new Pose2d(1.85, 6.39-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));
+    public static final Pose2d RED4 = new Pose2d(1.85, 5.82-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));
+    public static final Pose2d RED5 = new Pose2d(1.85, 5.27-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));
+    public static final Pose2d RED6 = new Pose2d(1.85, 4.72-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));
+    public static final Pose2d RED7 = new Pose2d(1.85, 4.15-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));
+    public static final Pose2d RED8 = new Pose2d(1.85, 3.57-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));
+    public static final Pose2d RED9 = new Pose2d(1.85, 2.97-ARM_OFFSET_FROM_CENTER, Rotation2d.fromDegrees(0));//*this node is up against the wall, we probably have to deliver out the back for this  */
+
+    public static final Pose2d RED_RAMP = new Pose2d(14.25, 0.52,Rotation2d.fromDegrees(-90));
+    public static final Pose2d RED_SHELF_LEFT = new Pose2d(15.75, 0.72,Rotation2d.fromDegrees(0));
+    public static final Pose2d RED_SHELF_RIGHT = new Pose2d(15.75, 1.82,Rotation2d.fromDegrees(0));
+
+
+    private static final Pose2d[] nodeArray = new Pose2d[] {BLUE1,BLUE2,BLUE3,BLUE4,BLUE5,BLUE6,BLUE7,BLUE8,BLUE9,BLUE_RAMP,BLUE_SHELF_LEFT,BLUE_SHELF_RIGHT,RED1,RED2,RED3,RED4,RED5,RED6,RED7,RED8,RED9,RED_RAMP,RED_SHELF_LEFT,RED_SHELF_RIGHT};
+    private static final Pose2d[] nodeArrayBlue = new Pose2d[] {BLUE1,BLUE2,BLUE3,BLUE4,BLUE5,BLUE6,BLUE7,BLUE8,BLUE9,BLUE_RAMP,BLUE_SHELF_LEFT,BLUE_SHELF_RIGHT};
+    private static final Pose2d[] nodeArrayRed = new Pose2d[] {RED1,RED2,RED3,RED4,RED5,RED6,RED7,RED8,RED9,RED_RAMP,RED_SHELF_LEFT,RED_SHELF_RIGHT};
     public static final List<Pose2d> ALL_NODES = Arrays.asList(nodeArray);
+    public static final List<Pose2d> ALL_NODES_BLUE = Arrays.asList(nodeArrayBlue);
+    public static final List<Pose2d> ALL_NODES_RED = Arrays.asList(nodeArrayRed);
   }
 }

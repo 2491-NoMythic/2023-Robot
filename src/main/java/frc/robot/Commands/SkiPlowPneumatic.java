@@ -8,7 +8,6 @@ import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.settings.IntakeState;
-import frc.robot.settings.Constants.Intake;
 import frc.robot.subsystems.SkiPlow;
 
 public class SkiPlowPneumatic extends CommandBase {

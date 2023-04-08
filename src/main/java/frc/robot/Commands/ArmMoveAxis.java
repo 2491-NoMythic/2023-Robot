@@ -11,13 +11,15 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class ArmMoveElbowAxis extends CommandBase {
+public class ArmMoveAxis extends CommandBase {
   /** Creates a new test. */
   private ArmSubsystem arm;
-  private DoubleSupplier axis;
-  public ArmMoveElbowAxis(ArmSubsystem arm, DoubleSupplier axis) {
+  private DoubleSupplier shoulderAxis;
+  private DoubleSupplier elbowAxis;
+  public ArmMoveAxis(ArmSubsystem arm, DoubleSupplier shoulderAxis, DoubleSupplier elbowAxis) {
     this.arm = arm;
-    this.axis = axis;
+    this.shoulderAxis = shoulderAxis;
+    this.elbowAxis = elbowAxis;
     addRequirements(arm);
 
   }
@@ -29,8 +31,11 @@ public class ArmMoveElbowAxis extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!(MathUtil.applyDeadband(axis.getAsDouble(), 0.05)==0)) {
-      arm.setDesiredElbowRotation(arm.getElbowTarget().plus(Rotation2d.fromDegrees(-axis.getAsDouble()*0.4)));
+    if (!(MathUtil.applyDeadband(shoulderAxis.getAsDouble(), 0.05)==0)) {
+      arm.setDesiredSholderRotation(arm.getShoulderTarget().plus(Rotation2d.fromDegrees(-shoulderAxis.getAsDouble()*0.25)));
+    }
+    if (!(MathUtil.applyDeadband(elbowAxis.getAsDouble(), 0.05)==0)) {
+      arm.setDesiredElbowRotation(arm.getElbowTarget().plus(Rotation2d.fromDegrees(-elbowAxis.getAsDouble()*0.4)));
     }
   }
 

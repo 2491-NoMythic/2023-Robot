@@ -36,7 +36,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Commands.ArmMoveElbowAxis;
+import frc.robot.Commands.ArmMoveAxis;
 import frc.robot.Commands.Autos;
 import frc.robot.Commands.Drive;
 import frc.robot.Commands.DriveBalanceCommand;
@@ -103,7 +103,7 @@ public class RobotContainer {
 
 
   private ArmSubsystem arm;
-  private ArmMoveElbowAxis armDefault;
+  private ArmMoveAxis armDefault;
   // private RobotArmControl ControlArm;
 
 
@@ -214,7 +214,7 @@ public class RobotContainer {
 
   private void ArmInst(){
     arm = new ArmSubsystem();
-    armDefault = new ArmMoveElbowAxis(arm, ()->opController.getRawAxis(Z_ROTATE));
+    armDefault = new ArmMoveAxis(arm, ()->opController.getRawAxis(Y_AXIS), ()->opController.getRawAxis(Z_ROTATE));
     arm.setDefaultCommand(armDefault);
   }
   private void EndEffectorInst(){

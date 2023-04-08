@@ -112,6 +112,7 @@ public class LightsByModeCommand extends CommandBase {
         isBlinking = !isBlinking;
       }
     }
+    drawConeMode();
   }
 
   // Called once the command ends or is interrupted.

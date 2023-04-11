@@ -119,12 +119,13 @@ public class LightsByModeCommand extends CommandBase {
           subsystemLights.lightsOut();
           subsystemLights.dataSetter();
         } else {
-          drawCubeModeGround();
+          drawConeMode();
         }
         counter = 0;
         isBlinking = !isBlinking;
       }
     }
+    else drawConeMode();
   }
 
   // Called once the command ends or is interrupted.

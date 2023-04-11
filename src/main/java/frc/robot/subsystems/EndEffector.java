@@ -49,7 +49,7 @@ public class EndEffector extends SubsystemBase {
     }
     public void rollerInCube() {
         sparkEndEffectorBigRoller.set(rollerSpeedBig);
-        sparkEndEffectorSmallRoller.set(rollerSpeedSmall);
+        sparkEndEffectorSmallRoller.set(-rollerSpeedSmall);
         
     }
     public void rollerOutCube() {
@@ -70,7 +70,7 @@ public class EndEffector extends SubsystemBase {
     }
     public void rollerPassiveCube() {
         sparkEndEffectorBigRoller.set(END_EFFECTOR_BIG_PASSIVE_POWER);
-        sparkEndEffectorSmallRoller.set(END_EFFECTOR_SMALL_PASSIVE_POWER);
+        sparkEndEffectorSmallRoller.set(-END_EFFECTOR_SMALL_PASSIVE_POWER);
     }
     public void rollerPassiveCone() {
         sparkEndEffectorBigRoller.set(-END_EFFECTOR_BIG_PASSIVE_POWER);

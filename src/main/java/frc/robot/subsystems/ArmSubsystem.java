@@ -44,8 +44,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -63,8 +61,6 @@ public class ArmSubsystem extends SubsystemBase {
   SparkMaxPIDController elbowPID;
   AbsoluteEncoder shoulderEncoder;
   AbsoluteEncoder elbowEncoder;
-  Solenoid shoulderLock;
-  Solenoid elbowLock;
   Rotation2d[] lastAngles = {new Rotation2d(), new Rotation2d()};
   double skP = ARM_SHOULDER_K_P;
   double skI = ARM_SHOULDER_K_I;
@@ -87,7 +83,6 @@ public class ArmSubsystem extends SubsystemBase {
     shoulderMotor = new CANSparkMax(ARM_SHOULDER_MOTOR_ID, MotorType.kBrushless);
     shoulderMotor.restoreFactoryDefaults();
     shoulderEncoder = shoulderMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    shoulderLock = new Solenoid(PneumaticsModuleType.CTREPCM, ARM_SHOULDER_LOCK_CHANNEL);
     
     shoulderEncoder.setPositionConversionFactor(360);
     shoulderEncoder.setVelocityConversionFactor(360);
@@ -113,8 +108,7 @@ public class ArmSubsystem extends SubsystemBase {
     elbowMotor = new CANSparkMax(ARM_ELBOW_MOTOR_ID, MotorType.kBrushless);
     elbowMotor.restoreFactoryDefaults();
     elbowEncoder = elbowMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    elbowLock = new Solenoid(PneumaticsModuleType.CTREPCM, ARM_ELBOW_LOCK_CHANNEL);
-    
+
     elbowEncoder.setPositionConversionFactor(360);
     elbowEncoder.setVelocityConversionFactor(360);
     elbowEncoder.setInverted(true);
@@ -253,12 +247,6 @@ public class ArmSubsystem extends SubsystemBase {
     return new double[] {shoulderFF, elbowFF};
   }
   
-  public void setShoulderLock(Boolean locked){
-    shoulderLock.set(!locked);
-  }
-  public void setElbowLock(Boolean locked){
-    elbowLock.set(!locked);
-  }
   public void setShoulderPower(double power){
       shoulderMotor.set(power);
   }

@@ -123,7 +123,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			BR_STEER_ENCODER_ID,
 			Offsets.valueOf(Preferences.getString("BR", "AUGIE")).getValue(Positions.BR),
 			CANIVORE_DRIVETRAIN);
-		// calibrateWheels();
 		odometer = new SwerveDrivePoseEstimator(
 			kinematics, 
 			getGyroscopeRotation(),

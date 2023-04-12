@@ -10,7 +10,6 @@ import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static frc.robot.settings.Constants.Poses.INTAKE_CONE;
 import static frc.robot.settings.Constants.Poses.AVOID_BUMPER;
 
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Commands.IntakeCommand;

@@ -5,7 +5,6 @@
 package frc.robot.Commands.arm;
 
 import static edu.wpi.first.wpilibj2.command.Commands.either;
-import static edu.wpi.first.wpilibj2.command.Commands.none;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static frc.robot.settings.Constants.Poses.RESET;

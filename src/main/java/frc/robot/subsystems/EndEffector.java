@@ -34,51 +34,56 @@ public class EndEffector extends SubsystemBase {
         rollerSpeedBig = maxSpeedBig;
         sparkEndEffectorBigRoller.burnFlash();
         sparkEndEffectorSmallRoller.burnFlash();
-        // endEffectorMotor = new TalonSRX(END_EFFECTOR_MOTOR_ID);
-        // endEffectorMotor.setNeutralMode(NeutralMode.Brake);
-    }
+     }
+
     public void setEndEffectorBrakeMode() {
         sparkEndEffectorBigRoller.setIdleMode(IdleMode.kBrake);
         sparkEndEffectorSmallRoller.setIdleMode(IdleMode.kBrake);
-        // endEffectorMotor.setNeutralMode(NeutralMode.Brake);
     }
+
     public void setEndEffectorPower(double bigspeed, double smallspeed) {
         sparkEndEffectorBigRoller.set(bigspeed);
         sparkEndEffectorSmallRoller.set(smallspeed);
-        // endEffectorMotor.set(ControlMode.PercentOutput, speed);
     }
+
     public void rollerInCube() {
         sparkEndEffectorBigRoller.set(rollerSpeedBig);
         sparkEndEffectorSmallRoller.set(-rollerSpeedSmall);
         
     }
+
     public void rollerOutCube() {
         sparkEndEffectorBigRoller.set(-rollerSpeedBig);
         sparkEndEffectorSmallRoller.set(-rollerSpeedSmall);
     }
+
     public void rollerInCone() {
         sparkEndEffectorBigRoller.set(-rollerSpeedBig);
         sparkEndEffectorSmallRoller.set(-rollerSpeedSmall);
     }
+
     public void rollerOutCone() {
         sparkEndEffectorBigRoller.set(rollerSpeedBig+END_EFFECTOR_CONE_POWER_BONUS);
         sparkEndEffectorSmallRoller.set(rollerSpeedSmall+END_EFFECTOR_CONE_POWER_BONUS);
     }
+
     public void rollerOff() {
         sparkEndEffectorBigRoller.set(0);
         sparkEndEffectorSmallRoller.set(0);
     }
+
     public void rollerPassiveCube() {
         sparkEndEffectorBigRoller.set(END_EFFECTOR_BIG_PASSIVE_POWER);
         sparkEndEffectorSmallRoller.set(-END_EFFECTOR_SMALL_PASSIVE_POWER);
     }
+
     public void rollerPassiveCone() {
         sparkEndEffectorBigRoller.set(-END_EFFECTOR_BIG_PASSIVE_POWER);
         sparkEndEffectorSmallRoller.set(-END_EFFECTOR_SMALL_PASSIVE_POWER);
     }
+
     public double getEndEffectorPosition() {
         return endEffectorEncoder.getPosition();
-        // endEffectorMotor.getSelectedSensorPosition();
     }
     
 }    

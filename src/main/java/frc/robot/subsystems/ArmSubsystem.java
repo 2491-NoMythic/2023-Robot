@@ -12,7 +12,6 @@ import static frc.robot.settings.Constants.Arm.ARM_ELBOW_K_D;
 import static frc.robot.settings.Constants.Arm.ARM_ELBOW_K_I;
 import static frc.robot.settings.Constants.Arm.ARM_ELBOW_K_P;
 import static frc.robot.settings.Constants.Arm.ARM_ELBOW_LENGTH_METERS;
-import static frc.robot.settings.Constants.Arm.ARM_ELBOW_LOCK_CHANNEL;
 import static frc.robot.settings.Constants.Arm.ARM_ELBOW_MOTOR_ID;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_ALLOWABLE_ERROR_DEG;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_ENCODER_OFFSET_DEG;
@@ -21,38 +20,24 @@ import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_K_D;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_K_I;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_K_P;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_LENGTH_METERS;
-import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_LOCK_CHANNEL;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_MOTOR_ID;
 import static frc.robot.settings.Constants.Arm.ARM_SHUFFLEBOARD_TAB;
-import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_LIMIT_FORWARD_DEG;
-import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_LIMIT_REVERSE_DEG;
-import static frc.robot.settings.Constants.Arm.ARM_ELBOW_LIMIT_FORWARD_DEG;
-import static frc.robot.settings.Constants.Arm.ARM_ELBOW_LIMIT_REVERSE_DEG;
-
-import java.util.function.Supplier;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.settings.Constants.Poses;
-
-
-
 
 public class ArmSubsystem extends SubsystemBase {
   CANSparkMax shoulderMotor;
@@ -117,8 +102,6 @@ public class ArmSubsystem extends SubsystemBase {
     elbowMotor.setInverted(false);
     elbowMotor.setSmartCurrentLimit(60); //max currrent rating not exceed 60A or 100A more than 2 sec
     elbowMotor.setClosedLoopRampRate(0.25);
-    // elbowMotor.setSoftLimit(SoftLimitDirection.kForward, 130);
-    // elbowMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
 
     elbowPID = elbowMotor.getPIDController();
     elbowPID.setFeedbackDevice(elbowEncoder);
@@ -225,7 +208,6 @@ public class ArmSubsystem extends SubsystemBase {
     double elbowVector = Math.acos((Math.pow(ARM_ELBOW_LENGTH_METERS, 2) - Math.pow(ARM_SHOULDER_LENGTH_METERS, 2) - Math.pow(magnitude, 2))/ (-2 * ARM_SHOULDER_LENGTH_METERS * magnitude));
     if (pose.getX() <= 0.0) elbowVector = -elbowVector;
     // SmartDashboard.putNumber("shouldervector", shoulderVector);
-    // SmartDashboard.putNumber("shouldervector", shoulderVector);
     Rotation2d shoulderAngle = Rotation2d.fromDegrees(-(poseVector+shoulderVector) + 270);
     Rotation2d elbowAngle = Rotation2d.fromDegrees(poseVector-elbowVector-90);
     return new Rotation2d[] {shoulderAngle, elbowAngle};
@@ -269,13 +251,6 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void setShoulderAngle(Rotation2d angle, double feedforward) {
-    // double newAngle = angle.getDegrees();
-    // if (newAngle <= ARM_SHOULDER_LIMIT_REVERSE_DEG && newAngle >= 180) {// too far reverse
-    //     newAngle = ARM_SHOULDER_LIMIT_REVERSE_DEG;
-    //     lastAngles[0] = Rotation2d.fromDegrees(newAngle);
-    // }
-
-    // MathUtil.clamp(ARM_SHOULDER_LIMIT_REVERSE_DEG, feedforward, feedforward)
     shoulderPID.setReference(angle.getDegrees(), ControlType.kPosition, 0, feedforward);
   }
   /** set target for the elbow to a given pose */

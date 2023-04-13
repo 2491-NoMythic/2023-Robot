@@ -67,25 +67,11 @@ public final class Autos {
                            // commands
         );
         // add autos to smart dashboard.\
-        // autoChooser.addOption("intakeDown", intakeDown());
-        // autoChooser.addOption("N2score2balance", N2Score2Bal());
-        // autoChooser.addOption("N2score2", N2Score2());
-        // autoChooser.addOption("N8score2balance", N8Score2Bal());
-        // autoChooser.addOption("N8score2", N8Score2());
-        // autoChooser.addOption("score1", score1());
-        // autoChooser.addOption("score1TaxiBalance", score1TaxiBal());
-        // autoChooser.addOption("N4coneScore1TaxiBalance", coneScore1TaxiBal());
-        // autoChooser.addOption("CubeLowScore1balance", cubeLowScore1Bal());
-        // autoChooser.addOption("CubeHighScore1balance", cubeHighScore1Bal());
-        // autoChooser.addOption("ConeHighScore1balance", coneHighScore1Bal());
-        // autoChooser.addOption("N1ConeScore2HighTaxi", N1ConeScore2HighTaxi());
-        // autoChooser.addOption("N9ConeHighMid", N9ConeHighMid());
-        // autoChooser.addOption("N9ConeHighMidN7High", N9ConeHighMidN7High());
-        autoChooser.addOption("N9ConeHighN8CubeHigh", N9ConeHighN8CubeHigh());
-        // autoChooser.addOption("balance", Bal());
-        // autoChooser.addOption("score1Taxi", score1Taxi());
-        // autoChooser.addOption("forward180", forward180());
-        // autoChooser.addOption("coolCircle", coolCircle());
+        autoChooser.addOption("N1HighN3HighMid", N1HighN3HighMid());
+        autoChooser.addOption("N9HighN8HighMid", N9HighN8HighMid());
+        autoChooser.addOption("N4HighBal", N4HighBal());
+        autoChooser.addOption("N4HighN5HighBal", N4HighN5HighBal());
+
     }
 
     public CommandBase moveToPose(Pose2d targetPose) {
@@ -105,134 +91,35 @@ public final class Autos {
     public CommandBase moveToNearestNode() {
         return moveToPose(drivetrain.getNearestNode());
     }
-    // public SequentialCommandGroup N2Score2Bal() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(N2Score2Bal),
-    //         new DriveBalanceCommand(drivetrain),
-    //         new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
-    // }
-    // public SequentialCommandGroup N2Score2() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(N2Score2),
-    //         new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
-    // }
-    // public SequentialCommandGroup N8Score2Bal() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(N8Score2Bal),
-    //         new DriveBalanceCommand(drivetrain),
-    //         new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
-    // }
-    // public SequentialCommandGroup N8Score2() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(N8Score2),
-    //         new InstantCommand(drivetrain::pointWheelsInward, drivetrain)); 
-    // }
-
-    // public SequentialCommandGroup score1() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(Score1),
-    //         new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
-    // }
-    // public SequentialCommandGroup Bal() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(Bal),
-    //         new DriveBalanceCommand(drivetrain),
-    //         new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
-    // }
-    // public SequentialCommandGroup cubeLowScore1Bal() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(CubeLowScore1Bal),
-    //         new DriveBalanceCommand(drivetrain),
-    //         new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
-    // }
-    // public SequentialCommandGroup cubeHighScore1Bal() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(CubeHighScore1Bal),
-    //         new DriveBalanceCommand(drivetrain),
-    //         new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
-    // }
-    // public SequentialCommandGroup coneHighScore1Bal() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(ConeHighScore1Bal),
-    //         new DriveBalanceCommand(drivetrain),
-    //         new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
-    // }
-    // public SequentialCommandGroup coneScore1TaxiBal() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(ConeScore1TaxiBal),
-    //         new DriveToBalance(drivetrain, true),
-    //         new DriveBalanceCommand(drivetrain),
-    //         new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
-    // }
-    // public SequentialCommandGroup N1ConeScore2HighTaxi() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(N1ConeScore2HighTaxi),
-    //         new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
-    // }
-    // public SequentialCommandGroup N9ConeHighMid() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(N9ConeHighMid),
-    //         new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
-    // }
-    // public SequentialCommandGroup N9ConeHighMidN7High() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(N9ConeHighMidN7High),
-    //         new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
-    // }
-    public SequentialCommandGroup N9ConeHighN8CubeHigh() {
+    public SequentialCommandGroup N4HighBal() {
         return new SequentialCommandGroup(
-            // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-            autoBuilder.fullAuto(N9ConeHighN8CubeHigh),
+            autoBuilder.fullAuto(N4HighBal),
+            new DriveBalanceCommand(drivetrain),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
-    // public SequentialCommandGroup score1Taxi() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(Score1Taxi),
-    //         new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
-    // }
-    // public SequentialCommandGroup forward180() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(forward180Path));
-    // }
-    // public SequentialCommandGroup coolCircle() {
-    //     return new SequentialCommandGroup(
-    //         // new InstantCommand(drivetrain::zeroGyroscope, drivetrain),
-    //         autoBuilder.fullAuto(coolCirclePath));
-    // }
+    public SequentialCommandGroup N4HighN5HighBal() {
+        return new SequentialCommandGroup(
+            autoBuilder.fullAuto(N4HighN5HighBal),
+            new DriveBalanceCommand(drivetrain),
+            new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
+    }
+
+    public SequentialCommandGroup N1HighN3HighMid() {
+        return new SequentialCommandGroup(
+            autoBuilder.fullAuto(N1HighN3HighMid),
+            new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
+    }
+    public SequentialCommandGroup N9HighN8HighMid() {
+        return new SequentialCommandGroup(
+            autoBuilder.fullAuto(N9HighN8HighMid),
+            new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
+    }
+
     // load all paths.
-    // static List<PathPlannerTrajectory> N2Score2Bal = PathPlanner.loadPathGroup("N2Score2Bal", new PathConstraints(4, 2.5));
-    // static List<PathPlannerTrajectory> N2Score2 = PathPlanner.loadPathGroup("N2Score2", new PathConstraints(4, 2.5));
 
-    // static List<PathPlannerTrajectory> N8Score2Bal = PathPlanner.loadPathGroup("N8Score2Bal", new PathConstraints(4, 2.5));
-    // static List<PathPlannerTrajectory> N8Score2 = PathPlanner.loadPathGroup("N8Score2", new PathConstraints(4, 1.75));
-    // static List<PathPlannerTrajectory> Score1 = PathPlanner.loadPathGroup("Score1", new PathConstraints(1, 1));
+    static List<PathPlannerTrajectory> N1HighN3HighMid = PathPlanner.loadPathGroup("N1HighN3HighMid", new PathConstraints(2.5, 1.75));
+    static List<PathPlannerTrajectory> N9HighN8HighMid = PathPlanner.loadPathGroup("N9HighN8HighMid", new PathConstraints(3, 2.5));
+    static List<PathPlannerTrajectory> N4HighBal = PathPlanner.loadPathGroup("N4HighBal", new PathConstraints(2.5, 1.75));
+    static List<PathPlannerTrajectory> N4HighN5HighBal = PathPlanner.loadPathGroup("N4HighN5HighBal", new PathConstraints(2.5, 1.75));
 
-    // static List<PathPlannerTrajectory> Score1Taxi = PathPlanner.loadPathGroup("Score1Taxi", new PathConstraints(2.5, 1.5));
-    // static List<PathPlannerTrajectory> Bal = PathPlanner.loadPathGroup("Bal", new PathConstraints(2.5, 1.5));
-    // static List<PathPlannerTrajectory> CubeLowScore1Bal = PathPlanner.loadPathGroup("CubeLowScore1Bal", new PathConstraints(2.5, 1.5));
-    // static List<PathPlannerTrajectory> CubeHighScore1Bal = PathPlanner.loadPathGroup("CubeHighScore1Bal", new PathConstraints(2.5, 1.5));
-    // static List<PathPlannerTrajectory> ConeHighScore1Bal = PathPlanner.loadPathGroup("ConeHighScore1Bal", new PathConstraints(2.5, 1.5));
-    // static List<PathPlannerTrajectory> ConeScore1TaxiBal = PathPlanner.loadPathGroup("ConeScore1TaxiBal", new PathConstraints(2.5, 1.5));
-    // static List<PathPlannerTrajectory> N1ConeScore2HighTaxi = PathPlanner.loadPathGroup("N1ConeScore2HighTaxi", new PathConstraints(2.5, 1.75));
-    static List<PathPlannerTrajectory> N9ConeHighMid = PathPlanner.loadPathGroup("N9ConeHighMid", new PathConstraints(2.5, 1.75));
-    // static List<PathPlannerTrajectory> N9ConeHighMidN7High = PathPlanner.loadPathGroup("N9ConeHighMidN7High", new PathConstraints(2.5, 1.75));
-    static List<PathPlannerTrajectory> N9ConeHighN8CubeHigh = PathPlanner.loadPathGroup("N9ConeHighN8CubeHigh", new PathConstraints(3, 2.5));
-
-    // static List<PathPlannerTrajectory> forward180Path = PathPlanner.loadPathGroup("forward 180", new PathConstraints(3, 1.5));
-    // static List<PathPlannerTrajectory> coolCirclePath = PathPlanner.loadPathGroup("cool circle", new PathConstraints(3, 1.5));
 }

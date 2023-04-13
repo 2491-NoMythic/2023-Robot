@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.8286222286730291,
-        "y": 5.053104249065641
+        "x": 1.8440234275686225,
+        "y": 2.1674787449468575
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6731920606698356,
-        "y": 4.781124133676839
+        "x": 2.8440234275686214,
+        "y": 2.1674787449468575
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -16,12 +16,12 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
+        "names": [ 
           "ModeConeGround",
           "ScoreHigh",
           "Outtake",
           "ResetArmPose"
-        ],
+          ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
@@ -29,16 +29,16 @@
     },
     {
       "anchorPoint": {
-        "x": 6.99624442106027,
-        "y": 4.337367103305636
+        "x": 5.8490544838130765,
+        "y": 2.17
       },
       "prevControl": {
-        "x": 5.364363728727457,
-        "y": 4.494829275372838
+        "x": 4.8490544838130765,
+        "y": 2.17
       },
       "nextControl": {
-        "x": 5.364363728727457,
-        "y": 4.494829275372838
+        "x": 4.8490544838130765,
+        "y": 2.17
       },
       "holonomicAngle": 180.0,
       "isReversal": true,
@@ -47,8 +47,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "EndEffectorStop",
-          "ResetArmPose"
+          "ResetArmPoseFast"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -57,12 +56,12 @@
     },
     {
       "anchorPoint": {
-        "x": 1.83,
-        "y": 5.1
+        "x": 3.8521184770992694,
+        "y": 2.1439628018217642
       },
       "prevControl": {
-        "x": 2.233665172027063,
-        "y": 4.932262181231769
+        "x": 5.145240966180565,
+        "y": 2.1439628018217642
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -71,28 +70,12 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "ScoreMid",
-          "Outtake"
-        ],
+        "names": [],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
     }
   ],
-  "markers": [
-    {
-      "position": 0.0727272727272727,
-      "names": [
-        "Intake"
-      ]
-    },
-    {
-      "position": 0.12727272727272726,
-      "names": [
-        "ConeFloor"
-      ]
-    }
-  ]
+  "markers": []
 }

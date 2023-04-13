@@ -57,12 +57,69 @@
     },
     {
       "anchorPoint": {
-        "x": 1.857251714503429,
-        "y": 3.7075184150368306
+        "x": 1.83,
+        "y": 5.05
       },
       "prevControl": {
-        "x": 1.9001959432490294,
-        "y": 4.85269784825284
+        "x": 2.233665172027063,
+        "y": 4.882262181231769
+      },
+      "nextControl": {
+        "x": 2.233665172027063,
+        "y": 4.882262181231769
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "ScoreMid",
+          "Outtake",
+          "ResetArmPose"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 7.0551091979376945,
+        "y": 3.355213026215527
+      },
+      "prevControl": {
+        "x": 6.175487614133124,
+        "y": 4.878681336310041
+      },
+      "nextControl": {
+        "x": 6.175487614133124,
+        "y": 4.878681336310041
+      },
+      "holonomicAngle": 140.19442890773482,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "EndEffectorStop",
+          "ResetArmPose"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.831789277613643,
+        "y": 3.881172323748156
+      },
+      "prevControl": {
+        "x": 2.2852024651417726,
+        "y": 5.377435842590985
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -90,6 +147,18 @@
     },
     {
       "position": 0.38181818181818183,
+      "names": [
+        "ConeFloor"
+      ]
+    },
+    {
+      "position": 2.2909090909090866,
+      "names": [
+        "Intake"
+      ]
+    },
+    {
+      "position": 2.399999999999998,
       "names": [
         "ConeFloor"
       ]

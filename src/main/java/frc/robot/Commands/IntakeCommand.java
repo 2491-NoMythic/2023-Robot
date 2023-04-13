@@ -15,7 +15,7 @@ public class IntakeCommand extends CommandBase {
 
   public IntakeCommand(SkiPlow skiPlow) {
     this.skiplow =  skiPlow;
-    this.intakeState = intakeState.getInstance();
+    this.intakeState = IntakeState.getInstance();
     addRequirements(skiPlow);
   }
 

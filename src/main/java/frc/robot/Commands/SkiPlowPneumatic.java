@@ -68,7 +68,7 @@ public class SkiPlowPneumatic extends CommandBase {
 
 
     switch(intakeState.getIntakeMode()){
-    case CUBE:{
+    case CUBE_GROUND:{
       skiplow.rollerCube();
       break;
     }

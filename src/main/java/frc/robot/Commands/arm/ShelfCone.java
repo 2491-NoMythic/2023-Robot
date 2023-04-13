@@ -24,10 +24,11 @@ public class ShelfCone extends SequentialCommandGroup {
   private static final double TIMEOUT = 1.0;
 
   /** Creates a new ShelfCone. */
-  public ShelfCone(ArmSubsystem arm, SkiPlow intake) {
+  // public ShelfCone(ArmSubsystem arm, SkiPlow intake) {
+  public ShelfCone(ArmSubsystem arm) {
     // Add your commands in the addCommands() call, e.g.
     addCommands(
-        runOnce(intake::pistonDown, intake).unless(() -> !SHELF_CONE.isRequiresIntakeDown()),
+        // runOnce(intake::pistonDown, intake).unless(() -> !SHELF_CONE.isRequiresIntakeDown()),
         either(
             Commands.sequence(
                 runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
@@ -35,11 +36,13 @@ public class ShelfCone extends SequentialCommandGroup {
                 runOnce(() -> arm.setDesiredElbowPose(AVOID_POST), arm)),
             none(),
             arm::isExtended), // TODO: could be a reset command ?
+
         runOnce(() -> arm.setDesiredSholderPose(AVOID_POST), arm),
-        waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
+        // waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
         runOnce(() -> arm.setDesiredElbowPose(SHELF_CONE), arm),
         waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
-        runOnce(() -> arm.setDesiredSholderPose(SHELF_CONE), arm),
-        runOnce(intake::pistonUp, intake));
+        runOnce(() -> arm.setDesiredSholderPose(SHELF_CONE), arm)
+        // runOnce(intake::pistonUp, intake)
+        );
   }
 }

@@ -31,25 +31,36 @@ public class LightsByModeCommand extends CommandBase {
     this.intakeState = IntakeState.getInstance();
   }
 
-  private void drawCubeMode1() {
+  private void drawCubeModeGround() {
     subsystemLights.lightsOut();
     subsystemLights.setLights(0, 51, 50, 0, 100);
     subsystemLights.dataSetter();
   }
-  private void drawCubeMode2() {
+  private void drawCubeModeRamp() {
+    subsystemLights.lightsOut();
+    subsystemLights.setLights(8, 16, 50, 0, 100);
+    subsystemLights.setLights(32, 40, 50, 0, 100);
+    subsystemLights.dataSetter();
+  }
+  private void drawCubeModeShelf() {
     subsystemLights.lightsOut();
     subsystemLights.setLights(0, 8, 50, 0, 100);
     subsystemLights.setLights(16, 32, 50, 0, 100);
     subsystemLights.setLights(40, 48, 50, 0, 100);
     subsystemLights.dataSetter();
   }
-
-  private void drawConeMode1() {
+  private void drawConeModeGround() {
     subsystemLights.lightsOut();
     subsystemLights.setLights(0, 51, 150, 100, 0);
     subsystemLights.dataSetter();
   }
-  private void drawConeMode2() {
+  private void drawConeModeRamp() {
+    subsystemLights.lightsOut();
+    subsystemLights.setLights(8, 16, 150, 100, 0);
+    subsystemLights.setLights(32, 40, 150, 100, 0);
+    subsystemLights.dataSetter();
+  }
+  private void drawConeModeShelf() {
     subsystemLights.lightsOut();
     subsystemLights.setLights(0, 8, 150, 100, 0);
     subsystemLights.setLights(16, 32, 150, 100, 0);
@@ -57,31 +68,32 @@ public class LightsByModeCommand extends CommandBase {
     subsystemLights.dataSetter();
   }
 
-  // private void drawConeMode3() {
-  //   subsystemLights.lightsOut();
-  //   subsystemLights.setLights(8, 16, 100, 64, 100);
-  //   subsystemLights.setLights(32, 40, 100, 64, 100);
-  //   subsystemLights.dataSetter();
-  // }
 
   private void drawConeMode() {
     switch(intakeState.getIntakeMode()) {
-      case CONE_GROUND: 
-        drawConeMode1();
-        break;
-      
-      // case CONE_RAMP: 
-      //   drawConeMode2();
-      //   break;
-      case CONE_SHELF: 
-        drawConeMode2();
-          break;
-      
-      case CUBE_SHELF:
-        drawCubeMode2();
+
+      case CONE_GROUND:
+        drawConeModeGround();
         break;
 
-      default: drawCubeMode1();
+      case CONE_RAMP:
+        drawConeModeRamp();
+        break;
+
+      case CONE_SHELF:
+        drawConeModeShelf();
+        break;
+
+      case CUBE_RAMP:
+        drawCubeModeRamp();
+        break;
+
+      case CUBE_SHELF:
+        drawCubeModeShelf();
+        break;
+
+      default:
+        drawCubeModeGround();
     }
     subsystemLights.dataSetter();
   }
@@ -112,6 +124,7 @@ public class LightsByModeCommand extends CommandBase {
         isBlinking = !isBlinking;
       }
     }
+    else drawConeMode();
   }
 
   // Called once the command ends or is interrupted.

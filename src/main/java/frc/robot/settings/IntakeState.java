@@ -5,16 +5,17 @@ public class IntakeState {
     private static IntakeMode intakeMode;
     
     public enum IntakeMode {
-        CUBE,
         CONE_GROUND,
         CONE_RAMP,
         CONE_SHELF,
-        CUBE_SHELF,
+        CUBE_GROUND,
+        CUBE_RAMP,
+        CUBE_SHELF
     }
 
 
     private IntakeState(){
-        intakeMode = IntakeMode.CUBE;
+        intakeMode = IntakeMode.CUBE_GROUND;
     }
 
 
@@ -38,7 +39,8 @@ public class IntakeState {
                 intakeMode.equals(intakeMode.CONE_SHELF));
     }
     public boolean isCubeMode() {
-        return (intakeMode.equals(intakeMode.CUBE) ||
+        return (intakeMode.equals(intakeMode.CUBE_GROUND) ||
+                intakeMode.equals(intakeMode.CUBE_RAMP) ||
                 intakeMode.equals(intakeMode.CUBE_SHELF));
     }
 }

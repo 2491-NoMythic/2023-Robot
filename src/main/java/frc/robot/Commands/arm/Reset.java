@@ -21,10 +21,11 @@ public class Reset extends SequentialCommandGroup {
   private static final double TIMEOUT = 1.0;
 
   /** Creates a new Reset. */
-  public Reset(ArmSubsystem arm, SkiPlow intake) {
+//   public Reset(ArmSubsystem arm, SkiPlow intake) {
+  public Reset(ArmSubsystem arm) {
 
     addCommands(
-        runOnce(intake::pistonDown, intake).unless(() -> !RESET.isRequiresIntakeDown()),
+        // runOnce(intake::pistonDown, intake).unless(() -> !RESET.isRequiresIntakeDown()),
         either(
             Commands.sequence(
                 runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
@@ -34,8 +35,8 @@ public class Reset extends SequentialCommandGroup {
                 runOnce(() -> arm.setDesiredElbowPose(RESET), arm),
                 waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
                 runOnce(() -> arm.setDesiredSholderPose(RESET), arm)),
-            arm::isExtended),
-        runOnce(intake::rollerOff, intake),
-        runOnce(intake::pistonUp, intake));
+            arm::isExtended));
+        // runOnce(intake::rollerOff, intake),
+        // runOnce(intake::pistonUp, intake));
   }
 }

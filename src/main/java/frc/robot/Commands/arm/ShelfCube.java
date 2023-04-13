@@ -24,10 +24,11 @@ public class ShelfCube extends SequentialCommandGroup {
   private static final double TIMEOUT = 1.0;
 
   /** Creates a new ShelfCone. */
-  public ShelfCube(ArmSubsystem arm, SkiPlow intake) {
+  // public ShelfCube(ArmSubsystem arm, SkiPlow intake) {
+  public ShelfCube(ArmSubsystem arm) {
     // Add your commands in the addCommands() call, e.g.
     addCommands(
-        runOnce(intake::pistonDown, intake).unless(() -> !SHELF_CUBE.isRequiresIntakeDown()),
+        // runOnce(intake::pistonDown, intake).unless(() -> !SHELF_CUBE.isRequiresIntakeDown()),
         either(
             Commands.sequence(
                 runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
@@ -39,7 +40,8 @@ public class ShelfCube extends SequentialCommandGroup {
         waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
         runOnce(() -> arm.setDesiredElbowPose(SHELF_CUBE), arm),
         waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
-        runOnce(() -> arm.setDesiredSholderPose(SHELF_CUBE), arm),
-        runOnce(intake::pistonUp, intake));
+        runOnce(() -> arm.setDesiredSholderPose(SHELF_CUBE), arm)
+        // runOnce(intake::pistonUp, intake)
+        );
   }
 }

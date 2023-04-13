@@ -11,6 +11,7 @@ import static frc.robot.settings.Constants.Poses.INTAKE_CONE;
 import static frc.robot.settings.Constants.Poses.AVOID_BUMPER;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Commands.IntakeCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SkiPlow;
@@ -20,16 +21,17 @@ import frc.robot.subsystems.SkiPlow;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeCone extends SequentialCommandGroup {
   /** Creates a new IntakeCone. */
-  public IntakeCone(ArmSubsystem arm, SkiPlow intake) {
+  // public IntakeCone(ArmSubsystem arm, SkiPlow intake) {
+  public IntakeCone(ArmSubsystem arm) {
 
     addCommands(
-        runOnce(intake::pistonDown, intake).unless(() -> !INTAKE_CONE.isRequiresIntakeDown()),
-        new IntakeCommand(intake),
-        waitSeconds(1),
+        // runOnce(intake::pistonDown, intake).unless(() -> !INTAKE_CONE.isRequiresIntakeDown()),
+        // new IntakeCommand(intake),
+        // new WaitCommand(0.5),
         runOnce(() -> arm.setDesiredElbowPose(AVOID_BUMPER), arm),
-        waitUntil(arm::isElbowAtTarget).withTimeout(2),
-        runOnce(() -> arm.setDesiredSholderPose(INTAKE_CONE), arm),
+        runOnce(() -> arm.setDesiredSholderPose(AVOID_BUMPER), arm),
         waitUntil(arm::isShoulderAtTarget).withTimeout(1),
+        runOnce(() -> arm.setDesiredSholderPose(INTAKE_CONE), arm),
         runOnce(() -> arm.setDesiredElbowPose(INTAKE_CONE), arm));
   }
 }

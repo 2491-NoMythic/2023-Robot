@@ -12,7 +12,6 @@ import static frc.robot.settings.Constants.Arm.ARM_ELBOW_K_D;
 import static frc.robot.settings.Constants.Arm.ARM_ELBOW_K_I;
 import static frc.robot.settings.Constants.Arm.ARM_ELBOW_K_P;
 import static frc.robot.settings.Constants.Arm.ARM_ELBOW_LENGTH_METERS;
-import static frc.robot.settings.Constants.Arm.ARM_ELBOW_LOCK_CHANNEL;
 import static frc.robot.settings.Constants.Arm.ARM_ELBOW_MOTOR_ID;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_ALLOWABLE_ERROR_DEG;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_ENCODER_OFFSET_DEG;
@@ -21,7 +20,6 @@ import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_K_D;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_K_I;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_K_P;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_LENGTH_METERS;
-import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_LOCK_CHANNEL;
 import static frc.robot.settings.Constants.Arm.ARM_SHOULDER_MOTOR_ID;
 import static frc.robot.settings.Constants.Arm.ARM_SHUFFLEBOARD_TAB;
 
@@ -35,10 +33,9 @@ import com.revrobotics.SparkMaxPIDController;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.settings.Constants.Poses;
 
@@ -49,8 +46,6 @@ public class ArmSubsystem extends SubsystemBase {
   SparkMaxPIDController elbowPID;
   AbsoluteEncoder shoulderEncoder;
   AbsoluteEncoder elbowEncoder;
-  Solenoid shoulderLock;
-  Solenoid elbowLock;
   Rotation2d[] lastAngles = {new Rotation2d(), new Rotation2d()};
   double skP = ARM_SHOULDER_K_P;
   double skI = ARM_SHOULDER_K_I;
@@ -73,7 +68,6 @@ public class ArmSubsystem extends SubsystemBase {
     shoulderMotor = new CANSparkMax(ARM_SHOULDER_MOTOR_ID, MotorType.kBrushless);
     shoulderMotor.restoreFactoryDefaults();
     shoulderEncoder = shoulderMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    shoulderLock = new Solenoid(PneumaticsModuleType.CTREPCM, ARM_SHOULDER_LOCK_CHANNEL);
     
     shoulderEncoder.setPositionConversionFactor(360);
     shoulderEncoder.setVelocityConversionFactor(360);
@@ -82,6 +76,7 @@ public class ArmSubsystem extends SubsystemBase {
     shoulderMotor.setIdleMode(IdleMode.kBrake);
     shoulderMotor.setInverted(true);
     shoulderMotor.setSmartCurrentLimit(60); //max currrent rating not exceed 60A or 100A more than 2 sec
+    shoulderMotor.setClosedLoopRampRate(0.25);
 
     shoulderPID = shoulderMotor.getPIDController();
     shoulderPID.setFeedbackDevice(shoulderEncoder);
@@ -91,15 +86,14 @@ public class ArmSubsystem extends SubsystemBase {
     shoulderPID.setP(ARM_SHOULDER_K_P);
     shoulderPID.setI(ARM_SHOULDER_K_I);
     shoulderPID.setD(ARM_SHOULDER_K_D);
-    shoulderPID.setOutputRange(-0.3, 0.3);
+    shoulderPID.setOutputRange(-0.6, 0.6);
     shoulderMotor.burnFlash();
 
     // ELBOW
     elbowMotor = new CANSparkMax(ARM_ELBOW_MOTOR_ID, MotorType.kBrushless);
     elbowMotor.restoreFactoryDefaults();
     elbowEncoder = elbowMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    elbowLock = new Solenoid(PneumaticsModuleType.CTREPCM, ARM_ELBOW_LOCK_CHANNEL);
-    
+
     elbowEncoder.setPositionConversionFactor(360);
     elbowEncoder.setVelocityConversionFactor(360);
     elbowEncoder.setInverted(true);
@@ -107,6 +101,7 @@ public class ArmSubsystem extends SubsystemBase {
     elbowMotor.setIdleMode(IdleMode.kBrake);
     elbowMotor.setInverted(false);
     elbowMotor.setSmartCurrentLimit(60); //max currrent rating not exceed 60A or 100A more than 2 sec
+    elbowMotor.setClosedLoopRampRate(0.25);
 
     elbowPID = elbowMotor.getPIDController();
     elbowPID.setFeedbackDevice(elbowEncoder);
@@ -116,22 +111,22 @@ public class ArmSubsystem extends SubsystemBase {
     elbowPID.setP(ARM_ELBOW_K_P);
     elbowPID.setI(ARM_ELBOW_K_I);
     elbowPID.setD(ARM_ELBOW_K_D);
-    elbowPID.setOutputRange(-0.3, 0.3);
+    elbowPID.setOutputRange(-0.6, 0.6);
     elbowMotor.burnFlash();
     
-    // SmartDashboard.putNumber("Shoulder P", ARM_SHOULDER_K_P);
-    // SmartDashboard.putNumber("Shoulder I", ARM_SHOULDER_K_I);
-    // SmartDashboard.putNumber("Shoulder D", ARM_SHOULDER_K_D);
-    // SmartDashboard.putNumber("Shoulder Feed Forward", ARM_SHOULDER_FF_K_G);
-    // SmartDashboard.putNumber("Shoulder Set Degrees", 0);
-    // SmartDashboard.putBoolean("Run Shoulder", false);
+    SmartDashboard.putNumber("Shoulder P", ARM_SHOULDER_K_P);
+    SmartDashboard.putNumber("Shoulder I", ARM_SHOULDER_K_I);
+    SmartDashboard.putNumber("Shoulder D", ARM_SHOULDER_K_D);
+    SmartDashboard.putNumber("Shoulder Feed Forward", ARM_SHOULDER_FF_K_G);
+    SmartDashboard.putNumber("Shoulder Set Degrees", 0);
+    SmartDashboard.putBoolean("Run Shoulder", false);
     
-    // SmartDashboard.putNumber("Elbow P", ARM_ELBOW_K_P);
-    // SmartDashboard.putNumber("Elbow I", ARM_ELBOW_K_I);
-    // SmartDashboard.putNumber("Elbow D", ARM_ELBOW_K_D);
-    // SmartDashboard.putNumber("Elbow Feed Forward", ARM_ELBOW_FF_K_G);
-    // SmartDashboard.putNumber("Elbow Set Degrees", 0);
-    // SmartDashboard.putBoolean("Run Elbow", false);
+    SmartDashboard.putNumber("Elbow P", ARM_ELBOW_K_P);
+    SmartDashboard.putNumber("Elbow I", ARM_ELBOW_K_I);
+    SmartDashboard.putNumber("Elbow D", ARM_ELBOW_K_D);
+    SmartDashboard.putNumber("Elbow Feed Forward", ARM_ELBOW_FF_K_G);
+    SmartDashboard.putNumber("Elbow Set Degrees", 0);
+    SmartDashboard.putBoolean("Run Elbow", false);
    
     //start arm in current position
     lastAngles[0] = getShoulderAngle();
@@ -234,12 +229,6 @@ public class ArmSubsystem extends SubsystemBase {
     return new double[] {shoulderFF, elbowFF};
   }
   
-  public void setShoulderLock(Boolean locked){
-    shoulderLock.set(!locked);
-  }
-  public void setElbowLock(Boolean locked){
-    elbowLock.set(!locked);
-  }
   public void setShoulderPower(double power){
       shoulderMotor.set(power);
   }
@@ -262,7 +251,6 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void setShoulderAngle(Rotation2d angle, double feedforward) {
-    setShoulderLock(false);
     shoulderPID.setReference(angle.getDegrees(), ControlType.kPosition, 0, feedforward);
   }
   /** set target for the elbow to a given pose */
@@ -281,7 +269,6 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void setElbowAngle(Rotation2d angle, double feedforward) {
-    setElbowLock(false);
     elbowPID.setReference(angle.getDegrees(), ControlType.kPosition, 0, feedforward);
   }
 
@@ -295,10 +282,39 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
 	public void periodic() {
+    double new_skP = SmartDashboard.getNumber("Shoulder P", ARM_SHOULDER_K_P);
+    double new_skI = SmartDashboard.getNumber("Shoulder I", ARM_SHOULDER_K_I);
+    double new_skD = SmartDashboard.getNumber("Shoulder D", ARM_SHOULDER_K_D);
+    double new_skFF = SmartDashboard.getNumber("Shoulder Feed Forward", ARM_SHOULDER_FF_K_G);
+    double new_sDegrees = SmartDashboard.getNumber("Shoulder Set Degrees", 0);
     
+    double new_ekP = SmartDashboard.getNumber("Elbow P", ARM_ELBOW_K_P);
+    double new_ekI = SmartDashboard.getNumber("Elbow I", ARM_ELBOW_K_I);
+    double new_ekD = SmartDashboard.getNumber("Elbow D", ARM_ELBOW_K_D);
+    double new_ekFF = SmartDashboard.getNumber("Elbow Feed Forward", ARM_ELBOW_FF_K_G);
+    double new_eDegrees = SmartDashboard.getNumber("Elbow Set Degrees", 0);
+    
+    if((new_skP!= skP)) {shoulderPID.setP(new_skP); skP=new_skP;}
+    if((new_skI!= skI)) {shoulderPID.setI(new_skI); skI=new_skI;}
+    if((new_skD!= skD)) {shoulderPID.setP(new_skD); skD=new_skD;}
+    if((new_skFF!= skFF)) {skFF=new_skFF;}
+
+    if((new_ekP!= ekP)) {elbowPID.setP(new_ekP); ekP=new_ekP;}
+    if((new_ekI!= ekI)) {elbowPID.setI(new_ekI); ekI=new_ekI;}
+    if((new_ekD!= ekD)) {elbowPID.setP(new_ekD); ekD=new_ekD;}
+    if((new_ekFF!= ekFF)) {ekFF=new_ekFF;}
+    
+    if (SmartDashboard.getBoolean("Run Shoulder", false)) { 
+      setDesiredSholderRotation(Rotation2d.fromDegrees(new_sDegrees));
+      SmartDashboard.putBoolean("Run Shoulder", false);
+    }
+    if (SmartDashboard.getBoolean("Run Elbow", false)) { 
+      setDesiredElbowRotation(Rotation2d.fromDegrees(new_eDegrees));
+      SmartDashboard.putBoolean("Run Elbow", false);
+    }
+
     double[] feedforward = calculateFeedForward(lastAngles);
     setShoulderAngle(lastAngles[0], feedforward[0]);
     setElbowAngle(lastAngles[1], feedforward[1]);
-    
   }
 }

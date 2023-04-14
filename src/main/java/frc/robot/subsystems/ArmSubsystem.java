@@ -163,13 +163,19 @@ public class ArmSubsystem extends SubsystemBase {
   public Rotation2d getElbowTarget() {
     return lastAngles[1];
   }
+  public boolean isShoulderWithinBounds(double boundDegrees) { 
+    return (Math.abs(shoulderEncoder.getPosition()-lastAngles[0].getDegrees()) <= boundDegrees
+    || Math.abs(shoulderEncoder.getPosition()-lastAngles[0].getDegrees()) >= 360-boundDegrees);
+  }
+  public boolean isElbowWithinBounds(double boundDegrees) { 
+    return (Math.abs(elbowEncoder.getPosition()-lastAngles[1].getDegrees()) <= boundDegrees 
+    || Math.abs(elbowEncoder.getPosition()-lastAngles[1].getDegrees()) >= 360-boundDegrees);
+  }
   public boolean isShoulderAtTarget() { 
-    return (Math.abs(shoulderEncoder.getPosition()-lastAngles[0].getDegrees()) <= ARM_SHOULDER_ALLOWABLE_ERROR_DEG 
-    || Math.abs(shoulderEncoder.getPosition()-lastAngles[0].getDegrees()) >= 360-ARM_SHOULDER_ALLOWABLE_ERROR_DEG);
+    return isShoulderWithinBounds(ARM_SHOULDER_ALLOWABLE_ERROR_DEG); 
   }
   public boolean isElbowAtTarget() { 
-    return (Math.abs(elbowEncoder.getPosition()-lastAngles[1].getDegrees()) <= ARM_ELBOW_ALLOWABLE_ERROR_DEG 
-    || Math.abs(elbowEncoder.getPosition()-lastAngles[1].getDegrees()) >= 360-ARM_ELBOW_ALLOWABLE_ERROR_DEG);
+    return isElbowWithinBounds(ARM_ELBOW_ALLOWABLE_ERROR_DEG);
   }
   public boolean isExtended() {
     double elbowPos = getElbowAngle().getDegrees();

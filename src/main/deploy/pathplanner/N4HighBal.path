@@ -16,38 +16,11 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [ 
+        "names": [
           "ModeConeGround",
           "ScoreHigh",
           "Outtake",
           "ResetArmPose"
-          ],
-        "executionBehavior": "sequential",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 5.8490544838130765,
-        "y": 2.17
-      },
-      "prevControl": {
-        "x": 4.8490544838130765,
-        "y": 2.17
-      },
-      "nextControl": {
-        "x": 4.8490544838130765,
-        "y": 2.17
-      },
-      "holonomicAngle": 180.0,
-      "isReversal": true,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": true,
-      "stopEvent": {
-        "names": [
-          "ResetArmPoseFast"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -56,12 +29,37 @@
     },
     {
       "anchorPoint": {
-        "x": 3.8521184770992694,
-        "y": 2.1439628018217642
+        "x": 6.855607395425317,
+        "y": 2.14
       },
       "prevControl": {
-        "x": 5.145240966180565,
-        "y": 2.1439628018217642
+        "x": 5.855607395425317,
+        "y": 2.14
+      },
+      "nextControl": {
+        "x": 5.855607395425317,
+        "y": 2.14
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 4.459671976486812,
+        "y": 2.1185819514496163
+      },
+      "prevControl": {
+        "x": 5.7527944655681065,
+        "y": 2.1185819514496163
       },
       "nextControl": null,
       "holonomicAngle": 180.0,

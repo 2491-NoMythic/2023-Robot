@@ -406,6 +406,11 @@ public class RobotContainer {
     if (driveController.getL2Button()|| driveController.getL1Button() || opController.getL1Button()) {
       value *= SmartDashboard.getNumber("Precision Multiplier", 0.3);
     }
+    else if (ArmExists){
+      if (Math.abs(arm.getArmPose().getX()) >= 0.5) {
+        value *= 0.2;
+      }
+    }
     return value;
   }
 

@@ -113,6 +113,10 @@ public final class Constants {
     }
     public static final Pose2d DRIVE_ODOMETRY_ORIGIN = new Pose2d(5.0, 5.0, new Rotation2d());
     /**
+     * The bumper-to-bumper width of the robot.
+     */
+    public static final double DRIVETRAIN_ROBOT_WIDTH_METERS = 0.83;
+    /**
      * The left-to-right distance between the drivetrain wheels
      * Should be measured from center to center.
      */

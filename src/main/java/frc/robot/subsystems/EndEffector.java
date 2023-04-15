@@ -25,8 +25,10 @@ public class EndEffector extends SubsystemBase {
         sparkEndEffectorBigRoller = new CANSparkMax(END_EFFECTOR_BIG_ROLLER_ID, MotorType.kBrushless);
         sparkEndEffectorSmallRoller = new CANSparkMax(END_EFFECTOR_SMALL_ROLLER_ID, MotorType.kBrushless);
         sparkEndEffectorSmallRoller.setInverted(false);
+        sparkEndEffectorBigRoller.setInverted(true);
         sparkEndEffectorBigRoller.setIdleMode(IdleMode.kBrake);
         sparkEndEffectorBigRoller.setSmartCurrentLimit(20);
+        sparkEndEffectorSmallRoller.setSmartCurrentLimit(20);
         sparkEndEffectorSmallRoller.setIdleMode(IdleMode.kBrake);
         endEffectorEncoder = sparkEndEffectorSmallRoller.getEncoder();
         endEffectorEncoder = sparkEndEffectorBigRoller.getEncoder();

@@ -31,6 +31,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -148,14 +149,14 @@ public class ArmSubsystem extends SubsystemBase {
    * The angle is positive when the end of the segment is tilted towards the front of the robot.
    */
   public Rotation2d getShoulderAngle() {
-    return Rotation2d.fromDegrees(shoulderEncoder.getPosition());
+    return Rotation2d.fromDegrees(MathUtil.inputModulus(shoulderEncoder.getPosition(),-180, 180));
   }
   /**
    * @return the angle of the elbow segment in relation to the ground. 
    * The angle is positive when the end of the segment is tilted towards the front of the robot.
    */
   public Rotation2d getElbowAngle() {
-    return Rotation2d.fromDegrees(elbowEncoder.getPosition());
+    return Rotation2d.fromDegrees(MathUtil.inputModulus(elbowEncoder.getPosition(),-180, 180));
   }
   public Rotation2d getShoulderTarget() {
     return lastAngles[0];
@@ -164,12 +165,14 @@ public class ArmSubsystem extends SubsystemBase {
     return lastAngles[1];
   }
   public boolean isShoulderWithinBounds(double boundDegrees) { 
-    return (Math.abs(shoulderEncoder.getPosition()-lastAngles[0].getDegrees()) <= boundDegrees
-    || Math.abs(shoulderEncoder.getPosition()-lastAngles[0].getDegrees()) >= 360-boundDegrees);
+    return Math.abs(getShoulderAngle().getDegrees()-lastAngles[0].getDegrees()) <= boundDegrees;
+    // return (Math.abs(shoulderEncoder.getPosition()-lastAngles[0].getDegrees()) <= boundDegrees
+    // || Math.abs(shoulderEncoder.getPosition()-lastAngles[0].getDegrees()) >= 360-boundDegrees);
   }
   public boolean isElbowWithinBounds(double boundDegrees) { 
-    return (Math.abs(elbowEncoder.getPosition()-lastAngles[1].getDegrees()) <= boundDegrees 
-    || Math.abs(elbowEncoder.getPosition()-lastAngles[1].getDegrees()) >= 360-boundDegrees);
+    return Math.abs(getElbowAngle().getDegrees()-lastAngles[1].getDegrees()) <= boundDegrees;
+    // return (Math.abs(elbowEncoder.getPosition()-lastAngles[1].getDegrees()) <= boundDegrees 
+    // || Math.abs(elbowEncoder.getPosition()-lastAngles[1].getDegrees()) >= 360-boundDegrees);
   }
   public boolean isShoulderAtTarget() { 
     return isShoulderWithinBounds(ARM_SHOULDER_ALLOWABLE_ERROR_DEG); 
@@ -178,8 +181,8 @@ public class ArmSubsystem extends SubsystemBase {
     return isElbowWithinBounds(ARM_ELBOW_ALLOWABLE_ERROR_DEG);
   }
   public boolean isExtended() {
-    double elbowPos = getElbowAngle().getDegrees();
-    double sholderPos = getShoulderAngle().getDegrees();
+    double elbowPos = Math.abs(getElbowAngle().getDegrees());
+    double sholderPos = Math.abs(getShoulderAngle().getDegrees());
     return 
         ((elbowPos > 10) && 
         (elbowPos < 350)) || 
@@ -203,21 +206,21 @@ public class ArmSubsystem extends SubsystemBase {
     return getArmPose(getArmAngles());
   }
 
-  /**
-   * @param pose
-   * @return [0]Shoulder Angle, [1]Elbow Angle
-   */
-  public Rotation2d[] calculateJointAngles(Translation2d pose) {
-    double magnitude = pose.getNorm();
-    double poseVector = 90-Math.atan2(pose.getY(), pose.getX());
-    double shoulderVector = Math.acos((Math.pow(ARM_SHOULDER_LENGTH_METERS,2)-Math.pow(ARM_ELBOW_LENGTH_METERS, 2)-Math.pow(magnitude, 2))/(-2*ARM_ELBOW_LENGTH_METERS*magnitude));
-    double elbowVector = Math.acos((Math.pow(ARM_ELBOW_LENGTH_METERS, 2) - Math.pow(ARM_SHOULDER_LENGTH_METERS, 2) - Math.pow(magnitude, 2))/ (-2 * ARM_SHOULDER_LENGTH_METERS * magnitude));
-    if (pose.getX() <= 0.0) elbowVector = -elbowVector;
-    // SmartDashboard.putNumber("shouldervector", shoulderVector);
-    Rotation2d shoulderAngle = Rotation2d.fromDegrees(-(poseVector+shoulderVector) + 270);
-    Rotation2d elbowAngle = Rotation2d.fromDegrees(poseVector-elbowVector-90);
-    return new Rotation2d[] {shoulderAngle, elbowAngle};
-  }
+  // /**
+  //  * @param pose
+  //  * @return [0]Shoulder Angle, [1]Elbow Angle
+  //  */
+  // public Rotation2d[] calculateJointAngles(Translation2d pose) {
+  //   double magnitude = pose.getNorm();
+  //   double poseVector = 90-Math.atan2(pose.getY(), pose.getX());
+  //   double shoulderVector = Math.acos((Math.pow(ARM_SHOULDER_LENGTH_METERS,2)-Math.pow(ARM_ELBOW_LENGTH_METERS, 2)-Math.pow(magnitude, 2))/(-2*ARM_ELBOW_LENGTH_METERS*magnitude));
+  //   double elbowVector = Math.acos((Math.pow(ARM_ELBOW_LENGTH_METERS, 2) - Math.pow(ARM_SHOULDER_LENGTH_METERS, 2) - Math.pow(magnitude, 2))/ (-2 * ARM_SHOULDER_LENGTH_METERS * magnitude));
+  //   if (pose.getX() <= 0.0) elbowVector = -elbowVector;
+  //   // SmartDashboard.putNumber("shouldervector", shoulderVector);
+  //   Rotation2d shoulderAngle = Rotation2d.fromDegrees(-(poseVector+shoulderVector) + 270);
+  //   Rotation2d elbowAngle = Rotation2d.fromDegrees(poseVector-elbowVector-90);
+  //   return new Rotation2d[] {shoulderAngle, elbowAngle};
+  // }
   public double[] calculateFeedForward(Rotation2d[] angles) {
     Translation2d shoulderPos= new Translation2d(0,ARM_SHOULDER_LENGTH_METERS).rotateBy(angles[0].unaryMinus());
     Translation2d comPos = new Translation2d(0,-ARM_ELBOW_CENTER_OF_MASS_OFFSET_METERS).rotateBy(angles[1]);
@@ -253,7 +256,7 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public void setDesiredSholderRotation(Rotation2d rot) {
     //TODO: valid input check
-    lastAngles[0] = rot;
+    lastAngles[0] = Rotation2d.fromDegrees(MathUtil.inputModulus(rot.getDegrees(),-180, 180));
   }
 
   private void setShoulderAngle(Rotation2d angle, double feedforward) {
@@ -271,7 +274,7 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public void setDesiredElbowRotation(Rotation2d rot) {
     //TODO: valid input check
-    lastAngles[1] = rot;
+    lastAngles[1] = Rotation2d.fromDegrees(MathUtil.inputModulus(rot.getDegrees(),-180, 180));
   }
 
   private void setElbowAngle(Rotation2d angle, double feedforward) {

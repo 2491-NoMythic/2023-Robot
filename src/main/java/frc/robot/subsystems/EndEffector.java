@@ -55,8 +55,8 @@ public class EndEffector extends SubsystemBase {
     }
 
     public void rollerOutCube() {
-        sparkEndEffectorBigRoller.set(-rollerSpeedBig);
-        sparkEndEffectorSmallRoller.set(-rollerSpeedSmall);
+        sparkEndEffectorBigRoller.set(-(rollerSpeedBig+END_EFFECTOR_POWER_BONUS));
+        sparkEndEffectorSmallRoller.set(-(rollerSpeedSmall+END_EFFECTOR_POWER_BONUS));
     }
 
     public void rollerInCone() {
@@ -65,8 +65,8 @@ public class EndEffector extends SubsystemBase {
     }
 
     public void rollerOutCone() {
-        sparkEndEffectorBigRoller.set(rollerSpeedBig+END_EFFECTOR_CONE_POWER_BONUS);
-        sparkEndEffectorSmallRoller.set(rollerSpeedSmall+END_EFFECTOR_CONE_POWER_BONUS);
+        sparkEndEffectorBigRoller.set(rollerSpeedBig+END_EFFECTOR_POWER_BONUS);
+        sparkEndEffectorSmallRoller.set(rollerSpeedSmall+END_EFFECTOR_POWER_BONUS);
     }
 
     public void rollerOff() {

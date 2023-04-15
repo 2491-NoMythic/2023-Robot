@@ -243,12 +243,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		updateOdometry();
 		if (RobotContainer.LimelightExists && useLimelight) {
 			LimelightValues visionData = limelight.getLimelightValues();
-			Boolean isVisionValid = (visionData.isResultValid && visionData.isPoseTrustworthy(odometer.getEstimatedPosition()));
-			SmartDashboard.putBoolean("visionValid", isVisionValid);
-			if (isVisionValid || forceTrustLimelight) {
+			Boolean isVisionValid = visionData.isResultValid;
+			Boolean isVisionTrustworthy = isVisionValid && visionData.isPoseTrustworthy(odometer.getEstimatedPosition());
+			SmartDashboard.putBoolean("visionValid", isVisionTrustworthy);
+			if (isVisionTrustworthy || (forceTrustLimelight && isVisionValid)) {
 				updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
 			}
-		} 
+		}
 		m_field.setRobotPose(odometer.getEstimatedPosition());
         SmartDashboard.putNumber("Robot Angle", getGyroscopeRotation().getDegrees());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());

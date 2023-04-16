@@ -1,0 +1,207 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 1.8440234275686225,
+        "y": 2.17
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.8440234275686214,
+        "y": 2.17
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "ModeConeGround",
+          "ScoreHigh",
+          "Outtake",
+          "ResetArmPose"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 5.032886381562237,
+        "y": 2.14
+      },
+      "prevControl": {
+        "x": 3.9382811750355957,
+        "y": 2.14
+      },
+      "nextControl": {
+        "x": 6.12749158808888,
+        "y": 2.14
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": 1.0,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 7.508712217424432,
+        "y": 2.14
+      },
+      "prevControl": {
+        "x": 6.508712217424432,
+        "y": 2.14
+      },
+      "nextControl": {
+        "x": 6.508712217424432,
+        "y": 2.14
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "EndEffectorStop",
+          "ResetArmPose"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 2.4727856598570344,
+        "y": 2.1901556660256185
+      },
+      "prevControl": {
+        "x": 3.7647389601919636,
+        "y": 2.2451324022100967
+      },
+      "nextControl": {
+        "x": 2.3382270764541535,
+        "y": 2.184429768859537
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.857251714503429,
+        "y": 2.71
+      },
+      "prevControl": {
+        "x": 2.6561487683797345,
+        "y": 2.71
+      },
+      "nextControl": {
+        "x": 2.6561487683797345,
+        "y": 2.71
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "ScoreMid",
+          "Outtake",
+          "TrustLimelightFalse"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 4.047407380529045,
+        "y": 2.705486410972822
+      },
+      "prevControl": {
+        "x": 2.4744384987534342,
+        "y": 2.705486410972822
+      },
+      "nextControl": null,
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "maxVelocity": null,
+  "maxAcceleration": 2.0,
+  "isReversed": null,
+  "markers": [
+    {
+      "position": 0.1090909090909092,
+      "names": [
+        "ModeCubeGround"
+      ]
+    },
+    {
+      "position": 4.163636363636362,
+      "names": [
+        "ResetArmPose"
+      ]
+    },
+    {
+      "position": 2.5272727272727273,
+      "names": [
+        "Intake"
+      ]
+    },
+    {
+      "position": 0.6181818181818183,
+      "names": [
+        "CubeFloor"
+      ]
+    },
+    {
+      "position": 0.9545454545454546,
+      "names": [
+        "TrustLimelightTrue"
+      ]
+    },
+    {
+      "position": 2.5000000000000004,
+      "names": [
+        "TrustLimelightFalse"
+      ]
+    },
+    {
+      "position": 2.954545454545454,
+      "names": [
+        "TrustLimelightTrue"
+      ]
+    }
+  ]
+}

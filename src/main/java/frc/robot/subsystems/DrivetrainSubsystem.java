@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.settings.CTREConfigs;
+import frc.robot.settings.IntakeState;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.DriveConstants.Offsets;
 import frc.robot.settings.Constants.DriveConstants.Positions;
@@ -43,6 +44,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public static final CTREConfigs ctreConfig = new CTREConfigs();
 	public SwerveDriveKinematics kinematics = DriveConstants.kinematics;
 
+	private IntakeState intakeState;
 	private final Pigeon2 pigeon = new Pigeon2(DRIVETRAIN_PIGEON_ID, CANIVORE_DRIVETRAIN);
 
 	/**
@@ -69,6 +71,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		Preferences.initString("BL", "AUGIE");
 		Preferences.initString("BR", "AUGIE");
 
+		intakeState = IntakeState.getInstance();
 		ShuffleboardTab tab = Shuffleboard.getTab(DRIVETRAIN_SMARTDASHBOARD_TAB);
 		SmartDashboard.putData("Field", m_field);
 		SmartDashboard.putData("resetOdometry", new InstantCommand(() -> this.resetOdometry()));
@@ -163,11 +166,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public Pose2d getPose() {
 		return odometer.getEstimatedPosition();
 	}
-	public Pose2d getNearestNode() { 
+	public Pose2d getNearestNodeAny() {
+		return getPose().nearest(nodePositions.ALL_NODES);
+	}
+	/**
+	 * @return the pose of the nearest node corresponding to your alliance color and intake mode.
+	 */
+	public Pose2d getNearestNode() {
 		if(DriverStation.getAlliance() ==  Alliance.Red){
-			return getPose().nearest(nodePositions.ALL_NODES_RED);
+			if (intakeState.isConeMode()) {
+				return getPose().nearest(nodePositions.ALL_NODES_CONE_RED);
+			}
+			else return getPose().nearest(nodePositions.ALL_NODES_CUBE_RED);
 		}else{
-			return getPose().nearest(nodePositions.ALL_NODES_BLUE);
+			if (intakeState.isConeMode()) {
+				return getPose().nearest(nodePositions.ALL_NODES_CONE_BLUE);
+			}
+			else return getPose().nearest(nodePositions.ALL_NODES_CUBE_BLUE);
 		}
 	}
     public void resetOdometry(Pose2d pose) {

@@ -32,12 +32,12 @@ public class Reset extends SequentialCommandGroup {
                 runOnce(() -> arm.setDesiredSholderRotation(Rotation2d.fromDegrees(Math.copySign(15, -arm.getElbowAngle().getDegrees()))), arm),
                 waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
                 runOnce(() -> arm.setDesiredElbowPose(RESET), arm),
-                waitUntil(() -> arm.isElbowWithinBounds(25)).withTimeout(TIMEOUT),
+                waitUntil(() -> arm.isElbowWithinBounds(30)).withTimeout(TIMEOUT),
                 runOnce(()-> arm.setDesiredSholderPose(RESET), arm)),
             Commands.sequence(
                 runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
-                runOnce(() -> arm.setDesiredElbowPose(RESET), arm),
-                waitUntil(() -> arm.isElbowWithinBounds(25)).withTimeout(TIMEOUT)),
+                runOnce(() -> arm.setDesiredElbowPose(RESET), arm)),
+                // waitUntil(() -> arm.isElbowWithinBounds(25)).withTimeout(TIMEOUT))
             () -> Math.abs(MathUtil.inputModulus(arm.getElbowAngle().getDegrees(), -180, 180)) >= 80)
 
         // either(

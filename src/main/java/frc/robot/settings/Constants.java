@@ -37,8 +37,8 @@ public final class Constants {
     public static final int END_EFFECTOR_BIG_ROLLER_ID = 1;
     public static final double END_EFFECTOR_SMALL_PASSIVE_POWER = 0.09;
     public static final double END_EFFECTOR_BIG_PASSIVE_POWER = 0.125;
-    public static final double END_EFFECTOR_SMALL_POWER = 0.2;
-    public static final double END_EFFECTOR_BIG_POWER = 0.175;
+    public static final double END_EFFECTOR_SMALL_POWER = 0.3;
+    public static final double END_EFFECTOR_BIG_POWER = 0.4;
     public static final double END_EFFECTOR_POWER_BONUS = 0.1;
     
     public static final int ARM_SHOULDER_MOTOR_ID = 18;
@@ -51,7 +51,7 @@ public final class Constants {
     // public static final double ARM_SHOULDER_ENCODER_OFFSET_DEG = 131.39;
     // public static final double ARM_ELBOW_ENCODER_OFFSET = 26.318;
     // public static final double ARM_ELBOW_ENCODER_OFFSET = 167.1972;
-    public static final double ARM_ELBOW_ENCODER_OFFSET = 127.845;
+    public static final double ARM_ELBOW_ENCODER_OFFSET = 138;
     public static final double ARM_SHOULDER_LENGTH_METERS = 0.9906;
     public static final double ARM_ELBOW_LENGTH_METERS = 0.7366;
     public static final double ARM_ELBOW_CENTER_OF_MASS_OFFSET_METERS = 0.7;
@@ -300,7 +300,7 @@ public final class Constants {
     RAMP_CONE(7.75,-46, true),
     RAMP_CUBE(13,-50, true),
     AVOID_POST(-20, 45, true), //TODO: how far back to avoid?
-    AVOID_BUMPER(-17.5,-3,true);
+    AVOID_BUMPER(-17.5,-4,true);
     private double[] angles = new double[2];
     private boolean requiresIntakeDown;
     private static final int SHOLDER = 0;
@@ -356,12 +356,30 @@ public final class Constants {
     public static final Pose2d RED_SHELF_LEFT = new Pose2d(15.75, 0.72,Rotation2d.fromDegrees(0));
     public static final Pose2d RED_SHELF_RIGHT = new Pose2d(15.75, 1.82,Rotation2d.fromDegrees(0));
 
+    private static final Pose2d[] nodeArray = new Pose2d[] {
+        BLUE1, BLUE2, BLUE3, BLUE4, BLUE5, BLUE6, BLUE7, BLUE8, BLUE9,
+        BLUE_RAMP, BLUE_SHELF_LEFT, BLUE_SHELF_RIGHT,
+        RED1, RED2, RED3, RED4, RED5, RED6, RED7, RED8, RED9, RED_RAMP,
+        RED_SHELF_LEFT, RED_SHELF_RIGHT };
 
-    private static final Pose2d[] nodeArray = new Pose2d[] {BLUE1,BLUE2,BLUE3,BLUE4,BLUE5,BLUE6,BLUE7,BLUE8,BLUE9,BLUE_RAMP,BLUE_SHELF_LEFT,BLUE_SHELF_RIGHT,RED1,RED2,RED3,RED4,RED5,RED6,RED7,RED8,RED9,RED_RAMP,RED_SHELF_LEFT,RED_SHELF_RIGHT};
-    private static final Pose2d[] nodeArrayBlue = new Pose2d[] {BLUE1,BLUE2,BLUE3,BLUE4,BLUE5,BLUE6,BLUE7,BLUE8,BLUE9,BLUE_RAMP,BLUE_SHELF_LEFT,BLUE_SHELF_RIGHT};
-    private static final Pose2d[] nodeArrayRed = new Pose2d[] {RED1,RED2,RED3,RED4,RED5,RED6,RED7,RED8,RED9,RED_RAMP,RED_SHELF_LEFT,RED_SHELF_RIGHT};
+    private static final Pose2d[] cubeNodeArray = new Pose2d[] {BLUE2, BLUE5, BLUE8, RED2, RED5, RED8};
+    private static final Pose2d[] coneNodeArray = new Pose2d[] {BLUE1, BLUE3, BLUE4, BLUE6, BLUE7, BLUE9, RED1, RED3, RED4, RED6, RED7, RED9};
+    
+    private static final Pose2d[] nodeArrayBlue = new Pose2d[] {BLUE1, BLUE2, BLUE3, BLUE4, BLUE5, BLUE6, BLUE7, BLUE8, BLUE9, BLUE_RAMP, BLUE_SHELF_LEFT, BLUE_SHELF_RIGHT};
+    private static final Pose2d[] cubeNodeArrayBlue = new Pose2d[] {BLUE2, BLUE5, BLUE8, BLUE_RAMP, BLUE_SHELF_LEFT, BLUE_SHELF_RIGHT};
+    private static final Pose2d[] coneNodeArrayBlue = new Pose2d[] {BLUE1, BLUE3, BLUE4, BLUE6, BLUE7, BLUE9, BLUE_RAMP, BLUE_SHELF_LEFT, BLUE_SHELF_RIGHT};
+    
+    private static final Pose2d[] nodeArrayRed = new Pose2d[] {RED1, RED2, RED3, RED4, RED5, RED6, RED7, RED8, RED9, RED_RAMP, RED_SHELF_LEFT, RED_SHELF_RIGHT};
+    private static final Pose2d[] cubeNodeArrayRed = new Pose2d[] {RED2, RED5, RED8, RED_RAMP, RED_SHELF_LEFT, RED_SHELF_RIGHT};
+    private static final Pose2d[] coneNodeArrayRed = new Pose2d[] {RED1, RED3, RED4, RED6, RED7, RED9, RED_RAMP, RED_SHELF_LEFT, RED_SHELF_RIGHT};
+    
     public static final List<Pose2d> ALL_NODES = Arrays.asList(nodeArray);
     public static final List<Pose2d> ALL_NODES_BLUE = Arrays.asList(nodeArrayBlue);
     public static final List<Pose2d> ALL_NODES_RED = Arrays.asList(nodeArrayRed);
+    public static final List<Pose2d> ALL_NODES_CUBE_RED = Arrays.asList(cubeNodeArrayRed);
+    public static final List<Pose2d> ALL_NODES_CONE_RED = Arrays.asList(coneNodeArrayRed);
+    public static final List<Pose2d> ALL_NODES_CUBE_BLUE = Arrays.asList(cubeNodeArrayBlue);
+    public static final List<Pose2d> ALL_NODES_CONE_BLUE = Arrays.asList(coneNodeArrayBlue);
+
   }
 }

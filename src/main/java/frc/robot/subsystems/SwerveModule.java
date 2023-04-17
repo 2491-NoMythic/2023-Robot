@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.RobotContainer;
 import frc.robot.settings.Constants.DriveConstants;
 
 public class SwerveModule {
@@ -121,36 +122,38 @@ public class SwerveModule {
       Rotation2d steerEncoderOffset,
       String canivoreName) {
     this(moduleName, driveMotorChannel, steerMotorChannel, steerEncoderChannel, steerEncoderOffset, canivoreName);
-    
-    // Make grid layouts.
-    ShuffleboardLayout MotorInfo = sbLayout.getLayout("GeneralInfo", BuiltInLayouts.kGrid)
-      .withProperties(Map.of("Number of columns", 1, "Number of rows", 3, "Label position", "LEFT"));
+    if (RobotContainer.debugMode) {
+      // Make grid layouts.
+      ShuffleboardLayout MotorInfo = sbLayout.getLayout("GeneralInfo", BuiltInLayouts.kGrid)
+          .withProperties(Map.of("Number of columns", 1, "Number of rows", 3, "Label position", "LEFT"));
 
-    ShuffleboardLayout ModuleInfo = sbLayout.getLayout("ModuleInfo", BuiltInLayouts.kGrid)
-      .withProperties(Map.of("Number of columns", 1, "Number of rows", 4, "Label position", "RIGHT"));
+      ShuffleboardLayout ModuleInfo = sbLayout.getLayout("ModuleInfo", BuiltInLayouts.kGrid)
+          .withProperties(Map.of("Number of columns", 1, "Number of rows", 4, "Label position", "RIGHT"));
 
-    MotorInfo.add(moduleName + " Angle", new GyroView(() -> MathUtil.inputModulus(getRotation().getDegrees(), -180.0, 180.0)))
-      .withWidget(BuiltInWidgets.kGyro) 
-      .withProperties(Map.of("Major tick spacing", 180, "Counter Clockwise", true));
-    MotorInfo.addNumber(moduleName + " Drive Voltage", () -> m_driveMotor.getStatorCurrent().getValue());
-    MotorInfo.addNumber(moduleName + " Steer Voltage", () -> m_steerMotor.getStatorCurrent().getValue());
-    
-    ModuleInfo.addNumber(moduleName + " Speed", () -> getSpeedMetersPerSecond());
-    ModuleInfo.addNumber(moduleName + " Angle", () -> getRotation().getDegrees());
-    ModuleInfo.addNumber(moduleName + " Speed Target", () -> getTargetSpeedMetersPerSecond());
-    ModuleInfo.addNumber(moduleName + " Angle Target", () -> getTargetAngle());
-    if (debug) {
-      debugInfo = Shuffleboard.getTab("Debug");
-      debugInfo.addNumber("Drive Target", () -> m_driveMotor.getClosedLoopReference().getValue());
-      debugInfo.addNumber("Drive Value", () -> m_driveMotor.getVelocity().getValue());
-      debugInfo.addNumber("Drive Error", () -> m_driveMotor.getClosedLoopError().getValue());
+      MotorInfo
+          .add(moduleName + " Angle",
+              new GyroView(() -> MathUtil.inputModulus(getRotation().getDegrees(), -180.0, 180.0)))
+          .withWidget(BuiltInWidgets.kGyro)
+          .withProperties(Map.of("Major tick spacing", 180, "Counter Clockwise", true));
+      MotorInfo.addNumber(moduleName + " Drive Voltage", () -> m_driveMotor.getStatorCurrent().getValue());
+      MotorInfo.addNumber(moduleName + " Steer Voltage", () -> m_steerMotor.getStatorCurrent().getValue());
 
-      debugInfo.addNumber("Steer Target", () -> m_steerMotor.getClosedLoopReference().getValue());
-      debugInfo.addNumber("Steer Value", () -> getRotation().getRotations());
-      debugInfo.addNumber("Steer Error", () -> m_steerMotor.getClosedLoopError().getValue());
-      debugInfo.add(m_steerMotor);
+      ModuleInfo.addNumber(moduleName + " Speed", () -> getSpeedMetersPerSecond());
+      ModuleInfo.addNumber(moduleName + " Angle", () -> getRotation().getDegrees());
+      ModuleInfo.addNumber(moduleName + " Speed Target", () -> getTargetSpeedMetersPerSecond());
+      ModuleInfo.addNumber(moduleName + " Angle Target", () -> getTargetAngle());
+      if (debug) {
+        debugInfo = Shuffleboard.getTab("Debug");
+        debugInfo.addNumber("Drive Target", () -> m_driveMotor.getClosedLoopReference().getValue());
+        debugInfo.addNumber("Drive Value", () -> m_driveMotor.getVelocity().getValue());
+        debugInfo.addNumber("Drive Error", () -> m_driveMotor.getClosedLoopError().getValue());
+
+        debugInfo.addNumber("Steer Target", () -> m_steerMotor.getClosedLoopReference().getValue());
+        debugInfo.addNumber("Steer Value", () -> getRotation().getRotations());
+        debugInfo.addNumber("Steer Error", () -> m_steerMotor.getClosedLoopError().getValue());
+        debugInfo.add(m_steerMotor);
+      }
     }
-
   }
 
   // public void resetToAbsolute(){

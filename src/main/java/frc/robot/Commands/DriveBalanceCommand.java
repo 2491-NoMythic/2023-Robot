@@ -26,8 +26,8 @@ public class DriveBalanceCommand extends CommandBase {
     public void execute() {
         targetSpeedMetersPerSecond = balanceController.calculate(drivetrain.getGyroscopePitch().getDegrees(), 0) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND/4;
         
-        SmartDashboard.putNumber("pitch", drivetrain.getGyroscopePitch().getDegrees());
-        SmartDashboard.putBoolean("IsAtTarget", balanceController.atSetpoint());
+        // SmartDashboard.putNumber("pitch", drivetrain.getGyroscopePitch().getDegrees());
+        // SmartDashboard.putBoolean("IsAtTarget", balanceController.atSetpoint());
         
         if (balanceController.atSetpoint()) timeBalanced++; else timeBalanced = 0;
         

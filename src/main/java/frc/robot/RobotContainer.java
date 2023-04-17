@@ -40,6 +40,7 @@ import frc.robot.Commands.EndEffectorCommand;
 import frc.robot.Commands.EndEffectorPassiveCommand;
 import frc.robot.Commands.EndEffectorRun;
 import frc.robot.Commands.LightsByModeCommand;
+import frc.robot.Commands.MoveToNearestNode;
 import frc.robot.Commands.PurpleLights;
 import frc.robot.Commands.ScoreNearestNodeHigh;
 import frc.robot.Commands.ScoreNearestNodeLow;
@@ -316,8 +317,15 @@ public class RobotContainer {
     if (DrivetrainExists) {
       new Trigger(driveController::getPSButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
       new Trigger(driveController::getSquareButton).whileTrue(new DriveBalanceCommand(drivetrain));
-      new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->autos.moveToPose(drivetrain.getNearestNode()).schedule()));
+      new Trigger(driveController::getTriangleButton).onTrue(new MoveToNearestNode(drivetrain, true, true));
       new Trigger(driveController::getCrossButton).onTrue(Commands.runOnce(drivetrain::pointWheelsInward, drivetrain));
+      
+      new Trigger(()-> driveController.getPOV() == 0)
+        .onTrue(new ScoreNearestNodeLow(drivetrain, arm, effector));
+      new Trigger(()-> driveController.getPOV() == 90).or(()-> driveController.getPOV() == 270)
+        .onTrue(new ScoreNearestNodeMid(drivetrain, arm, effector));
+      new Trigger(()-> driveController.getPOV() == 180)
+        .onTrue(new ScoreNearestNodeHigh(drivetrain, arm, effector));
       // new Trigger(driveController::getR1Button).whileTrue(new DriveRotateToAngleCommand(drivetrain,
       //     () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
       //     () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),

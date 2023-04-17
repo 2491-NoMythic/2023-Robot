@@ -20,6 +20,8 @@ public class MoveToPose extends CommandBase {
   private Pose2d currentPose;
   private Pose2d targetPose;
   private Autos autos = Autos.getInstance();
+  private PathPlannerTrajectory trajectory;
+  private CommandBase pathCommand;
   /** Creates a new MoveToPose. */
   public MoveToPose(DrivetrainSubsystem drivetrain, Pose2d targetPose) {
     this.drivetrain = drivetrain;
@@ -32,9 +34,13 @@ public class MoveToPose extends CommandBase {
   public void initialize() {
     timer.restart();
     currentPose = drivetrain.getPose();
-    PathPlannerTrajectory trajectory = autos.calculatePath(currentPose, targetPose);
+    trajectory = autos.calculatePath(currentPose, targetPose);
     timeout = trajectory.getTotalTimeSeconds();
-    autos.followPath(trajectory);
+    autos.followPath(trajectory).schedule();
+  }
+
+  @Override
+  public void execute() {
   }
   
   // Called once the command ends or is interrupted.

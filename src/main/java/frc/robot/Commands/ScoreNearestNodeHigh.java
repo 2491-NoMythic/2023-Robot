@@ -24,13 +24,13 @@ public class ScoreNearestNodeHigh extends SequentialCommandGroup {
     addCommands(
       Commands.either(
         new SequentialCommandGroup(
-            new MoveToPose(drivetrain, drivetrain.getNearestNode()),
-            Commands.waitSeconds(0.25),
+            new MoveToNearestNode(drivetrain, true, true),
+            Commands.waitSeconds(0.2),
             Commands.either(
                     new HighCone(arm),
                     new HighCube(arm),
                     intakeState::isConeMode),
-            new EndEffectorCommand(endEffector, () -> false).withTimeout(1),
+            new EndEffectorCommand(endEffector, () -> false).withTimeout(0.5),
             new Reset(arm)),
         new SequentialCommandGroup(Commands.none()),
         () -> (drivetrain.getPose().getTranslation().getDistance(drivetrain.getNearestNode().getTranslation()) < 1))

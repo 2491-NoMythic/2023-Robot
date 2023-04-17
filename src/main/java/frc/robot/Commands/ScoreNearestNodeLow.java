@@ -25,10 +25,10 @@ public class ScoreNearestNodeLow extends SequentialCommandGroup {
     addCommands(
         Commands.either(
             new SequentialCommandGroup(
-                new MoveToPose(drivetrain, drivetrain.getNearestNode()),
-                Commands.waitSeconds(0.25),
+                new MoveToNearestNode(drivetrain, true, false),
+                Commands.waitSeconds(0.15),
                 new DropLow(arm),
-                new EndEffectorCommand(endEffector, () -> false).withTimeout(1),
+                new EndEffectorCommand(endEffector, () -> false).withTimeout(0.5),
                 new Reset(arm)),
             new SequentialCommandGroup(Commands.none()),
             () -> (drivetrain.getPose().getTranslation()

@@ -364,7 +364,8 @@ public final class Constants {
 
     private static final Pose2d[] cubeNodeArray = new Pose2d[] {BLUE2, BLUE5, BLUE8, RED2, RED5, RED8};
     private static final Pose2d[] coneNodeArray = new Pose2d[] {BLUE1, BLUE3, BLUE4, BLUE6, BLUE7, BLUE9, RED1, RED3, RED4, RED6, RED7, RED9};
-    
+    private static final Pose2d[] humanPlayerArray = new Pose2d[] {BLUE_RAMP, BLUE_SHELF_LEFT, BLUE_SHELF_RIGHT, RED_RAMP, RED_SHELF_LEFT, RED_SHELF_RIGHT};
+
     private static final Pose2d[] nodeArrayBlue = new Pose2d[] {BLUE1, BLUE2, BLUE3, BLUE4, BLUE5, BLUE6, BLUE7, BLUE8, BLUE9, BLUE_RAMP, BLUE_SHELF_LEFT, BLUE_SHELF_RIGHT};
     private static final Pose2d[] cubeNodeArrayBlue = new Pose2d[] {BLUE2, BLUE5, BLUE8, BLUE_RAMP, BLUE_SHELF_LEFT, BLUE_SHELF_RIGHT};
     private static final Pose2d[] coneNodeArrayBlue = new Pose2d[] {BLUE1, BLUE3, BLUE4, BLUE6, BLUE7, BLUE9, BLUE_RAMP, BLUE_SHELF_LEFT, BLUE_SHELF_RIGHT};
@@ -374,6 +375,9 @@ public final class Constants {
     private static final Pose2d[] coneNodeArrayRed = new Pose2d[] {RED1, RED3, RED4, RED6, RED7, RED9, RED_RAMP, RED_SHELF_LEFT, RED_SHELF_RIGHT};
     
     public static final List<Pose2d> ALL_NODES = Arrays.asList(nodeArray);
+    public static final List<Pose2d> ALL_NODES_CUBE = Arrays.asList(cubeNodeArray);
+    public static final List<Pose2d> ALL_NODES_CONE = Arrays.asList(coneNodeArray);
+    public static final List<Pose2d> ALL_NODES_HP = Arrays.asList(humanPlayerArray);
     public static final List<Pose2d> ALL_NODES_BLUE = Arrays.asList(nodeArrayBlue);
     public static final List<Pose2d> ALL_NODES_RED = Arrays.asList(nodeArrayRed);
     public static final List<Pose2d> ALL_NODES_CUBE_RED = Arrays.asList(cubeNodeArrayRed);

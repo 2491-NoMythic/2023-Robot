@@ -169,6 +169,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public Pose2d getNearestNodeAny() {
 		return getPose().nearest(nodePositions.ALL_NODES);
 	}
+	public Pose2d getNearestNodeAnyMode() {
+		if(DriverStation.getAlliance() ==  Alliance.Red){
+		return getPose().nearest(nodePositions.ALL_NODES_RED);
+		} else {
+			return getPose().nearest(nodePositions.ALL_NODES_BLUE);
+		}
+	}
+	public Pose2d getNearestNodeAnyAlliance() {
+		if(intakeState.isConeMode()){
+		return getPose().nearest(nodePositions.ALL_NODES_CONE);
+		} else {
+			return getPose().nearest(nodePositions.ALL_NODES_CUBE);
+		}
+	}
 	/**
 	 * @return the pose of the nearest node corresponding to your alliance color and intake mode.
 	 */

@@ -41,6 +41,9 @@ import frc.robot.Commands.EndEffectorPassiveCommand;
 import frc.robot.Commands.EndEffectorRun;
 import frc.robot.Commands.LightsByModeCommand;
 import frc.robot.Commands.PurpleLights;
+import frc.robot.Commands.ScoreNearestNodeHigh;
+import frc.robot.Commands.ScoreNearestNodeLow;
+import frc.robot.Commands.ScoreNearestNodeMid;
 import frc.robot.Commands.arm.RampCone;
 import frc.robot.Commands.arm.RampCube;
 import frc.robot.Commands.arm.DropLow;
@@ -233,12 +236,16 @@ public class RobotContainer {
         // eventMap.put("IntakeOff", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerOff, skiPlow)));
       // }
       if (EndEffectorExists) {
-        eventMap.put("Outtake", new ParallelDeadlineGroup(new WaitCommand(1), new EndEffectorCommand(effector, ()->false)));
+        eventMap.put("Outtake", new ParallelDeadlineGroup(new WaitCommand(.25), new EndEffectorCommand(effector, ()->false)));
         eventMap.put("Intake", new EndEffectorRun(effector, ()->true));
         eventMap.put("EndEffectorStop", new InstantCommand(effector::rollerOff, effector));
       }
       if (LightsExists) {
         // eventMap.put("LightsOff", new SequentialCommandGroup(new InstantCommand(lightsSubsystem::lightsOut, lightsSubsystem)));
+      }
+      if (LimelightExists) {
+        eventMap.put("TrustLimelightTrue", Commands.runOnce(()-> DrivetrainSubsystem.forceTrustLimelight(true)));
+        eventMap.put("TrustLimelightFalse", Commands.runOnce(()-> DrivetrainSubsystem.forceTrustLimelight(false)));
       }
       if (ArmExists) {
         eventMap.put("CubeShelf", new ShelfCube(arm));
@@ -246,8 +253,8 @@ public class RobotContainer {
         eventMap.put("CubeFloor", new IntakeCube(arm));
         eventMap.put("ConeFloor", new IntakeCone(arm));
 
-        eventMap.put("ScoreHigh", Commands.either(new HighCone(arm), new HighCube(arm), intakeState::isConeMode));
-        eventMap.put("ScoreMid", Commands.either(new MidCone(arm), new MidCube(arm), intakeState::isConeMode));
+        eventMap.put("ScoreHigh", Commands.either(new HighCone(arm), new HighCube(arm), intakeState::isConeMode).andThen(Commands.waitSeconds(0.25)));
+        eventMap.put("ScoreMid", Commands.either(new MidCone(arm), new MidCube(arm), intakeState::isConeMode).andThen(Commands.waitSeconds(0.25)));
         eventMap.put("ScoreLow", new DropLow(arm));
         
         eventMap.put("ResetArmPose", new Reset(arm));
@@ -311,18 +318,18 @@ public class RobotContainer {
       new Trigger(driveController::getSquareButton).whileTrue(new DriveBalanceCommand(drivetrain));
       new Trigger(driveController::getTriangleButton).onTrue(Commands.runOnce(()->autos.moveToPose(drivetrain.getNearestNode()).schedule()));
       new Trigger(driveController::getCrossButton).onTrue(Commands.runOnce(drivetrain::pointWheelsInward, drivetrain));
-      new Trigger(driveController::getR1Button).whileTrue(new DriveRotateToAngleCommand(drivetrain,
-          () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
-          () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-          () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
-          () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
-      new Trigger(driveController::getR2Button).whileTrue(new DriveOffsetCenterCommand(
-        drivetrain,
-        () -> driveController.getL1Button(),
-        () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
-        () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
-        () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL), 
-        new Translation2d(1,0)));
+      // new Trigger(driveController::getR1Button).whileTrue(new DriveRotateToAngleCommand(drivetrain,
+      //     () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      //     () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      //     () -> getJoystickDegrees(Z_AXIS, Z_ROTATE),
+      //     () -> getJoystickMagnitude(Z_AXIS, Z_ROTATE)));
+      // new Trigger(driveController::getR2Button).whileTrue(new DriveOffsetCenterCommand(
+      //   drivetrain,
+      //   () -> driveController.getL1Button(),
+      //   () -> modifyAxis(-driveController.getRawAxis(Y_AXIS), DEADBAND_NORMAL),
+      //   () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
+      //   () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL), 
+      //   new Translation2d(1,0)));
     }
     if (ArmExists) {
       
@@ -405,6 +412,11 @@ public class RobotContainer {
     value = Math.copySign(value * value, value);
     if (driveController.getL2Button()|| driveController.getL1Button() || opController.getL1Button()) {
       value *= SmartDashboard.getNumber("Precision Multiplier", 0.3);
+    }
+    else if (ArmExists){
+      if (Math.abs(arm.getArmPose().getX()) >= 0.5) {
+        value *= 0.2;
+      }
     }
     return value;
   }

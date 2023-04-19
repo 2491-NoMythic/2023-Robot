@@ -24,9 +24,9 @@ public class RampCone extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       runOnce(() -> arm.setDesiredSholderPose(RESET), arm).unless(() -> !arm.isExtended()),
-      runOnce(() -> arm.setDesiredElbowPose(RAMP_CONE), arm),
-      waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
-      runOnce(() -> arm.setDesiredSholderPose(RAMP_CONE), arm)
+      runOnce(() -> arm.setDesiredSholderPose(RAMP_CONE), arm),
+      waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
+      runOnce(() -> arm.setDesiredElbowPose(RAMP_CONE), arm)
     );
   }
 }

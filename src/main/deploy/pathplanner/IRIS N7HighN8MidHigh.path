@@ -1,0 +1,190 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 1.849925805118309,
+        "y": 3.9020013827344706
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.114719106634736,
+        "y": 5.008329560303106
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "ModeConeGround",
+          "ScoreHigh",
+          "Outtake"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.88821875085886,
+        "y": 4.674961506940099
+      },
+      "prevControl": {
+        "x": 5.977765070302375,
+        "y": 4.947009419456978
+      },
+      "nextControl": {
+        "x": 5.977765070302375,
+        "y": 4.947009419456978
+      },
+      "holonomicAngle": 168.98288838121087,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "ResetArmPose"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.8580043430070807,
+        "y": 4.401746534990715
+      },
+      "prevControl": {
+        "x": 3.8739895227241323,
+        "y": 4.7854278684163996
+      },
+      "nextControl": {
+        "x": 3.8739895227241323,
+        "y": 4.7854278684163996
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "Outtake"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.955358296681474,
+        "y": 3.4332000944665912
+      },
+      "prevControl": {
+        "x": 6.238965460388107,
+        "y": 5.673061240857361
+      },
+      "nextControl": {
+        "x": 6.238965460388107,
+        "y": 5.673061240857361
+      },
+      "holonomicAngle": 114.86369657150897,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "ResetArmPose"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.85,
+        "y": 4.398122579274964
+      },
+      "prevControl": {
+        "x": 2.9958849352465307,
+        "y": 4.627299566324271
+      },
+      "nextControl": null,
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "ScoreHigh",
+          "Outtake",
+          "ResetArmPose"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "maxVelocity": 3.0,
+  "maxAcceleration": 2.5,
+  "isReversed": null,
+  "markers": [
+    {
+      "position": 0.5181818181818183,
+      "names": [
+        "Intake"
+      ]
+    },
+    {
+      "position": 0.40909090909090895,
+      "names": [
+        "CubeFloor"
+      ]
+    },
+    {
+      "position": 0.13636363636363635,
+      "names": [
+        "ModeCubeGround"
+      ]
+    },
+    {
+      "position": 2.036363636363636,
+      "names": [
+        "ResetArmPose"
+      ]
+    },
+    {
+      "position": 2.4999999999999996,
+      "names": [
+        "Intake"
+      ]
+    },
+    {
+      "position": 2.454545454545454,
+      "names": [
+        "CubeFloor"
+      ]
+    },
+    {
+      "position": 1.8181818181818186,
+      "names": [
+        "ScoreMid"
+      ]
+    },
+    {
+      "position": 0.07272727272727272,
+      "names": [
+        "ArmResetPose"
+      ]
+    }
+  ]
+}

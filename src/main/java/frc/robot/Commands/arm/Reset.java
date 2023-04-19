@@ -9,6 +9,8 @@ import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static frc.robot.settings.Constants.Poses.RESET;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ArmSubsystem;
@@ -25,18 +27,29 @@ public class Reset extends SequentialCommandGroup {
   public Reset(ArmSubsystem arm) {
 
     addCommands(
-        // runOnce(intake::pistonDown, intake).unless(() -> !RESET.isRequiresIntakeDown()),
         either(
             Commands.sequence(
-                runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
+                runOnce(() -> arm.setDesiredSholderRotation(Rotation2d.fromDegrees(Math.copySign(15, -arm.getElbowAngle().getDegrees()))), arm),
                 waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
-                runOnce(() -> arm.setDesiredElbowPose(RESET), arm)),
-            Commands.sequence(
                 runOnce(() -> arm.setDesiredElbowPose(RESET), arm),
-                waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
-                runOnce(() -> arm.setDesiredSholderPose(RESET), arm)),
-            arm::isExtended));
-        // runOnce(intake::rollerOff, intake),
-        // runOnce(intake::pistonUp, intake));
+                waitUntil(() -> arm.isElbowWithinBounds(30)).withTimeout(TIMEOUT),
+                runOnce(()-> arm.setDesiredSholderPose(RESET), arm)),
+            Commands.sequence(
+                runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
+                runOnce(() -> arm.setDesiredElbowPose(RESET), arm)),
+                // waitUntil(() -> arm.isElbowWithinBounds(25)).withTimeout(TIMEOUT))
+            () -> Math.abs(MathUtil.inputModulus(arm.getElbowAngle().getDegrees(), -180, 180)) >= 80)
+
+        // either(
+        //     Commands.sequence(
+        //         runOnce(() -> arm.setDesiredSholderPose(RESET), arm),
+        //         waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
+        //         runOnce(() -> arm.setDesiredElbowPose(RESET), arm)),
+        //     Commands.sequence(
+        //         runOnce(() -> arm.setDesiredElbowPose(RESET), arm),
+        //         waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
+        //         runOnce(() -> arm.setDesiredSholderPose(RESET), arm)),
+        //     arm::isExtended)
+        );
   }
 }

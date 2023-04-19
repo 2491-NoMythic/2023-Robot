@@ -24,9 +24,9 @@ public class RampCube extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       runOnce(() -> arm.setDesiredSholderPose(RESET), arm).unless(() -> !arm.isExtended()),
-      runOnce(() -> arm.setDesiredElbowPose(RAMP_CUBE), arm),
-      waitUntil(arm::isElbowAtTarget).withTimeout(TIMEOUT),
-      runOnce(() -> arm.setDesiredSholderPose(RAMP_CUBE), arm)
+      runOnce(() -> arm.setDesiredSholderPose(RAMP_CUBE), arm),
+      waitUntil(arm::isShoulderAtTarget).withTimeout(TIMEOUT),
+      runOnce(() -> arm.setDesiredElbowPose(RAMP_CUBE), arm)
     );
   }
 }

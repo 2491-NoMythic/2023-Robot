@@ -28,8 +28,9 @@ public class IntakeCube extends SequentialCommandGroup {
       // waitSeconds(0.5),
       runOnce(() -> arm.setDesiredElbowPose(AVOID_BUMPER), arm),
       runOnce(() -> arm.setDesiredSholderPose(AVOID_BUMPER), arm),
-      waitUntil(arm::isShoulderAtTarget).withTimeout(1),
+      waitUntil(()->arm.isShoulderWithinBounds(3)).withTimeout(1),
       runOnce(() -> arm.setDesiredSholderPose(INTAKE_CUBE), arm),
+      waitUntil(()->arm.isShoulderWithinBounds(3)).withTimeout(1),
       runOnce(() -> arm.setDesiredElbowPose(INTAKE_CUBE), arm));
   }
 }

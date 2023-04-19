@@ -112,6 +112,7 @@ public class RobotContainer {
   public static boolean LimelightExists = Preferences.getBoolean("Limelight", false);
   public static boolean DrivetrainExists = Preferences.getBoolean("Drivetrain", false);
   public static boolean LightsExists = Preferences.getBoolean("Lights", false);
+  public static boolean debugMode = Preferences.getBoolean("DebugMode", false);
 
   public IntakeState intakeState;
 
@@ -125,6 +126,7 @@ public class RobotContainer {
     Preferences.initBoolean("SkiPlow", false);
     Preferences.initBoolean("Limelight", false);
     Preferences.initBoolean("Lights", false);
+    Preferences.initBoolean("DebugMode", false);
     driveController = new PS4Controller(0);
     opController = new PS4Controller(1);
     autoChooser = new SendableChooser<>();
@@ -194,7 +196,6 @@ public class RobotContainer {
         () -> modifyAxis(-driveController.getRawAxis(X_AXIS), DEADBAND_NORMAL),
         () -> modifyAxis(-driveController.getRawAxis(Z_AXIS), DEADBAND_NORMAL));
     drivetrain.setDefaultCommand(defaultDriveCommand);
-    SmartDashboard.putData(new DriveToBalance(drivetrain, true));
     SmartDashboard.putData(drivetrain);
     SmartDashboard.putNumber("Precision Multiplier", 0.5);
   }
@@ -217,7 +218,6 @@ public class RobotContainer {
   private void LimelightInst() {
     limelight = Limelight.getInstance();
     SmartDashboard.putBoolean("UseLimelight", SmartDashboard.getBoolean("UseLimelight", true));
-    SmartDashboard.putBoolean("ForceTrustLimelight", SmartDashboard.getBoolean("ForceTrustLimelight", false));
   }
 
   private void autoInit() {
@@ -435,6 +435,6 @@ public class RobotContainer {
 
   public void teleopPeriodic() {
     // SmartDashboard.putString("NearestNode", drivetrain.getPose().nearest(ALL_NODES).toString());
-    SmartDashboard.putNumber("Match Timer", Timer.getMatchTime());
+    // SmartDashboard.putNumber("Match Timer", Timer.getMatchTime());
   }
 }

@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.settings.Constants.Poses;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -114,32 +115,33 @@ public class ArmSubsystem extends SubsystemBase {
     elbowPID.setD(ARM_ELBOW_K_D);
     elbowPID.setOutputRange(-0.6, 0.6);
     elbowMotor.burnFlash();
-    
-    SmartDashboard.putNumber("Shoulder P", ARM_SHOULDER_K_P);
-    SmartDashboard.putNumber("Shoulder I", ARM_SHOULDER_K_I);
-    SmartDashboard.putNumber("Shoulder D", ARM_SHOULDER_K_D);
-    SmartDashboard.putNumber("Shoulder Feed Forward", ARM_SHOULDER_FF_K_G);
-    SmartDashboard.putNumber("Shoulder Set Degrees", 0);
-    SmartDashboard.putBoolean("Run Shoulder", false);
-    
-    SmartDashboard.putNumber("Elbow P", ARM_ELBOW_K_P);
-    SmartDashboard.putNumber("Elbow I", ARM_ELBOW_K_I);
-    SmartDashboard.putNumber("Elbow D", ARM_ELBOW_K_D);
-    SmartDashboard.putNumber("Elbow Feed Forward", ARM_ELBOW_FF_K_G);
-    SmartDashboard.putNumber("Elbow Set Degrees", 0);
-    SmartDashboard.putBoolean("Run Elbow", false);
-   
-    //start arm in current position
-    lastAngles[0] = getShoulderAngle();
-    lastAngles[1] = getElbowAngle();
-    tab.addBoolean("isExtened", this::isExtended).withSize(9,1).withPosition(1,4);
-    tab.addDouble("Shoulder Angle", () -> getShoulderAngle().getDegrees()).withSize(2,1).withPosition(1,1);
-    tab.addDouble("Elbow Angle", () -> getElbowAngle().getDegrees()).withSize(2,1).withPosition(6,1);
-    tab.addDouble("Target Shoulder Angle", () -> lastAngles[0].getDegrees()).withSize(2,1).withPosition(1,2);
-    tab.addDouble("Target Elbow Angle", () -> lastAngles[1].getDegrees()).withSize(2,1).withPosition(6,2);
-    tab.addBoolean("Shoulder at Target", () -> isShoulderAtTarget()).withSize(1,2).withPosition(3,1);
-    tab.addBoolean("Elbow at Target", () -> isElbowAtTarget()).withSize(1,2).withPosition(8,1);
-    tab.addDoubleArray("Arm Pose", ()-> new double[]{getArmPose().getX(),getArmPose().getY()}).withSize(2,1).withPosition(4,3);
+    if (RobotContainer.debugMode) {
+      SmartDashboard.putNumber("Shoulder P", ARM_SHOULDER_K_P);
+      SmartDashboard.putNumber("Shoulder I", ARM_SHOULDER_K_I);
+      SmartDashboard.putNumber("Shoulder D", ARM_SHOULDER_K_D);
+      SmartDashboard.putNumber("Shoulder Feed Forward", ARM_SHOULDER_FF_K_G);
+      SmartDashboard.putNumber("Shoulder Set Degrees", 0);
+      SmartDashboard.putBoolean("Run Shoulder", false);
+      
+      SmartDashboard.putNumber("Elbow P", ARM_ELBOW_K_P);
+      SmartDashboard.putNumber("Elbow I", ARM_ELBOW_K_I);
+      SmartDashboard.putNumber("Elbow D", ARM_ELBOW_K_D);
+      SmartDashboard.putNumber("Elbow Feed Forward", ARM_ELBOW_FF_K_G);
+      SmartDashboard.putNumber("Elbow Set Degrees", 0);
+      SmartDashboard.putBoolean("Run Elbow", false);
+     
+      //start arm in current position
+      lastAngles[0] = getShoulderAngle();
+      lastAngles[1] = getElbowAngle();
+      tab.addBoolean("isExtened", this::isExtended).withSize(9,1).withPosition(1,4);
+      tab.addDouble("Shoulder Angle", () -> getShoulderAngle().getDegrees()).withSize(2,1).withPosition(1,1);
+      tab.addDouble("Elbow Angle", () -> getElbowAngle().getDegrees()).withSize(2,1).withPosition(6,1);
+      tab.addDouble("Target Shoulder Angle", () -> lastAngles[0].getDegrees()).withSize(2,1).withPosition(1,2);
+      tab.addDouble("Target Elbow Angle", () -> lastAngles[1].getDegrees()).withSize(2,1).withPosition(6,2);
+      tab.addBoolean("Shoulder at Target", () -> isShoulderAtTarget()).withSize(1,2).withPosition(3,1);
+      tab.addBoolean("Elbow at Target", () -> isElbowAtTarget()).withSize(1,2).withPosition(8,1);
+      tab.addDoubleArray("Arm Pose", ()-> new double[]{getArmPose().getX(),getArmPose().getY()}).withSize(2,1).withPosition(4,3);
+    }
     // xTarget = tab.add("X Target Setpoint", 0).getEntry();
     // yTarget = tab.add("Y Target Setpoint", 0).getEntry();
     // calculateAnglesTrue = tab.add("Calculate From Targets", false).withWidget(BuiltInWidgets.kToggleSwitch).getEntry(); 
@@ -291,35 +293,48 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
 	public void periodic() {
-    double new_skP = SmartDashboard.getNumber("Shoulder P", ARM_SHOULDER_K_P);
-    double new_skI = SmartDashboard.getNumber("Shoulder I", ARM_SHOULDER_K_I);
-    double new_skD = SmartDashboard.getNumber("Shoulder D", ARM_SHOULDER_K_D);
-    double new_skFF = SmartDashboard.getNumber("Shoulder Feed Forward", ARM_SHOULDER_FF_K_G);
-    double new_sDegrees = SmartDashboard.getNumber("Shoulder Set Degrees", 0);
-    
-    double new_ekP = SmartDashboard.getNumber("Elbow P", ARM_ELBOW_K_P);
-    double new_ekI = SmartDashboard.getNumber("Elbow I", ARM_ELBOW_K_I);
-    double new_ekD = SmartDashboard.getNumber("Elbow D", ARM_ELBOW_K_D);
-    double new_ekFF = SmartDashboard.getNumber("Elbow Feed Forward", ARM_ELBOW_FF_K_G);
-    double new_eDegrees = SmartDashboard.getNumber("Elbow Set Degrees", 0);
-    
-    if((new_skP!= skP)) {shoulderPID.setP(new_skP); skP=new_skP;}
-    if((new_skI!= skI)) {shoulderPID.setI(new_skI); skI=new_skI;}
-    if((new_skD!= skD)) {shoulderPID.setP(new_skD); skD=new_skD;}
-    if((new_skFF!= skFF)) {skFF=new_skFF;}
+    if (RobotContainer.debugMode) {
+      double new_skP = SmartDashboard.getNumber("Shoulder P", ARM_SHOULDER_K_P);
+      double new_skI = SmartDashboard.getNumber("Shoulder I", ARM_SHOULDER_K_I);
+      double new_skD = SmartDashboard.getNumber("Shoulder D", ARM_SHOULDER_K_D);
+      double new_skFF = SmartDashboard.getNumber("Shoulder Feed Forward", ARM_SHOULDER_FF_K_G);
+      double new_sDegrees = SmartDashboard.getNumber("Shoulder Set Degrees", 0);
+      
+      double new_ekP = SmartDashboard.getNumber("Elbow P", ARM_ELBOW_K_P);
+      double new_ekI = SmartDashboard.getNumber("Elbow I", ARM_ELBOW_K_I);
+      double new_ekD = SmartDashboard.getNumber("Elbow D", ARM_ELBOW_K_D);
+      double new_ekFF = SmartDashboard.getNumber("Elbow Feed Forward", ARM_ELBOW_FF_K_G);
+      double new_eDegrees = SmartDashboard.getNumber("Elbow Set Degrees", 0);
+      
+      if ((new_skP != skP)) {
+        shoulderPID.setP(new_skP);
+        skP = new_skP;
+      }
+      if ((new_skI != skI)) {
+        shoulderPID.setI(new_skI);
+        skI = new_skI;
+      }
+      if ((new_skD != skD)) {
+        shoulderPID.setP(new_skD);
+        skD = new_skD;
+      }
+      if ((new_skFF != skFF)) {
+        skFF = new_skFF;
+      }
 
-    if((new_ekP!= ekP)) {elbowPID.setP(new_ekP); ekP=new_ekP;}
-    if((new_ekI!= ekI)) {elbowPID.setI(new_ekI); ekI=new_ekI;}
-    if((new_ekD!= ekD)) {elbowPID.setP(new_ekD); ekD=new_ekD;}
-    if((new_ekFF!= ekFF)) {ekFF=new_ekFF;}
-    
-    if (SmartDashboard.getBoolean("Run Shoulder", false)) { 
-      setDesiredSholderRotation(Rotation2d.fromDegrees(new_sDegrees));
-      SmartDashboard.putBoolean("Run Shoulder", false);
-    }
-    if (SmartDashboard.getBoolean("Run Elbow", false)) { 
-      setDesiredElbowRotation(Rotation2d.fromDegrees(new_eDegrees));
-      SmartDashboard.putBoolean("Run Elbow", false);
+      if((new_ekP!= ekP)) {elbowPID.setP(new_ekP); ekP=new_ekP;}
+      if((new_ekI!= ekI)) {elbowPID.setI(new_ekI); ekI=new_ekI;}
+      if((new_ekD!= ekD)) {elbowPID.setP(new_ekD); ekD=new_ekD;}
+      if((new_ekFF!= ekFF)) {ekFF=new_ekFF;}
+      
+      if (SmartDashboard.getBoolean("Run Shoulder", false)) { 
+          setDesiredSholderRotation(Rotation2d.fromDegrees(new_sDegrees));
+          SmartDashboard.putBoolean("Run Shoulder", false);
+        }
+      if (SmartDashboard.getBoolean("Run Elbow", false)) {
+        setDesiredElbowRotation(Rotation2d.fromDegrees(new_eDegrees));
+        SmartDashboard.putBoolean("Run Elbow", false);
+      }
     }
 
     double[] feedforward = calculateFeedForward(lastAngles);

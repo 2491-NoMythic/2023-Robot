@@ -73,14 +73,16 @@ public final class Autos {
         // autoChooser.addOption("N9HighN8HighMid", N9HighN8HighMid());
         // autoChooser.addOption("N4HighBal", N4HighBal());
         // autoChooser.addOption("N4HighN5HighBal", N4HighN5HighBal());
-        autoChooser.addOption("N1MidN3MidHigh", N1MidN3MidHigh());
-        autoChooser.addOption("N9MidN8MidHigh", N9MidN8MidHigh());
+        autoChooser.addOption("N1highN3MidHigh", N1HighN3MidHigh());
+        // autoChooser.addOption("N9MidN8MidHigh", N9MidN8MidHigh());
         autoChooser.addOption("N7HighN8MidHigh", N7HighN8MidHigh());
-        autoChooser.addOption("N4MidBal", N4MidBal());
-        autoChooser.addOption("N4MidN5MidBal", N4MidN5MidBal());
-        autoChooser.addOption("N4MidN5MidBalLL", N4HighGrabBal());
+        autoChooser.addOption("N4HighBal", N4HighBal());
+        // autoChooser.addOption("N4MidN5MidBal", N4MidN5MidBal());
+        // autoChooser.addOption("N4MidN5MidBalLL", N4HighGrabBal());
+        autoChooser.addOption("HighCone", highCone());
         autoChooser.addOption("driveForward", driveForward());
         autoChooser.addOption("highConeDriveForward", highConeDriveForward());
+        autoChooser.addOption("highCubeDriveForward", highCubeDriveForward());
     }
 
     public CommandBase moveToPose(Pose2d targetPose) {
@@ -135,9 +137,17 @@ public final class Autos {
     //         autoBuilder.fullAuto(N9HighN8HighMid),
     //         new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     // }
-    public SequentialCommandGroup N4MidBal() {
+    public SequentialCommandGroup highCone() {
         return new SequentialCommandGroup(
-            autoBuilder.fullAuto(N4MidBal),
+            eventMap.get("ModeConeGround"),
+            eventMap.get("ScoreHigh"),
+            eventMap.get("Outtake"),
+            eventMap.get("ResetArmPose")
+        );
+    }
+    public SequentialCommandGroup N4HighBal() {
+        return new SequentialCommandGroup(
+            autoBuilder.fullAuto(N4HighBal),
             new DriveBalanceCommand(drivetrain),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
@@ -154,7 +164,7 @@ public final class Autos {
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
     }
 
-    public SequentialCommandGroup N1MidN3MidHigh() {
+    public SequentialCommandGroup N1HighN3MidHigh() {
         return new SequentialCommandGroup(
             autoBuilder.fullAuto(N1HighN3MidHigh),
             new InstantCommand(drivetrain::pointWheelsInward, drivetrain));
@@ -182,6 +192,13 @@ public final class Autos {
             autoBuilder.fullAuto(highConeDriveForward),
             new InstantCommand(()->DrivetrainSubsystem.useLimelight(true))
             );
+    }        
+    public SequentialCommandGroup highCubeDriveForward() {
+        return new SequentialCommandGroup(
+            new InstantCommand(()->DrivetrainSubsystem.useLimelight(false)),
+            autoBuilder.fullAuto(highCubeDriveForward),
+            new InstantCommand(()->DrivetrainSubsystem.useLimelight(true))
+            );
     }
 
     // load all paths.
@@ -192,10 +209,11 @@ public final class Autos {
     // static List<PathPlannerTrajectory> N4HighN5HighBal = PathPlanner.loadPathGroup("N4HighN5HighBal", new PathConstraints(2.5, 1.75));
     static List<PathPlannerTrajectory> driveForward = PathPlanner.loadPathGroup("driveForward", new PathConstraints(2.5, 1.75));
     static List<PathPlannerTrajectory> highConeDriveForward = PathPlanner.loadPathGroup("highConeDriveForward", new PathConstraints(2.5, 1.75));
+    static List<PathPlannerTrajectory> highCubeDriveForward = PathPlanner.loadPathGroup("highCubeDriveForward", new PathConstraints(2.5, 1.75));
     static List<PathPlannerTrajectory> N1HighN3MidHigh = PathPlanner.loadPathGroup("IRIS N1HighN3MidHigh", new PathConstraints(2.5, 1.75));
     static List<PathPlannerTrajectory> N9MidN8MidHigh = PathPlanner.loadPathGroup("IRIS N9MidN8MidHigh", new PathConstraints(3, 2.5));
     static List<PathPlannerTrajectory> N7HighN8MidHigh = PathPlanner.loadPathGroup("IRIS N7HighN8MidHigh", new PathConstraints(3, 2.5));
-    static List<PathPlannerTrajectory> N4MidBal = PathPlanner.loadPathGroup("IRIS N4MidBal", new PathConstraints(2.5, 1.75));
+    static List<PathPlannerTrajectory> N4HighBal = PathPlanner.loadPathGroup("IRIS N4HighBal", new PathConstraints(2.5, 1.75));
     static List<PathPlannerTrajectory> N4MidN5MidBal = PathPlanner.loadPathGroup("IRIS N4MidN5MidBal", new PathConstraints(2.5, 1.75));
     static List<PathPlannerTrajectory> N4HighGrabBal = PathPlanner.loadPathGroup("IRIS N4HighGrabBal", new PathConstraints(2.5, 1.75));
 

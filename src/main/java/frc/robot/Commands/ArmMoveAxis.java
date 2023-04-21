@@ -31,10 +31,10 @@ public class ArmMoveAxis extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!(MathUtil.applyDeadband(shoulderAxis.getAsDouble(), 0.05)==0)) {
+    if (!(MathUtil.applyDeadband(shoulderAxis.getAsDouble(), 0.1)==0)) {
       arm.setDesiredSholderRotation(arm.getShoulderTarget().plus(Rotation2d.fromDegrees(-shoulderAxis.getAsDouble()*0.25)));
     }
-    if (!(MathUtil.applyDeadband(elbowAxis.getAsDouble(), 0.05)==0)) {
+    if (!(MathUtil.applyDeadband(elbowAxis.getAsDouble(), 0.1)==0)) {
       arm.setDesiredElbowRotation(arm.getElbowTarget().plus(Rotation2d.fromDegrees(-elbowAxis.getAsDouble()*0.4)));
     }
   }

@@ -19,7 +19,7 @@
         "names": [
           "ModeConeGround",
           "ScoreHigh",
-          "Outtake"
+          "OuttakeX2"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -73,7 +73,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Outtake"
+          "OuttakeX2"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -125,7 +125,7 @@
       "stopEvent": {
         "names": [
           "ScoreHigh",
-          "Outtake",
+          "OuttakeX2",
           "ResetArmPose"
         ],
         "executionBehavior": "sequential",

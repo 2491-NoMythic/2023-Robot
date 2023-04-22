@@ -19,7 +19,7 @@
         "names": [
           "ModeConeGround",
           "ScoreHigh",
-          "Outtake",
+          "OuttakeX2",
           "ResetArmPose"
         ],
         "executionBehavior": "sequential",

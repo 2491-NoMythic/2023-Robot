@@ -19,7 +19,7 @@
         "names": [
           "ModeCubeGround",
           "ScoreHigh",
-          "Outtake",
+          "OuttakeX2",
           "ResetArmPose"
         ],
         "executionBehavior": "sequential",

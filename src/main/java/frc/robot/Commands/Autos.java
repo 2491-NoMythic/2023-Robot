@@ -141,7 +141,7 @@ public final class Autos {
         return new SequentialCommandGroup(
             eventMap.get("ModeConeGround"),
             eventMap.get("ScoreHigh"),
-            eventMap.get("Outtake"),
+            eventMap.get("OuttakeX2"),
             eventMap.get("ResetArmPose")
         );
     }

@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -236,8 +237,13 @@ public class RobotContainer {
         // eventMap.put("IntakeOff", new SequentialCommandGroup(new InstantCommand(skiPlow::rollerOff, skiPlow)));
       // }
       if (EndEffectorExists) {
-        eventMap.put("Outtake", new ParallelDeadlineGroup(new WaitCommand(.25), new EndEffectorCommand(effector, ()->false)));
-        eventMap.put("Intake", new EndEffectorRun(effector, ()->true));
+        eventMap.put("Outtake",
+            new ParallelDeadlineGroup(new WaitCommand(.25), new EndEffectorCommand(effector, () -> false)));
+        eventMap.put("OuttakeX2",
+            new SequentialCommandGroup(
+                new ParallelDeadlineGroup(new WaitCommand(.13), new EndEffectorCommand(effector, () -> false)),
+                new ParallelDeadlineGroup(new WaitCommand(.13), new EndEffectorCommand(effector, () -> false))));
+        eventMap.put("Intake", new EndEffectorRun(effector, () -> true));
         eventMap.put("EndEffectorStop", new InstantCommand(effector::rollerOff, effector));
       }
       if (LightsExists) {

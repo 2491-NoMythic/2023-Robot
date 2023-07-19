@@ -285,7 +285,14 @@ public final class Constants {
     public static final double DEADBAND_NORMAL = 0.08;
     public static final double DEADBAND_LARGE = 0.1;
 }
-
+public static final class Vision {
+  /** the position of the far left corner of the field in meters */
+  public static final Translation2d FIELD_CORNER = new Translation2d(16.54, 8.02);
+  
+  public static final double POSE_DETECTION_DISTANCE_THRESHOLD = 0.5;
+  public static final String LIMELIGHT_APRILTAG_NAME = "";
+  public static final String LIMELIGHT_NEURAL_NAME = "limelightneural";
+}
   public enum Poses{
     RESET(0,0, false),
     INTAKE_CONE(-33,5.5, true),

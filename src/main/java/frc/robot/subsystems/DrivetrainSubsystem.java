@@ -37,7 +37,8 @@ import frc.robot.settings.IntakeState;
 import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.DriveConstants.Offsets;
 import frc.robot.settings.Constants.DriveConstants.Positions;
-import frc.robot.settings.LimelightValues;
+import frc.robot.settings.LimelightFiducialData;
+import frc.robot.settings.LimelightFiducialData;
 import frc.robot.settings.Constants.nodePositions;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -257,7 +258,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void periodic() {
 		updateOdometry();
 		if (RobotContainer.LimelightExists && useLimelight) {
-			LimelightValues visionData = limelight.getLimelightValues();
+			LimelightFiducialData visionData = limelight.latestAprilTagValues;
 			Boolean isVisionValid = visionData.isResultValid;
 			Boolean isVisionTrustworthy = isVisionValid && visionData.isPoseTrustworthy(odometer.getEstimatedPosition());
 			SmartDashboard.putBoolean("visionValid", isVisionTrustworthy);

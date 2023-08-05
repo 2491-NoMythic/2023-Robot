@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import frc.robot.LimelightHelpers;
-import frc.robot.LimelightHelpers.Results;
 import frc.robot.settings.LimelightDetectorData;
 import frc.robot.settings.LimelightFiducialData;
 import frc.robot.settings.Constants.Vision;
@@ -9,18 +8,31 @@ public class Limelight {
 
     private static Limelight limelight;
 
-    private  Limelight(){
-      vision_thread();
-    }
+    public static Boolean aprilTagEnabled;
+    public static Boolean aprilTagForceTrust;
+    public static Boolean detectorEnabled;
     
     public LimelightFiducialData latestAprilTagValues;
     public LimelightDetectorData latestDetectorValues;
+
+    private  Limelight(){
+      vision_thread();
+    }
 
     public static Limelight getInstance(){
         if (limelight == null){
             limelight = new Limelight();
         }
         return limelight;
+    }
+    public static void useAprilTagLimelight(boolean enabled) {
+      aprilTagEnabled = enabled;
+    }
+    public static void forceTrustAprilTag(boolean enabled) {
+      aprilTagEnabled = enabled;
+    }
+    public static void useDetectorLimelight(boolean enabled) {
+      aprilTagEnabled = enabled;
     }
     private LimelightFiducialData getAprilTagValues(){
         return new LimelightFiducialData(LimelightHelpers.getLatestResults(Vision.LIMELIGHT_APRILTAG_NAME).targetingResults, LimelightHelpers.getTV(Vision.LIMELIGHT_APRILTAG_NAME));
@@ -45,7 +57,7 @@ public class Limelight {
       }
     
       public void periodic() {
-        this.latestAprilTagValues = getAprilTagValues();
-        this.latestDetectorValues = getNeuralDetectorValues();
+        if (aprilTagEnabled) this.latestAprilTagValues = getAprilTagValues();
+        if (detectorEnabled) this.latestDetectorValues = getNeuralDetectorValues();
       }
 }

@@ -38,7 +38,6 @@ import frc.robot.settings.Constants.DriveConstants;
 import frc.robot.settings.Constants.DriveConstants.Offsets;
 import frc.robot.settings.Constants.DriveConstants.Positions;
 import frc.robot.settings.LimelightFiducialData;
-import frc.robot.settings.LimelightFiducialData;
 import frc.robot.settings.Constants.nodePositions;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -62,9 +61,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	private final SwerveDrivePoseEstimator odometer;
 	Limelight limelight = Limelight.getInstance();
 	private final Field2d m_field = new Field2d();
-	private static boolean useLimelight = true;
-	private static boolean forceTrustLimelight = false;
-
 	public DrivetrainSubsystem() {
 
 		Preferences.initString("FL", "AUGIE");
@@ -199,12 +195,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void displayFieldTrajectory(PathPlannerTrajectory traj) {
 		m_field.getObject("traj").setTrajectory(traj);
 	}
-	public static void forceTrustLimelight(boolean trust) {
-		forceTrustLimelight = trust;
-	}
-	public static void useLimelight(boolean enable) {
-		useLimelight = enable;
-	}
 	/**
 	 *  Sets the modules speed and rotation to zero.
 	 */
@@ -257,12 +247,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		updateOdometry();
-		if (RobotContainer.LimelightExists && useLimelight) {
+		if (RobotContainer.LimelightExists && Limelight.aprilTagEnabled) {
 			LimelightFiducialData visionData = limelight.latestAprilTagValues;
 			Boolean isVisionValid = visionData.isResultValid;
 			Boolean isVisionTrustworthy = isVisionValid && visionData.isPoseTrustworthy(odometer.getEstimatedPosition());
-			SmartDashboard.putBoolean("visionValid", isVisionTrustworthy);
-			if (isVisionTrustworthy || (forceTrustLimelight && isVisionValid)) {
+			SmartDashboard.putBoolean("ApriltagValid", isVisionTrustworthy);
+			if (isVisionTrustworthy || (Limelight.aprilTagForceTrust && isVisionValid)) {
 				updateOdometryWithVision(visionData.getbotPose(), visionData.gettimestamp());
 			}
 		}

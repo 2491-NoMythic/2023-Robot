@@ -13,25 +13,22 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.settings.Constants.DriveConstants;
-import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Limelight;
 
 public final class Autos {
     private DrivetrainSubsystem drivetrain;
     public static SwerveAutoBuilder autoBuilder;
-    private HashMap<String, Command> eventMap;
 
     private static Autos autos;
 
-    private void Autos() {
+    private Autos() {
     }
 
     public static Autos getInstance() {
@@ -43,7 +40,6 @@ public final class Autos {
 
     public void autoInit(SendableChooser<Command> autoChooser, HashMap<String, Command> eventMap, DrivetrainSubsystem drivetrain) {
         this.drivetrain = drivetrain;
-        this.eventMap = eventMap;
         // Create the AutoBuilder. This only needs to be created once when robot code
         // starts, not every time you want to create an auto command. A good place to
         // put this is in RobotContainer along with your subsystems.
@@ -171,16 +167,16 @@ public final class Autos {
     }
     public SequentialCommandGroup driveForward() {
         return new SequentialCommandGroup(
-            new InstantCommand(()->DrivetrainSubsystem.useLimelight(false)),
+            new InstantCommand(()->Limelight.useAprilTagLimelight(false)),
             autoBuilder.fullAuto(driveForward),
-            new InstantCommand(()->DrivetrainSubsystem.useLimelight(true))
+            new InstantCommand(()->Limelight.useAprilTagLimelight(true))
             );
     }
     public SequentialCommandGroup highConeDriveForward() {
         return new SequentialCommandGroup(
-            new InstantCommand(()->DrivetrainSubsystem.useLimelight(false)),
+            new InstantCommand(()->Limelight.useAprilTagLimelight(false)),
             autoBuilder.fullAuto(highConeDriveForward),
-            new InstantCommand(()->DrivetrainSubsystem.useLimelight(true))
+            new InstantCommand(()->Limelight.useAprilTagLimelight(true))
             );
     }
 

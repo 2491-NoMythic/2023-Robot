@@ -218,8 +218,8 @@ public class RobotContainer {
 
   private void LimelightInst() {
     limelight = Limelight.getInstance();
-    SmartDashboard.putBoolean("UseLimelight", SmartDashboard.getBoolean("UseLimelight", true));
-    SmartDashboard.putBoolean("ForceTrustLimelight", SmartDashboard.getBoolean("ForceTrustLimelight", false));
+    SmartDashboard.putBoolean("UseApriltagLimelight", SmartDashboard.getBoolean("UseApriltagLimelight", true));
+    SmartDashboard.putBoolean("UseDetectorLimelight", SmartDashboard.getBoolean("UseDetectorLimelight", true));
   }
 
   private void autoInit() {
@@ -246,8 +246,8 @@ public class RobotContainer {
         // eventMap.put("LightsOff", new SequentialCommandGroup(new InstantCommand(lightsSubsystem::lightsOut, lightsSubsystem)));
       }
       if (LimelightExists) {
-        eventMap.put("TrustLimelightTrue", Commands.runOnce(()-> DrivetrainSubsystem.forceTrustLimelight(true)));
-        eventMap.put("TrustLimelightFalse", Commands.runOnce(()-> DrivetrainSubsystem.forceTrustLimelight(false)));
+        eventMap.put("TrustLimelightTrue", Commands.runOnce(()-> Limelight.forceTrustAprilTag(true)));
+        eventMap.put("TrustLimelightFalse", Commands.runOnce(()-> Limelight.forceTrustAprilTag(false)));
       }
       if (ArmExists) {
         eventMap.put("CubeShelf", new ShelfCube(arm));
@@ -359,14 +359,15 @@ public class RobotContainer {
       // BooleanSupplier tmp2 = () -> opController.getR1Button();
     }
     if (LimelightExists) {
-      if (DrivetrainExists) {
-        new Trigger(()->SmartDashboard.getBoolean("UseLimelight", true))
-          .onTrue(Commands.runOnce(()-> DrivetrainSubsystem.useLimelight(true)))
-          .onFalse(Commands.runOnce(()-> DrivetrainSubsystem.useLimelight(false)));
-        new Trigger(driveController::getTouchpad)
-          .onTrue(Commands.runOnce(()-> DrivetrainSubsystem.forceTrustLimelight(true)))
-          .onFalse(Commands.runOnce(()-> DrivetrainSubsystem.forceTrustLimelight(false)));
-      }
+      new Trigger(()->SmartDashboard.getBoolean("UseApriltagLimelight", true))
+        .onTrue(Commands.runOnce(()-> Limelight.useAprilTagLimelight(true)))
+        .onFalse(Commands.runOnce(()-> Limelight.useAprilTagLimelight(false)));
+      new Trigger(()->SmartDashboard.getBoolean("UseDetectorLimelight", true))
+        .onTrue(Commands.runOnce(()-> Limelight.useDetectorLimelight(true)))
+        .onFalse(Commands.runOnce(()-> Limelight.useDetectorLimelight(false)));
+      new Trigger(driveController::getTouchpad)
+        .onTrue(Commands.runOnce(()-> Limelight.forceTrustAprilTag(true)))
+        .onFalse(Commands.runOnce(()-> Limelight.forceTrustAprilTag(false)));
     }
     new Trigger(opController::getOptionsButton)
         .onTrue(Commands.runOnce(() -> IntakeState.setIntakeMode(IntakeMode.CUBE_GROUND)))

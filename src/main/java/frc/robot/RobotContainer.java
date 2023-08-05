@@ -34,6 +34,8 @@ import frc.robot.Commands.Autos;
 import frc.robot.Commands.Drive;
 import frc.robot.Commands.DriveBalanceCommand;
 import frc.robot.Commands.DriveOffsetCenterCommand;
+import frc.robot.Commands.DrivePickupCube;
+import frc.robot.Commands.DriveToCube;
 import frc.robot.Commands.DriveRotateToAngleCommand;
 import frc.robot.Commands.DriveToBalance;
 import frc.robot.Commands.EndEffectorCommand;
@@ -267,6 +269,8 @@ public class RobotContainer {
       eventMap.put("ModeConeShelf", Commands.runOnce(()->IntakeState.setIntakeMode(IntakeMode.CONE_SHELF)).alongWith(Commands.run(effector::rollerInCone).withTimeout(0.25)));
       autos.autoInit(autoChooser, eventMap, drivetrain);
       SmartDashboard.putData(autoChooser);
+      SmartDashboard.putData(new DriveToCube(drivetrain));
+      SmartDashboard.putData(new DrivePickupCube(drivetrain, arm, effector));
     }
   }
 

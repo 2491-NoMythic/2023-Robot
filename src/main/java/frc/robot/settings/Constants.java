@@ -267,7 +267,15 @@ public final class Constants {
     public static final double k_BALANCE_D = 0.0;
     public static final double k_BALANCE_TOLORANCE_DEGREES = 10.0;
     public static final double k_BALANCE_TOLORANCE_DEG_PER_SEC = 1;
-}
+
+    public static final double K_DETECTOR_TX_P = 0;
+    public static final double K_DETECTOR_TX_I = 0;
+    public static final double K_DETECTOR_TX_D = 0;
+    
+    public static final double K_DETECTOR_TY_P = 0;
+    public static final double K_DETECTOR_TY_I = 0;
+    public static final double K_DETECTOR_TY_D = 0;
+  }
   public final class PS4Driver{
     private PS4Driver() {
     }

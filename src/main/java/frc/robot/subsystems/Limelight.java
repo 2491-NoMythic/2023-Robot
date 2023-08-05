@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.Results;
 import frc.robot.settings.LimelightDetectorData;
 import frc.robot.settings.LimelightFiducialData;
 import frc.robot.settings.Constants.Vision;
@@ -8,7 +9,8 @@ public class Limelight {
 
     private static Limelight limelight;
 
-    private void Limelight(){
+    private  Limelight(){
+      vision_thread();
     }
     
     public LimelightFiducialData latestAprilTagValues;
@@ -21,15 +23,15 @@ public class Limelight {
         return limelight;
     }
     private LimelightFiducialData getAprilTagValues(){
-        return new LimelightFiducialData(LimelightHelpers.getLatestResults(Vision.LIMELIGHT_APRILTAG_NAME).targetingResults);
+        return new LimelightFiducialData(LimelightHelpers.getLatestResults(Vision.LIMELIGHT_APRILTAG_NAME).targetingResults, LimelightHelpers.getTV(Vision.LIMELIGHT_APRILTAG_NAME));
     }
     private LimelightDetectorData getNeuralDetectorValues(){
-        return new LimelightDetectorData(LimelightHelpers.getLatestResults(Vision.LIMELIGHT_NEURAL_NAME).targetingResults);
+        return new LimelightDetectorData(LimelightHelpers.getLatestResults(Vision.LIMELIGHT_NEURAL_NAME).targetingResults, LimelightHelpers.getTV(Vision.LIMELIGHT_NEURAL_NAME));
     }
     
     public void vision_thread(){
         try{
-          new Thread(() -> {
+          new Thread(() -> { // this will make a seperate thread for limelight things to happen on and not interrup other code 
             while(true){
               periodic();
               try {

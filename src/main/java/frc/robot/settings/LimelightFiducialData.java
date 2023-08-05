@@ -19,9 +19,9 @@ public class LimelightFiducialData {
         Pose2d botPoseRed;
         Pose2d botPoseBlue;
 
-        public LimelightFiducialData(Results llresults){
+        public LimelightFiducialData(Results llresults, boolean valid){
             this.llresults = llresults;
-            this.isResultValid = llresults.valid;
+            this.isResultValid = valid;
         }
         public Pose2d getbotPose(){
             if(DriverStation.getAlliance() ==  Alliance.Red){

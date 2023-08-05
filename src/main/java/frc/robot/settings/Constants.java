@@ -291,7 +291,7 @@ public static final class Vision {
   
   public static final double POSE_DETECTION_DISTANCE_THRESHOLD = 0.5;
   public static final String LIMELIGHT_APRILTAG_NAME = "";
-  public static final String LIMELIGHT_NEURAL_NAME = "limelightneural";
+  public static final String LIMELIGHT_NEURAL_NAME = "limelight-neural";
 }
   public enum Poses{
     RESET(0,0, false),

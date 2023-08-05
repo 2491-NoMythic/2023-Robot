@@ -4,6 +4,7 @@
 
 package frc.robot.settings;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.Results;
 
@@ -20,15 +21,21 @@ public class LimelightDetectorData {
     /**0=Cone, 1=Cube, 2=merge? */
     public double classID;
 
-    public LimelightDetectorData(Results llresults) {
+    public LimelightDetectorData(Results llresults, boolean valid) {
         this.llresults = llresults;
-        this.isResultValid = llresults.valid;
+        this.isResultValid = valid;
         
-        if (isResultValid) {
+        if (isResultValid && llresults.targets_Detector.length >=1) {
             this.tx = llresults.targets_Detector[0].tx;
             this.ty = llresults.targets_Detector[0].ty;
             this.ta = llresults.targets_Detector[0].ta;
             this.classID = llresults.targets_Detector[0].classID;
+            // System.out.print(" "+classID+ " ");
+            SmartDashboard.putNumber("TX", tx);
+            SmartDashboard.putNumber("TY", ty);
+        } else {
+            SmartDashboard.putNumber("TX", 0);
+            SmartDashboard.putNumber("TY", 0);
         }
     }
 }

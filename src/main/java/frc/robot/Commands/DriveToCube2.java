@@ -34,33 +34,15 @@ public class DriveToCube2 extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // ------- TEMPORARY
-    SmartDashboard.putNumber("tx kP", SmartDashboard.getNumber("tx kP", 0));
-    SmartDashboard.putNumber("tx kI", SmartDashboard.getNumber("tx kI", 0));
-    SmartDashboard.putNumber("tx kD", SmartDashboard.getNumber("tx kD", 0));
-
-    SmartDashboard.putNumber("ty kP", SmartDashboard.getNumber("ty kP", 0));
-    SmartDashboard.putNumber("ty kI", SmartDashboard.getNumber("ty kI", 0));
-    SmartDashboard.putNumber("ty kD", SmartDashboard.getNumber("ty kD", 0));
 
     txController = new PIDController(
-        SmartDashboard.getNumber("tx kP", 0),
-        SmartDashboard.getNumber("tx kI", 0),
-        SmartDashboard.getNumber("tx kD", 0));
+        DriveConstants.K_DETECTOR_TX_P,
+        DriveConstants.K_DETECTOR_TX_I,
+        DriveConstants.K_DETECTOR_TX_D);
     tyController = new PIDController(
-        SmartDashboard.getNumber("ty kP", 0),
-        SmartDashboard.getNumber("ty kI", 0),
-        SmartDashboard.getNumber("ty kD", 0));
-    // ----------
-
-    // txController = new PIDController(
-    //     DriveConstants.K_DETECTOR_TX_P,
-    //     DriveConstants.K_DETECTOR_TX_I,
-    //     DriveConstants.K_DETECTOR_TX_D);
-    // tyController = new PIDController(
-    //     DriveConstants.K_DETECTOR_TY_P,
-    //     DriveConstants.K_DETECTOR_TY_I,
-    //     DriveConstants.K_DETECTOR_TY_D);
+        DriveConstants.K_DETECTOR_TY_P,
+        DriveConstants.K_DETECTOR_TY_I,
+        DriveConstants.K_DETECTOR_TY_D);
 
     txController.setSetpoint(0);
     tyController.setSetpoint(0);
@@ -74,17 +56,26 @@ public class DriveToCube2 extends CommandBase {
     detectorData = Limelight.latestDetectorValues;
     if (detectorData == null) {
       drivetrain.stop();
+      System.err.println("nullDetectorData");
       return;
     }
     if (!detectorData.isResultValid) {
       drivetrain.stop();
+      System.err.println("invalidDetectorData");
       return;
     }
-
+    
     tx = detectorData.tx;
     ty = detectorData.ty;
+    
+    SmartDashboard.putNumber("Ttx", txController.calculate(tx));
+    SmartDashboard.putNumber("Tty", tyController.calculate(ty));
 
-    drivetrain.drive(new ChassisSpeeds(-tyController.calculate(ty), 0, -txController.calculate(tx)));
+    if (tyController.atSetpoint() && txController.atSetpoint()) {
+      drivetrain.stop();
+    } else {
+      drivetrain.drive(new ChassisSpeeds(tyController.calculate(ty), 0, txController.calculate(tx)));
+    }
   }
 
   // Called once the command ends or is interrupted.

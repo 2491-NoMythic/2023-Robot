@@ -24,59 +24,7 @@
               "_showGlyph": false
             }
           },
-          "4,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/limelight_PipelineName",
-              "_title": "limelight_PipelineName",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "5,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/limelight_Interface",
-              "_title": "limelight_Interface",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "6,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/limelight_Stream",
-              "_title": "limelight_Stream",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "9,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/resetOdometry",
-              "_title": "resetOdometry",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "10,0": {
+          "11,0": {
             "size": [
               2,
               1
@@ -132,35 +80,7 @@
               "_showGlyph": false
             }
           },
-          "8,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/DriveToBalance",
-              "_title": "DriveToBalance",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "4,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/visionValid",
-              "_title": "/SmartDashboard/visionValid",
-              "_glyph": 148,
-              "_showGlyph": false,
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "0,2": {
+          "5,1": {
             "size": [
               3,
               2
@@ -173,7 +93,7 @@
               "_showGlyph": false,
               "Crosshair/Show crosshair": true,
               "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": true,
+              "Controls/Show controls": false,
               "Controls/Rotation": "NONE",
               "compression": -1.0,
               "fps": -1,
@@ -181,24 +101,10 @@
               "imageHeight": 0
             }
           },
-          "9,5": {
+          "0,2": {
             "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Robot Preferences",
-              "_source0": "network_table:///Preferences",
-              "_title": "Preferences",
-              "_glyph": 148,
-              "_showGlyph": false,
-              "Miscellaneous/Show search box": true
-            }
-          },
-          "5,1": {
-            "size": [
-              4,
-              2
+              5,
+              3
             ],
             "content": {
               "_type": "Field",
@@ -211,59 +117,7 @@
               "Visuals/Show Outside Circles": false
             }
           },
-          "5,5": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Match Timer",
-              "_title": "Match Timer",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "6,5": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/PPSwerveControllerCommand/xErrorMeters",
-              "_title": "PPSwerveControllerCommand/xErrorMeters",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "7,5": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/PPSwerveControllerCommand/yErrorMeters",
-              "_title": "PPSwerveControllerCommand/yErrorMeters",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "8,5": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/PPSwerveControllerCommand/rotationErrorDegrees",
-              "_title": "PPSwerveControllerCommand/rotationErrorDegrees",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "2,0": {
+          "1,0": {
             "size": [
               2,
               1
@@ -276,10 +130,10 @@
               "_showGlyph": false
             }
           },
-          "10,1": {
+          "8,1": {
             "size": [
-              3,
-              3
+              5,
+              4
             ],
             "content": {
               "_type": "Camera Stream",
@@ -297,20 +151,46 @@
               "imageHeight": -1
             }
           },
-          "5,3": {
+          "3,0": {
             "size": [
-              2,
+              1,
               1
             ],
             "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/DrivePickupCube",
-              "_title": "SmartDashboard/DrivePickupCube",
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Match Timer",
+              "_title": "Match Timer",
               "_glyph": 148,
               "_showGlyph": false
             }
           },
-          "9,1": {
+          "4,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/resetOdometry",
+              "_title": "resetOdometry",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/limelight_Stream",
+              "_title": "limelight_Stream",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,1": {
             "size": [
               1,
               1
@@ -323,7 +203,7 @@
               "_showGlyph": false
             }
           },
-          "3,2": {
+          "0,5": {
             "size": [
               1,
               1
@@ -336,7 +216,7 @@
               "_showGlyph": false
             }
           },
-          "4,2": {
+          "1,5": {
             "size": [
               1,
               1
@@ -349,6 +229,110 @@
               "_showGlyph": false
             }
           },
+          "2,5": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Toggle Button",
+              "_source0": "network_table:///SmartDashboard/UseApriltagLimelight",
+              "_title": "UseApriltagLimelight",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,5": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Toggle Button",
+              "_source0": "network_table:///SmartDashboard/UseDetectorLimelight",
+              "_title": "UseDetectorLimelight",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/DriveToCube2",
+              "_title": "DriveToCube2",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/DrivePickupCube2",
+              "_title": "DrivePickupCube2",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/tx kP",
+              "_title": "tx kP",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/tx kI",
+              "_title": "tx kI",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/tx kD",
+              "_title": "tx kD",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ty kP",
+              "_title": "ty kP",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
           "6,4": {
             "size": [
               1,
@@ -356,8 +340,127 @@
             ],
             "content": {
               "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ty kI",
+              "_title": "ty kI",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ty kD",
+              "_title": "ty kD",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/limelight_PipelineName",
+              "_title": "limelight_PipelineName",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "8,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/limelight_Interface",
+              "_title": "limelight_Interface",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "9,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/initializedd",
+              "_title": "initializedd",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "10,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/TX",
-              "_title": "SmartDashboard/TX",
+              "_title": "TX",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,5": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/TY",
+              "_title": "TY",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,5": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/ApriltagValid",
+              "_title": "ApriltagValid",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "6,5": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Ttx",
+              "_title": "Ttx",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,5": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Tty",
+              "_title": "Tty",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -380,7 +483,7 @@
     }
   ],
   "windowGeometry": {
-    "x": -6.0,
+    "x": -7.0,
     "y": 0.0,
     "width": 1933.0,
     "height": 1047.0

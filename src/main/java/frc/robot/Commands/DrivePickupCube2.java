@@ -4,6 +4,7 @@
 
 package frc.robot.Commands;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -26,7 +27,8 @@ public class DrivePickupCube2 extends SequentialCommandGroup {
       new DriveToCube2(drivetrain),
       new EndEffectorRun(effector, ()->true),
       new IntakeCube(arm),
-      new WaitCommand(2),
+      new DriveForSeconds(drivetrain, new ChassisSpeeds(-.5, 0, 0), 1),
+      new WaitCommand(1),
       new InstantCommand(effector::rollerOff, effector),
       new ResetFast(arm));
   }

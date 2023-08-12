@@ -71,7 +71,7 @@ public class DriveToCube2 extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    detectorData = ll.latestDetectorValues;
+    detectorData = Limelight.latestDetectorValues;
     if (detectorData == null) {
       drivetrain.stop();
       return;

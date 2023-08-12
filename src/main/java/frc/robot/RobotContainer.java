@@ -220,6 +220,9 @@ public class RobotContainer {
     limelight = Limelight.getInstance();
     SmartDashboard.putBoolean("UseApriltagLimelight", SmartDashboard.getBoolean("UseApriltagLimelight", true));
     SmartDashboard.putBoolean("UseDetectorLimelight", SmartDashboard.getBoolean("UseDetectorLimelight", true));
+
+    Limelight.aprilTagEnabled = SmartDashboard.getBoolean("UseApriltagLimelight", true);
+    Limelight.detectorEnabled = SmartDashboard.getBoolean("UseDetectorLimelight", true);
   }
 
   private void autoInit() {

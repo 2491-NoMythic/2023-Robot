@@ -8,12 +8,12 @@ public class Limelight {
 
     private static Limelight limelight;
 
-    public static Boolean aprilTagEnabled;
-    public static Boolean aprilTagForceTrust;
-    public static Boolean detectorEnabled;
+    public static Boolean aprilTagEnabled = false;
+    public static Boolean aprilTagForceTrust = false;
+    public static Boolean detectorEnabled = false;
     
-    public LimelightFiducialData latestAprilTagValues;
-    public LimelightDetectorData latestDetectorValues;
+    public static LimelightFiducialData latestAprilTagValues;
+    public static LimelightDetectorData latestDetectorValues;
 
     private  Limelight(){
       vision_thread();
@@ -57,7 +57,7 @@ public class Limelight {
       }
     
       public void periodic() {
-        if (aprilTagEnabled) this.latestAprilTagValues = getAprilTagValues();
-        if (detectorEnabled) this.latestDetectorValues = getNeuralDetectorValues();
+        if (aprilTagEnabled) Limelight.latestAprilTagValues = getAprilTagValues();
+        if (detectorEnabled) Limelight.latestDetectorValues = getNeuralDetectorValues();
       }
 }

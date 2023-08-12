@@ -248,7 +248,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void periodic() {
 		updateOdometry();
 		if (RobotContainer.LimelightExists && Limelight.aprilTagEnabled) {
-			LimelightFiducialData visionData = limelight.latestAprilTagValues;
+			LimelightFiducialData visionData = Limelight.latestAprilTagValues;
 			Boolean isVisionValid = visionData.isResultValid;
 			Boolean isVisionTrustworthy = isVisionValid && visionData.isPoseTrustworthy(odometer.getEstimatedPosition());
 			SmartDashboard.putBoolean("ApriltagValid", isVisionTrustworthy);

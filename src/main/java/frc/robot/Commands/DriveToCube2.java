@@ -5,6 +5,7 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -22,6 +23,8 @@ public class DriveToCube2 extends CommandBase {
   private double ty;
   private PIDController txController;
   private PIDController tyController;
+  private SlewRateLimiter txLimiter;
+  private SlewRateLimiter tyLimiter;
 
   /** Creates a new DrivePickupCube. */
   public DriveToCube2(DrivetrainSubsystem drivetrain) {
@@ -43,11 +46,11 @@ public class DriveToCube2 extends CommandBase {
         DriveConstants.K_DETECTOR_TY_P,
         DriveConstants.K_DETECTOR_TY_I,
         DriveConstants.K_DETECTOR_TY_D);
-
+    tyLimiter = new SlewRateLimiter(1, -1, 0);
     txController.setSetpoint(0);
     tyController.setSetpoint(0);
-    txController.setTolerance(1);
-    tyController.setTolerance(1);
+    txController.setTolerance(1, 0.25);
+    tyController.setTolerance(1, 0.25);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -67,20 +70,22 @@ public class DriveToCube2 extends CommandBase {
     
     tx = detectorData.tx;
     ty = detectorData.ty;
-    
+
     SmartDashboard.putNumber("Ttx", txController.calculate(tx));
     SmartDashboard.putNumber("Tty", tyController.calculate(ty));
 
     if (tyController.atSetpoint() && txController.atSetpoint()) {
       drivetrain.stop();
     } else {
-      drivetrain.drive(new ChassisSpeeds(tyController.calculate(ty), 0, txController.calculate(tx)));
+      drivetrain.drive(new ChassisSpeeds(tyLimiter.calculate(tyController.calculate(ty)), 0, txController.calculate(tx)));
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    if (tx == 0 && ty == 0) System.out.println("There might be a problem with the limelight detector");
+    if (interrupted) System.out.println("DriveToCube interrupted");
     drivetrain.stop();
   }
 

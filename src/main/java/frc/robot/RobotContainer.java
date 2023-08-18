@@ -36,6 +36,7 @@ import frc.robot.Commands.DriveBalanceCommand;
 import frc.robot.Commands.DriveOffsetCenterCommand;
 import frc.robot.Commands.DrivePickupCube;
 import frc.robot.Commands.DrivePickupCube2;
+import frc.robot.Commands.DrivePickupCubeReturn;
 import frc.robot.Commands.DriveToCube;
 import frc.robot.Commands.DriveToCube2;
 import frc.robot.Commands.DriveRotateToAngleCommand;
@@ -276,6 +277,7 @@ public class RobotContainer {
       SmartDashboard.putData(autoChooser);
       SmartDashboard.putData(new DriveToCube2(drivetrain));
       SmartDashboard.putData(new DrivePickupCube2(drivetrain, arm, effector));
+      SmartDashboard.putData(new DrivePickupCubeReturn(drivetrain, arm, effector));
     }
   }
 

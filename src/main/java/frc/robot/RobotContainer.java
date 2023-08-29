@@ -197,6 +197,7 @@ public class RobotContainer {
     SmartDashboard.putData(new DriveToBalance(drivetrain, true));
     SmartDashboard.putData(drivetrain);
     SmartDashboard.putNumber("Precision Multiplier", 0.5);
+    SmartDashboard.putBoolean("Safe Mode", true);
   }
 
   private void ArmInst(){
@@ -410,7 +411,7 @@ public class RobotContainer {
     value = MathUtil.applyDeadband(value, deadband);
     // Square the axis
     value = Math.copySign(value * value, value);
-    if (driveController.getL2Button()|| driveController.getL1Button() || opController.getL1Button()) {
+    if (driveController.getL2Button()|| driveController.getL1Button() || opController.getL1Button() || SmartDashboard.getBoolean("Safe Mode", true)) {
       value *= SmartDashboard.getNumber("Precision Multiplier", 0.3);
     }
     else if (ArmExists){

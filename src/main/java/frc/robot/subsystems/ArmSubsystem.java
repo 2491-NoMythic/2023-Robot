@@ -87,7 +87,6 @@ public class ArmSubsystem extends SubsystemBase {
     shoulderPID.setP(ARM_SHOULDER_K_P);
     shoulderPID.setI(ARM_SHOULDER_K_I);
     shoulderPID.setD(ARM_SHOULDER_K_D);
-    shoulderPID.setOutputRange(-0.6, 0.6);
     shoulderMotor.burnFlash();
 
     // ELBOW
@@ -112,7 +111,6 @@ public class ArmSubsystem extends SubsystemBase {
     elbowPID.setP(ARM_ELBOW_K_P);
     elbowPID.setI(ARM_ELBOW_K_I);
     elbowPID.setD(ARM_ELBOW_K_D);
-    elbowPID.setOutputRange(-0.6, 0.6);
     elbowMotor.burnFlash();
     
     SmartDashboard.putNumber("Shoulder P", ARM_SHOULDER_K_P);
@@ -291,6 +289,13 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
 	public void periodic() {
+    if (SmartDashboard.getBoolean("Safe Mode", true)){
+    shoulderPID.setOutputRange(-0.2, 0.2);
+    elbowPID.setOutputRange(-0.2, 0.2);
+    } else if (SmartDashboard.getBoolean("Safe Mode", true)){
+      shoulderPID.setOutputRange(-0.6, 0.6);
+      elbowPID.setOutputRange(-0.6, 0.6);
+    }
     double new_skP = SmartDashboard.getNumber("Shoulder P", ARM_SHOULDER_K_P);
     double new_skI = SmartDashboard.getNumber("Shoulder I", ARM_SHOULDER_K_I);
     double new_skD = SmartDashboard.getNumber("Shoulder D", ARM_SHOULDER_K_D);

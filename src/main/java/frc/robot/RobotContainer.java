@@ -98,6 +98,7 @@ public class RobotContainer {
 
 
   private EndEffectorPassiveCommand endEffectorPassiveCommand;
+  private EndEffectorCommand endEffectorCommand;
   private SkiPlow skiPlow;
 
   private EndEffector effector;
@@ -208,6 +209,7 @@ public class RobotContainer {
   private void EndEffectorInst(){
     effector = new EndEffector(Arm.END_EFFECTOR_BIG_POWER, Arm.END_EFFECTOR_SMALL_POWER);
     endEffectorPassiveCommand = new EndEffectorPassiveCommand(effector);
+    endEffectorCommand = new EndEffectorCommand(effector, () -> false);
     effector.setDefaultCommand(endEffectorPassiveCommand);
   }
   private void SkiPlowInst(){
@@ -349,6 +351,7 @@ public class RobotContainer {
           .onTrue(Commands.either(new MidCone(arm), new MidCube(arm), intakeState::isConeMode));//score mid
       new Trigger(()-> opController.getPOV() == 180)
           .onTrue(new DropLow(arm));//score floor
+      
     }
 
     if (SkiPlowExists) {

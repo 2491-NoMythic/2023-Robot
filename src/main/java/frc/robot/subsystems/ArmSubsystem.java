@@ -292,7 +292,7 @@ public class ArmSubsystem extends SubsystemBase {
     if (SmartDashboard.getBoolean("Safe Mode", true)){
     shoulderPID.setOutputRange(-0.2, 0.2);
     elbowPID.setOutputRange(-0.2, 0.2);
-    } else if (SmartDashboard.getBoolean("Safe Mode", false)){
+    } else {
       shoulderPID.setOutputRange(-0.6, 0.6);
       elbowPID.setOutputRange(-0.6, 0.6);
     }

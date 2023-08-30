@@ -98,6 +98,7 @@ public class RobotContainer {
 
 
   private EndEffectorPassiveCommand endEffectorPassiveCommand;
+  private EndEffectorCommand endEffectorCommand;
   private SkiPlow skiPlow;
 
   private EndEffector effector;
@@ -196,7 +197,8 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(defaultDriveCommand);
     SmartDashboard.putData(new DriveToBalance(drivetrain, true));
     SmartDashboard.putData(drivetrain);
-    SmartDashboard.putNumber("Precision Multiplier", 0.5);
+    SmartDashboard.putNumber("Precision Multiplier", 0.2);
+    SmartDashboard.putBoolean("Safe Mode", true);
   }
 
   private void ArmInst(){
@@ -207,6 +209,7 @@ public class RobotContainer {
   private void EndEffectorInst(){
     effector = new EndEffector(Arm.END_EFFECTOR_BIG_POWER, Arm.END_EFFECTOR_SMALL_POWER);
     endEffectorPassiveCommand = new EndEffectorPassiveCommand(effector);
+    endEffectorCommand = new EndEffectorCommand(effector, () -> false);
     effector.setDefaultCommand(endEffectorPassiveCommand);
   }
   private void SkiPlowInst(){
@@ -348,6 +351,7 @@ public class RobotContainer {
           .onTrue(Commands.either(new MidCone(arm), new MidCube(arm), intakeState::isConeMode));//score mid
       new Trigger(()-> opController.getPOV() == 180)
           .onTrue(new DropLow(arm));//score floor
+      
     }
 
     if (SkiPlowExists) {
@@ -410,8 +414,8 @@ public class RobotContainer {
     value = MathUtil.applyDeadband(value, deadband);
     // Square the axis
     value = Math.copySign(value * value, value);
-    if (driveController.getL2Button()|| driveController.getL1Button() || opController.getL1Button()) {
-      value *= SmartDashboard.getNumber("Precision Multiplier", 0.3);
+    if (driveController.getL2Button()|| driveController.getL1Button() || opController.getL1Button() || SmartDashboard.getBoolean("Safe Mode", true)) {
+      value *= SmartDashboard.getNumber("Precision Multiplier", 0.2);
     }
     else if (ArmExists){
       if (Math.abs(arm.getArmPose().getX()) >= 0.5) {

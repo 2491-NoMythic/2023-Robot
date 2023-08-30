@@ -29,8 +29,8 @@ public class EndEffectorPassiveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (intakeState.isConeMode()) endEffector.rollerPassiveCone();
-    if (intakeState.isCubeMode()) endEffector.rollerPassiveCube();
+    if (intakeState.isConeMode()) endEffector.rollerOff();
+    if (intakeState.isCubeMode()) endEffector.rollerOff();
   }
 
   // Called once the command ends or is interrupted.
